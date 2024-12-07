@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/pros_and_cons/static/css/main.f855e6bc.css",
+    "main.js": "/pros_and_cons/static/js/main.26555206.js",
+    "static/js/453.89625756.chunk.js": "/pros_and_cons/static/js/453.89625756.chunk.js",
+    "service-worker.js": "/pros_and_cons/service-worker.js",
+    "static/media/logo.svg": "/pros_and_cons/static/media/logo.103b5fa18196d5665a7e12318285c916.svg",
+    "index.html": "/pros_and_cons/index.html",
+    "main.f855e6bc.css.map": "/pros_and_cons/static/css/main.f855e6bc.css.map",
+    "main.26555206.js.map": "/pros_and_cons/static/js/main.26555206.js.map",
+    "453.89625756.chunk.js.map": "/pros_and_cons/static/js/453.89625756.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.26555206.js"
+  ]
+}

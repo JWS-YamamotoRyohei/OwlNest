@@ -1,4 +1,6 @@
 ## 開発ログ
+### ０．便利コマンド 
+
 ### １．プロジェクト作成
 
 - 以下のサイトを参考にプロジェクト立ち上げ
@@ -7,5 +9,11 @@
 - gitにpush
   
   https://github.com/JWS-YamamotoRyohei/pros_and_cons
-- 
+
+
+- 拡張機能としてgenieとgptについて、GPTのAPIが上手く機能しない。
+- 無料の拡張機能codeiumをinstall
+- https://bitbeans.com/blog/codeiumai/
+
+
 

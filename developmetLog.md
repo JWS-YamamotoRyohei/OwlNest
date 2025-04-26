@@ -8,7 +8,7 @@
   https://qiita.com/nemutas/items/8b7d22d4e44d659ef4eb
 - gitにpush
   
-  https://github.com/JWS-YamamotoRyohei/pros_and_cons
+  https://github.com/JWS-YamamotoRyohei/pros-and-cons
 
 
 - 拡張機能としてgenieとgptについて、GPTのAPIが上手く機能しない。

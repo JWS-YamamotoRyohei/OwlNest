@@ -16,12 +16,12 @@ export const SortableTile: FC<Props> = ({ post }) => {
         padding: "0.25rem",
         marginBottom: "0.1rem",
         marginTop: "0.1rem",
-        // marginLeft: "0.1rem",
+        marginRight: post.stance === "pros" ? "0.5rem" : "0rem",
+        marginLeft: post.stance === "cons" ? "0.5rem" : "0rem",
         cursor: "grab",
         userSelect: "none",
         width: "100%",
         fontSize: "0.6rem",
-        textIndent:"0.3rem",
         backgroundColor: post.stance === "pros" ? "#E0F7FA" : "#FFEBEE",
         transform: transform ? CSS.Transform.toString(transform) : undefined,
         transition,
@@ -29,7 +29,9 @@ export const SortableTile: FC<Props> = ({ post }) => {
 
     return (
         <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
-            {post.text}
+            <div style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}>
+                {post.text}
+            </div>
         </div>
     );
 };

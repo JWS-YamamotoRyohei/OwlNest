@@ -38,7 +38,7 @@ const baseMain: CSSProperties = {
     position: "relative",
 };
 
-export const Post = () => {
+export const DiscussionPage = () => {
     const isDesktop = useMediaQuery({ minWidth: 768 });
 
     const [discussion, setDiscussion] = useState<Discussion>(sampleDiscussion

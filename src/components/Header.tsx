@@ -44,7 +44,7 @@ export const Header: FC<HeaderProps> = ({ onButtonClick, onIconClick }) => {
 
   return (
     <header style={style}>
-      <img src="/pros-and-cons/logo192.png" alt="logo" style={logo} onClick={onIconClick} />
+      <img src="/owlnest/logo192.png" alt="logo" style={logo} onClick={onIconClick} />
       <button style={button} onClick={onButtonClick}>
         Pros &amp; Cons
       </button>

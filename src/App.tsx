@@ -8,8 +8,8 @@ export const App = () => {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/home" element={<Home />} /> */}
-        <Route path="/pros-and-cons" element={<Post />} />
-        <Route path="/" element={<Navigate replace to="/pros-and-cons" />} />
+        <Route path="/discussion" element={<Post />} />
+        <Route path="/" element={<Navigate replace to="/owlnest" />} />
       </Routes>
     </BrowserRouter>
   )

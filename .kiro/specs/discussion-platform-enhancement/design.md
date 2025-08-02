@@ -1,5 +1,3 @@
-プレビュー：crtl+shift+v
-
 # 設計文書
 
 ## 概要
@@ -160,7 +158,437 @@ src/
 ├── store/               # 状態管理（Context API）
 ├── types/               # TypeScript型定義
 ├── utils/               # ユーティリティ関数
-└── constants/           # 定数定義
+├── constants/           # 定数定義
+├── styles/              # スタイル定義
+│   ├── themes/          # テーマ設定
+│   ├── components/      # コンポーネント別スタイル
+│   └── globals/         # グローバルスタイル
+└── assets/              # 静的リソース
+    ├── images/          # 画像ファイル
+    ├── icons/           # アイコンファイル
+    └── fonts/           # フォントファイル
+```
+
+## UI/UXデザイン
+
+### デザインシステム
+
+#### カラーパレット
+```typescript
+export const colors = {
+  primary: {
+    50: '#eff6ff',
+    100: '#dbeafe', 
+    200: '#bfdbfe',
+    300: '#93c5fd',
+    400: '#60a5fa', // メインブランドカラー（現在のヘッダー色）
+    500: '#3b82f6',
+    600: '#2563eb',
+    700: '#1d4ed8',
+    800: '#1e40af',
+    900: '#1e3a8a',
+  },
+  secondary: {
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+  },
+  success: {
+    50: '#f0fdf4',
+    400: '#4ade80',
+    500: '#22c55e',
+    600: '#16a34a',
+  },
+  warning: {
+    50: '#fffbeb',
+    400: '#fbbf24',
+    500: '#f59e0b',
+    600: '#d97706',
+  },
+  error: {
+    50: '#fef2f2',
+    400: '#f87171',
+    500: '#ef4444',
+    600: '#dc2626',
+  },
+  pros: '#22c55e',    // Pros投稿用の緑色
+  cons: '#ef4444',    // Cons投稿用の赤色
+  neutral: '#64748b', // 中立投稿用のグレー
+  unknown: '#a855f7', // わからない投稿用の紫色
+};
+```
+
+#### タイポグラフィ
+```typescript
+export const typography = {
+  fontFamily: {
+    primary: ['Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', 'sans-serif'],
+    mono: ['Fira Code', 'Monaco', 'Consolas', 'monospace'],
+  },
+  fontSize: {
+    xs: '0.75rem',    // 12px
+    sm: '0.875rem',   // 14px
+    base: '1rem',     // 16px
+    lg: '1.125rem',   // 18px
+    xl: '1.25rem',    // 20px
+    '2xl': '1.5rem',  // 24px
+    '3xl': '1.875rem', // 30px
+    '4xl': '2.25rem', // 36px
+  },
+  fontWeight: {
+    normal: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+  },
+  lineHeight: {
+    tight: 1.25,
+    normal: 1.5,
+    relaxed: 1.75,
+  },
+};
+```
+
+#### スペーシング・レイアウト
+```typescript
+export const spacing = {
+  0: '0',
+  1: '0.25rem',  // 4px
+  2: '0.5rem',   // 8px
+  3: '0.75rem',  // 12px
+  4: '1rem',     // 16px
+  5: '1.25rem',  // 20px
+  6: '1.5rem',   // 24px
+  8: '2rem',     // 32px
+  10: '2.5rem',  // 40px
+  12: '3rem',    // 48px
+  16: '4rem',    // 64px
+  20: '5rem',    // 80px
+  24: '6rem',    // 96px
+};
+
+export const borderRadius = {
+  none: '0',
+  sm: '0.125rem',   // 2px
+  base: '0.25rem',  // 4px
+  md: '0.375rem',   // 6px
+  lg: '0.5rem',     // 8px
+  xl: '0.75rem',    // 12px
+  '2xl': '1rem',    // 16px
+  full: '9999px',
+};
+```
+
+### ページレイアウト設計
+
+#### 1. ヘッダーナビゲーション
+```typescript
+interface HeaderProps {
+  user: User | null;
+  onMenuToggle: () => void;
+  onNotificationClick: () => void;
+  notificationCount: number;
+}
+
+// レスポンシブ対応
+const HeaderLayout = {
+  desktop: {
+    height: '64px',
+    padding: '0 24px',
+    items: ['logo', 'navigation', 'search', 'notifications', 'userMenu'],
+  },
+  mobile: {
+    height: '56px', 
+    padding: '0 16px',
+    items: ['menuButton', 'logo', 'notifications', 'userMenu'],
+  },
+};
+```
+
+#### 2. サイドバーナビゲーション
+```typescript
+interface SidebarItem {
+  id: string;
+  label: string;
+  icon: string;
+  path: string;
+  badge?: number;
+  children?: SidebarItem[];
+}
+
+const sidebarItems: SidebarItem[] = [
+  { id: 'home', label: 'ホーム', icon: 'home', path: '/' },
+  { id: 'discussions', label: '議論一覧', icon: 'discussions', path: '/discussions' },
+  { id: 'timeline', label: 'タイムライン', icon: 'timeline', path: '/timeline' },
+  { id: 'following', label: 'フォロー中', icon: 'heart', path: '/following' },
+  { id: 'my-discussions', label: '自分の議論', icon: 'user', path: '/my-discussions' },
+  { id: 'settings', label: '設定', icon: 'settings', path: '/settings' },
+];
+```
+
+#### 3. 議論一覧ページレイアウト
+```mermaid
+graph TD
+    A[Header: Logo<br/>Search<br/>Notifications<br/>User Menu] --> B[Main Layout]
+    B --> C[Sidebar: Navigation Menu]
+    B --> D[Content Area]
+    D --> E[Filters: Category<br/>Status<br/>Sort]
+    D --> F[Discussion List]
+    F --> G[Discussion Card 1]
+    F --> H[Discussion Card 2]
+    F --> I[Discussion Card N]
+    G --> J[Title<br/>Description<br/>Categories<br/>Owner<br/>Stats<br/>Last Activity]
+    H --> K[Title<br/>Description<br/>Categories<br/>Owner<br/>Stats<br/>Last Activity]
+    I --> L[Title<br/>Description<br/>Categories<br/>Owner<br/>Stats<br/>Last Activity]
+
+```
+
+#### 4. 議論詳細ページレイアウト
+```mermaid
+graph TD
+    A[Header: Logo<br/>Search<br/>Notifications<br/>User Menu] --> B[Discussion Header]
+    B --> C[Title<br/>Description<br/>Categories<br/>Owner<br/>Follow Button]
+    C --> D[Main Layout]
+    D --> E[Discussion Points Navigation<br/>Hierarchical Point List]
+    D --> F[Content Area]
+    F --> G[Current Point<br/>Title<br/>Description]
+    G --> H[Posts Section]
+    H --> I[Post Card 1<br/>Author<br/>Stance<br/>Content<br/>Reactions]
+    H --> J[Post Card 2<br/>Author<br/>Stance<br/>Content<br/>Reactions]
+    H --> K[Post Card N<br/>Author<br/>Stance<br/>Content<br/>Reactions]
+    K --> L[Post Form<br/>Point Selection<br/>Content Editor<br/>Stance<br/>Submit]
+```
+
+#### 5. 議論作成フォーム
+```typescript
+interface DiscussionFormLayout {
+  sections: [
+    {
+      title: '基本情報';
+      fields: ['title', 'description', 'ownerStance'];
+    },
+    {
+      title: 'カテゴリ';
+      fields: ['categories'];
+    },
+    {
+      title: '議論の論点';
+      fields: ['discussionPoints'];
+    },
+    {
+      title: '前提知識（任意）';
+      fields: ['backgroundKnowledge'];
+    },
+    {
+      title: 'アクセス制御（任意）';
+      fields: ['accessControl'];
+    }
+  ];
+}
+```
+
+### コンポーネント設計
+
+#### 1. 投稿カード (PostCard)
+```typescript
+interface PostCardProps {
+  post: Post;
+  onReact: (postId: string, reaction: ReactionType) => void;
+  onReply: (postId: string) => void;
+  onEdit?: (postId: string) => void;
+  onDelete?: (postId: string) => void;
+  isOwner: boolean;
+  currentUserId: string;
+}
+
+const PostCardLayout = {
+  header: {
+    avatar: '40px',
+    authorName: 'font-medium',
+    timestamp: 'text-sm text-gray-500',
+    stanceBadge: 'stance-specific-color',
+  },
+  content: {
+    text: 'rich-text-display',
+    attachments: 'grid-layout',
+  },
+  footer: {
+    reactions: 'horizontal-list',
+    replyButton: 'text-button',
+    moreActions: 'dropdown-menu',
+  },
+};
+```
+
+#### 2. 議論カード (DiscussionCard)
+```typescript
+interface DiscussionCardProps {
+  discussion: Discussion;
+  onFollow: (discussionId: string) => void;
+  onUnfollow: (discussionId: string) => void;
+  isFollowing: boolean;
+}
+
+const DiscussionCardLayout = {
+  header: {
+    title: 'text-xl font-semibold',
+    followButton: 'top-right-position',
+  },
+  content: {
+    description: 'text-gray-600 line-clamp-3',
+    categories: 'tag-list',
+  },
+  footer: {
+    ownerInfo: 'flex items-center',
+    stats: 'text-sm text-gray-500',
+    lastActivity: 'text-sm text-gray-400',
+  },
+};
+```
+
+#### 3. フォーム要素
+```typescript
+// リッチテキストエディタ
+interface RichTextEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  features: {
+    bold: boolean;
+    fontSize: boolean;
+    imageUpload: boolean;
+    linkInsert: boolean;
+  };
+}
+
+// カテゴリ選択
+interface CategorySelectorProps {
+  selectedCategories: string[];
+  onChange: (categories: string[]) => void;
+  maxSelections?: number;
+  hierarchical: boolean;
+}
+
+// 論点管理
+interface DiscussionPointsEditorProps {
+  points: DiscussionPoint[];
+  onChange: (points: DiscussionPoint[]) => void;
+  maxDepth: number;
+}
+```
+
+### レスポンシブデザイン
+
+#### ブレークポイント
+```typescript
+export const breakpoints = {
+  sm: '640px',   // スマートフォン
+  md: '768px',   // タブレット
+  lg: '1024px',  // デスクトップ
+  xl: '1280px',  // 大画面デスクトップ
+  '2xl': '1536px', // 超大画面
+};
+```
+
+#### レスポンシブレイアウト戦略
+- **モバイルファースト**: 小画面から設計開始
+- **プログレッシブエンハンスメント**: 画面サイズに応じて機能追加
+- **タッチフレンドリー**: 44px以上のタッチターゲット
+- **読みやすさ**: 適切な行間・文字サイズ
+
+### アクセシビリティ
+
+#### WCAG 2.1 AA準拠
+- **色のコントラスト**: 4.5:1以上の比率
+- **キーボードナビゲーション**: 全機能をキーボードで操作可能
+- **スクリーンリーダー対応**: 適切なARIAラベル
+- **フォーカス管理**: 明確なフォーカス表示
+
+#### セマンティックHTML
+```typescript
+// 例: 投稿の構造
+<article role="article" aria-labelledby="post-title">
+  <header>
+    <h3 id="post-title">投稿タイトル</h3>
+    <div role="img" aria-label="賛成の立場">🟢</div>
+  </header>
+  <main>
+    <div role="main" aria-label="投稿内容">
+      {content}
+    </div>
+  </main>
+  <footer>
+    <button aria-label="この投稿にいいねする">👍</button>
+    <button aria-label="この投稿に返信する">💬</button>
+  </footer>
+</article>
+```
+
+### アニメーション・インタラクション
+
+#### マイクロインタラクション
+```typescript
+export const animations = {
+  // ホバー効果
+  hover: {
+    scale: 1.02,
+    transition: { duration: 0.2 },
+  },
+  // ローディング
+  loading: {
+    opacity: [1, 0.5, 1],
+    transition: { repeat: Infinity, duration: 1.5 },
+  },
+  // 新着通知
+  notification: {
+    x: [300, 0],
+    transition: { type: 'spring', stiffness: 100 },
+  },
+  // ページ遷移
+  pageTransition: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  },
+};
+```
+
+### ダークモード対応
+
+#### テーマ切り替え
+```typescript
+interface Theme {
+  name: 'light' | 'dark';
+  colors: ColorPalette;
+  shadows: ShadowSystem;
+}
+
+export const lightTheme: Theme = {
+  name: 'light',
+  colors: {
+    background: '#ffffff',
+    surface: '#f8fafc',
+    text: '#1e293b',
+    // ...
+  },
+};
+
+export const darkTheme: Theme = {
+  name: 'dark', 
+  colors: {
+    background: '#0f172a',
+    surface: '#1e293b',
+    text: '#f1f5f9',
+    // ...
+  },
+};
 ```
 
 ## コンポーネントとインターフェース
@@ -420,6 +848,15 @@ interface PostItem {
   replyToId?: string;
   reactions: {
     [userId: string]: ReactionType;
+  };
+  moderation: {
+    isHidden: boolean;
+    hiddenBy?: string; // 非表示にしたユーザーID（議論所有者またはシステム管理者）
+    hiddenAt?: string;
+    hiddenReason?: string;
+    isDeleted: boolean;
+    deletedBy?: string;
+    deletedAt?: string;
   };
   metadata: {
     createdAt: string;

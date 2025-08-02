@@ -1,0 +1,15 @@
+{
+  "environment": "test",
+  "region": "ap-northeast-1",
+  "domainName": "",
+  "certificateArn": "",
+  "enableDetailedMonitoring": false,
+  "logRetentionDays": 1,
+  "lambdaMemorySize": 128,
+  "lambdaTimeout": 30,
+  "dynamoDbBillingMode": "ON_DEMAND",
+  "enablePointInTimeRecovery": false,
+  "removalPolicy": "DESTROY",
+  "corsAllowedOrigins": ["http://localhost:3000"],
+  "cognitoDomainPrefix": "owlnest-test"
+}

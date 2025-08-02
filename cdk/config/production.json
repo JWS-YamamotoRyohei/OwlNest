@@ -1,0 +1,15 @@
+{
+  "environment": "production",
+  "region": "ap-northeast-1",
+  "domainName": "",
+  "certificateArn": "",
+  "enableDetailedMonitoring": true,
+  "logRetentionDays": 90,
+  "lambdaMemorySize": 1024,
+  "lambdaTimeout": 30,
+  "dynamoDbBillingMode": "ON_DEMAND",
+  "enablePointInTimeRecovery": true,
+  "removalPolicy": "RETAIN",
+  "corsAllowedOrigins": ["https://owlnest.example.com"],
+  "cognitoDomainPrefix": "owlnest-prod"
+}

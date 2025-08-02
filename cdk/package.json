@@ -1,0 +1,35 @@
+{
+  "name": "cdk",
+  "version": "0.1.0",
+  "bin": {
+    "cdk": "bin/cdk.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "deploy:dev": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 development",
+    "deploy:staging": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 staging",
+    "deploy:prod": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 production",
+    "destroy:dev": "powershell -ExecutionPolicy Bypass -File scripts/destroy.ps1 development",
+    "destroy:staging": "powershell -ExecutionPolicy Bypass -File scripts/destroy.ps1 staging",
+    "destroy:prod": "powershell -ExecutionPolicy Bypass -File scripts/destroy.ps1 production",
+    "synth": "cdk synth",
+    "diff": "cdk diff"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.1023.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "aws-cdk-lib": "2.206.0",
+    "constructs": "^10.0.0"
+  }
+}

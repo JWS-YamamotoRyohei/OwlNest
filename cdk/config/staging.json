@@ -1,0 +1,15 @@
+{
+  "environment": "staging",
+  "region": "ap-northeast-1",
+  "domainName": "",
+  "certificateArn": "",
+  "enableDetailedMonitoring": true,
+  "logRetentionDays": 30,
+  "lambdaMemorySize": 512,
+  "lambdaTimeout": 30,
+  "dynamoDbBillingMode": "ON_DEMAND",
+  "enablePointInTimeRecovery": true,
+  "removalPolicy": "RETAIN",
+  "corsAllowedOrigins": ["https://staging.owlnest.example.com"],
+  "cognitoDomainPrefix": "owlnest-staging"
+}

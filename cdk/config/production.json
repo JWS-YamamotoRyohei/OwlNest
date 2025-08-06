@@ -1,7 +1,7 @@
 {
   "environment": "production",
   "region": "ap-northeast-1",
-  "domainName": "",
+  "domainName": "owlnest.example.com",
   "certificateArn": "",
   "enableDetailedMonitoring": true,
   "logRetentionDays": 90,
@@ -10,6 +10,15 @@
   "dynamoDbBillingMode": "ON_DEMAND",
   "enablePointInTimeRecovery": true,
   "removalPolicy": "RETAIN",
-  "corsAllowedOrigins": ["https://owlnest.example.com"],
-  "cognitoDomainPrefix": "owlnest-prod"
+  "corsAllowedOrigins": ["https://owlnest.example.com", "https://www.owlnest.example.com"],
+  "cognitoDomainPrefix": "owlnest-prod",
+  "enableWaf": true,
+  "enableShield": true,
+  "enableGuardDuty": true,
+  "enableConfig": true,
+  "enableCloudTrail": true,
+  "backupRetentionDays": 90,
+  "budgetLimit": 500,
+  "alertEmail": "alerts@owlnest.example.com",
+  "slackWebhookUrl": ""
 }

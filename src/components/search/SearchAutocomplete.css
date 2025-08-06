@@ -1,0 +1,278 @@
+.search-autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+/* Input Container */
+.search-autocomplete__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-autocomplete__input {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px; /* Space for loading indicator */
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 16px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.search-autocomplete__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha-20);
+}
+
+.search-autocomplete__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-background);
+}
+
+.search-autocomplete__input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* Loading Indicator */
+.search-autocomplete__loading {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.search-autocomplete__loading-spinner {
+  font-size: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Suggestions Dropdown */
+.search-autocomplete__suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--color-shadow);
+  max-height: 320px;
+  overflow-y: auto;
+  margin-top: 4px;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Individual Suggestion */
+.search-autocomplete__suggestion {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.search-autocomplete__suggestion:last-child {
+  border-bottom: none;
+}
+
+.search-autocomplete__suggestion:hover,
+.search-autocomplete__suggestion--selected {
+  background: var(--color-hover);
+}
+
+.search-autocomplete__suggestion--selected {
+  background: var(--color-primary-alpha-10);
+}
+
+.search-autocomplete__suggestion-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.search-autocomplete__suggestion-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-autocomplete__suggestion-text {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.search-autocomplete__suggestion-type {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.search-autocomplete__suggestion-count {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background: var(--color-background);
+  padding: 2px 6px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* Highlight */
+.search-autocomplete__highlight {
+  background: var(--color-warning-alpha-30);
+  color: var(--color-warning-dark);
+  padding: 1px 2px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-autocomplete__input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 16px;
+    padding-right: 44px;
+  }
+  
+  .search-autocomplete__suggestions {
+    max-height: 280px;
+  }
+  
+  .search-autocomplete__suggestion {
+    padding: 14px 16px;
+  }
+  
+  .search-autocomplete__suggestion-text {
+    font-size: 15px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .search-autocomplete__suggestions {
+    background: var(--color-surface-dark, #1a1a1a);
+    border-color: var(--color-border-dark, #333);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .search-autocomplete__highlight {
+    background: var(--color-warning-alpha-40);
+    color: var(--color-warning-light);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .search-autocomplete__input {
+    border-width: 3px;
+  }
+  
+  .search-autocomplete__suggestion:hover,
+  .search-autocomplete__suggestion--selected {
+    background: var(--color-primary-alpha-20);
+    border: 1px solid var(--color-primary);
+  }
+  
+  .search-autocomplete__highlight {
+    background: yellow;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .search-autocomplete__suggestions {
+    animation: none;
+  }
+  
+  .search-autocomplete__loading-spinner {
+    animation: none;
+  }
+  
+  .search-autocomplete__input,
+  .search-autocomplete__suggestion {
+    transition: none;
+  }
+}
+
+/* Focus Management */
+.search-autocomplete__input:focus + .search-autocomplete__suggestions {
+  border-color: var(--color-primary);
+}
+
+/* Scrollbar Styling */
+.search-autocomplete__suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-autocomplete__suggestions::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+.search-autocomplete__suggestions::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+.search-autocomplete__suggestions::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Loading State */
+.search-autocomplete--loading .search-autocomplete__input {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-primary-alpha-10),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Error State */
+.search-autocomplete--error .search-autocomplete__input {
+  border-color: var(--color-error);
+}
+
+.search-autocomplete--error .search-autocomplete__input:focus {
+  box-shadow: 0 0 0 3px var(--color-error-alpha-20);
+}

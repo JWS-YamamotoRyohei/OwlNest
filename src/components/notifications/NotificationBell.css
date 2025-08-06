@@ -1,0 +1,451 @@
+.notification-bell {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-bell__button {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  color: var(--color-secondary-600);
+  transition: all 0.2s ease-in-out;
+}
+
+.notification-bell__button:hover {
+  background-color: var(--color-secondary-100);
+  color: var(--color-secondary-800);
+}
+
+.notification-bell__button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-primary-500);
+}
+
+.notification-bell__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.notification-bell__badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background-color: var(--color-error-500);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.75rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.notification-bell__dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 50;
+  width: 20rem;
+  max-height: 28rem;
+  background: white;
+  border: 1px solid var(--color-secondary-200);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.notification-bell__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-secondary-200);
+  background-color: var(--color-secondary-50);
+}
+
+.notification-bell__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-secondary-900);
+}
+
+.notification-bell__unread-count {
+  font-size: 0.75rem;
+  color: var(--color-secondary-600);
+  background-color: var(--color-primary-100);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+}
+
+.notification-bell__content {
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.notification-bell__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--color-secondary-600);
+}
+
+.notification-bell__spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--color-secondary-200);
+  border-top: 2px solid var(--color-primary-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.notification-bell__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-bell__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  border-bottom: 1px solid var(--color-secondary-100);
+  position: relative;
+}
+
+.notification-bell__item:hover {
+  background-color: var(--color-secondary-50);
+}
+
+.notification-bell__item:last-child {
+  border-bottom: none;
+}
+
+.notification-bell__item--unread {
+  background-color: var(--color-primary-50);
+}
+
+.notification-bell__item--unread:hover {
+  background-color: var(--color-primary-100);
+}
+
+.notification-bell__item-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.notification-bell__item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-bell__item-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-secondary-900);
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.notification-bell__item-message {
+  font-size: 0.8125rem;
+  color: var(--color-secondary-700);
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notification-bell__item-time {
+  font-size: 0.75rem;
+  color: var(--color-secondary-500);
+}
+
+.notification-bell__item-unread-dot {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--color-primary-500);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.notification-bell__footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--color-secondary-200);
+  background-color: var(--color-secondary-50);
+}
+
+.notification-bell__view-all {
+  display: block;
+  text-align: center;
+  color: var(--color-primary-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.notification-bell__view-all:hover {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.notification-bell__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.notification-bell__empty-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}
+
+.notification-bell__empty-message {
+  font-size: 0.875rem;
+  color: var(--color-secondary-600);
+}
+
+.notification-bell__error {
+  padding: 1rem;
+  background-color: var(--color-error-50);
+  border-top: 1px solid var(--color-error-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.notification-bell__error-message {
+  font-size: 0.8125rem;
+  color: var(--color-error-700);
+  flex: 1;
+}
+
+.notification-bell__error-retry {
+  background-color: var(--color-error-600);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  flex-shrink: 0;
+}
+
+.notification-bell__error-retry:hover {
+  background-color: var(--color-error-700);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .notification-bell__dropdown {
+    width: 18rem;
+    max-height: 24rem;
+  }
+  
+  .notification-bell__content {
+    max-height: 16rem;
+  }
+  
+  .notification-bell__item {
+    padding: 0.625rem 0.75rem;
+  }
+  
+  .notification-bell__item-title {
+    font-size: 0.8125rem;
+  }
+  
+  .notification-bell__item-message {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-bell__dropdown {
+    width: 16rem;
+    right: -2rem;
+  }
+  
+  .notification-bell__header {
+    padding: 0.75rem;
+  }
+  
+  .notification-bell__item {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .notification-bell__item-icon {
+    font-size: 1rem;
+  }
+  
+  .notification-bell__footer {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .notification-bell__button {
+    color: var(--color-secondary-400);
+  }
+  
+  .notification-bell__button:hover {
+    background-color: var(--color-secondary-800);
+    color: var(--color-secondary-200);
+  }
+  
+  .notification-bell__dropdown {
+    background: var(--color-secondary-800);
+    border-color: var(--color-secondary-700);
+  }
+  
+  .notification-bell__header {
+    background-color: var(--color-secondary-900);
+    border-color: var(--color-secondary-700);
+  }
+  
+  .notification-bell__title {
+    color: var(--color-secondary-100);
+  }
+  
+  .notification-bell__unread-count {
+    color: var(--color-secondary-400);
+    background-color: var(--color-primary-900);
+  }
+  
+  .notification-bell__loading {
+    color: var(--color-secondary-400);
+  }
+  
+  .notification-bell__item {
+    border-color: var(--color-secondary-700);
+  }
+  
+  .notification-bell__item:hover {
+    background-color: var(--color-secondary-700);
+  }
+  
+  .notification-bell__item--unread {
+    background-color: var(--color-primary-900);
+  }
+  
+  .notification-bell__item--unread:hover {
+    background-color: var(--color-primary-800);
+  }
+  
+  .notification-bell__item-title {
+    color: var(--color-secondary-100);
+  }
+  
+  .notification-bell__item-message {
+    color: var(--color-secondary-300);
+  }
+  
+  .notification-bell__item-time {
+    color: var(--color-secondary-500);
+  }
+  
+  .notification-bell__footer {
+    background-color: var(--color-secondary-900);
+    border-color: var(--color-secondary-700);
+  }
+  
+  .notification-bell__view-all {
+    color: var(--color-primary-400);
+  }
+  
+  .notification-bell__view-all:hover {
+    background-color: var(--color-primary-900);
+    color: var(--color-primary-300);
+  }
+  
+  .notification-bell__empty-message {
+    color: var(--color-secondary-400);
+  }
+  
+  .notification-bell__error {
+    background-color: var(--color-error-900);
+    border-color: var(--color-error-700);
+  }
+  
+  .notification-bell__error-message {
+    color: var(--color-error-300);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .notification-bell__dropdown {
+    border-width: 2px;
+  }
+  
+  .notification-bell__badge {
+    border: 2px solid white;
+  }
+  
+  .notification-bell__item-title {
+    font-weight: 700;
+  }
+  
+  .notification-bell__item-unread-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .notification-bell__button {
+    transition: none;
+  }
+  
+  .notification-bell__item {
+    transition: none;
+  }
+  
+  .notification-bell__view-all {
+    transition: none;
+  }
+  
+  .notification-bell__error-retry {
+    transition: none;
+  }
+  
+  .notification-bell__spinner {
+    animation: none;
+  }
+}

@@ -1,0 +1,56 @@
+.create-discussion-page {
+  padding: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.create-discussion-page__header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.create-discussion-page__header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.create-discussion-page__header p {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+}
+
+.create-discussion-page__content {
+  min-height: 400px;
+}
+
+.create-discussion-page__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: var(--color-surface);
+  border-radius: 8px;
+  border: 2px dashed var(--color-border);
+}
+
+.create-discussion-page__placeholder p {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .create-discussion-page {
+    padding: 1rem;
+  }
+  
+  .create-discussion-page__header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .create-discussion-page__header p {
+    font-size: 1rem;
+  }
+}

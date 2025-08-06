@@ -1,58 +1,8 @@
-import { Discussion } from "../types/post";
+import { Discussion } from "../types/discussion";
+import { TestDataFactory } from "../utils/testDataFactory";
 
-export const sampleDiscussion: Discussion =     {
-        id: "post1",
-        title: "The Benefits of Remote Work",
-        userId: "user1",
-        userName: "Alice",
-        posts: [
-            {
-                id: "pc1",
-                stance: "pros",
-                text: "Remote work improves work-life balance by reducing commute times.",
-                graph: [
-                    {
-                        id: "graph1",
-                        title: "Commute Time Reduction",
-                        comment: "Shows average time saved daily."
-                    }
-                ],
-                userId: "user1",
-                userName: "Alice",
-                images: ["https://example.com/image1.png"],
-                references: ["https://remote-work-benefits.com"]
-            },
-                        {
-                id: "pc2",
-                stance: "cons",
-                text: "Remote work improves work-life balance by reducing commute times.",
-                graph: [
-                    {
-                        id: "graph1",
-                        title: "Commute Time Reduction",
-                        comment: "Shows average time saved daily."
-                    }
-                ],
-                userId: "user2",
-                userName: "Bob",
-                images: ["https://example.com/image1.png"],
-                references: ["https://remote-work-benefits.com"]
-            },
-                                    {
-                id: "pc3",
-                stance: "pros",
-                text: "Remote work improves work-life balance by reducing commute times.",
-                graph: [
-                    {
-                        id: "graph1",
-                        title: "Commute Time Reduction",
-                        comment: "Shows average time saved daily."
-                    }
-                ],
-                userId: "user1",
-                userName: "Alice",
-                images: ["https://example.com/image1.png"],
-                references: ["https://remote-work-benefits.com"]
-            },
-        ]
-    }
+// Generate a sample discussion using the test factory
+export const sampleDiscussion: Discussion = TestDataFactory.createTestDiscussion({
+  title: "The Benefits of Remote Work",
+  description: "A discussion about the advantages and disadvantages of remote work arrangements.",
+});

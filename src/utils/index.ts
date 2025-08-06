@@ -1,47 +1,19 @@
-// Utility functions
+import { DynamoDBHelpers } from '../services/dynamodb/DynamoDBHelpers';
 
-export const generateId = (): string => {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-};
+// Validation utilities
+export * from './validation';
 
-export const formatDate = (date: string | Date): string => {
-  const d = new Date(date);
-  return d.toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
+// Data transformation utilities
+export * from './dataTransform';
 
-export const truncateText = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
-};
+// Test data factory
+export * from './testDataFactory';
 
-export const debounce = <T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
+// Class names utility
+export * from './classNames';
 
-export const classNames = (...classes: (string | undefined | null | false)[]): string => {
-  return classes.filter(Boolean).join(' ');
-};
+// Re-export DynamoDB helpers
+export { DynamoDBHelpers } from '../services/dynamodb/DynamoDBHelpers';
 
-export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-export const sanitizeHtml = (html: string): string => {
-  const div = document.createElement('div');
-  div.textContent = html;
-  return div.innerHTML;
-};
+// Convenience export for generateId
+export const generateId = DynamoDBHelpers.generateId;

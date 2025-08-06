@@ -1,0 +1,313 @@
+.moderation-queue-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.moderation-queue-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.moderation-queue-item--selected {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.moderation-queue-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.moderation-queue-item__header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.moderation-queue-item__header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.moderation-queue-item__checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.moderation-queue-item__checkbox input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+}
+
+.moderation-queue-item__priority {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.moderation-queue-item__priority-indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.moderation-queue-item__priority-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.moderation-queue-item__status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.moderation-queue-item__urgent-badge,
+.moderation-queue-item__escalated-badge {
+  padding: 0.25rem 0.5rem;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.moderation-queue-item__escalated-badge {
+  background-color: #fff7ed;
+  color: #ea580c;
+  border-color: #fed7aa;
+}
+
+.moderation-queue-item__time {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.moderation-queue-item__expand {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.moderation-queue-item__expand:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.moderation-queue-item__content {
+  margin-bottom: 1rem;
+}
+
+.moderation-queue-item__report-info {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+}
+
+.moderation-queue-item__category,
+.moderation-queue-item__reason {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+}
+
+.moderation-queue-item__reason:last-child {
+  margin-bottom: 0;
+}
+
+.moderation-queue-item__post-preview {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.moderation-queue-item__post-author {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.moderation-queue-item__post-content {
+  font-size: 0.875rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.moderation-queue-item__multiple-reports {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #dbeafe;
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.moderation-queue-item__details {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.moderation-queue-item__metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.moderation-queue-item__metadata-item {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.moderation-queue-item__metadata-item strong {
+  color: #111827;
+}
+
+.moderation-queue-item__assignment {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.moderation-queue-item__assigned-time {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.moderation-queue-item__review-time {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.moderation-queue-item__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.moderation-queue-item__action {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.moderation-queue-item__action--assign {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.moderation-queue-item__action--assign:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.moderation-queue-item__action--unassign {
+  background-color: #6b7280;
+  color: white;
+  border-color: #6b7280;
+}
+
+.moderation-queue-item__action--unassign:hover {
+  background-color: #4b5563;
+  border-color: #4b5563;
+}
+
+.moderation-queue-item__action--review {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.moderation-queue-item__action--review:hover {
+  background-color: #059669;
+  border-color: #059669;
+}
+
+.moderation-queue-item__action--view {
+  background-color: white;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.moderation-queue-item__action--view:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .moderation-queue-item {
+    padding: 1rem;
+  }
+  
+  .moderation-queue-item__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .moderation-queue-item__header-left {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .moderation-queue-item__header-right {
+    justify-content: space-between;
+  }
+  
+  .moderation-queue-item__metadata {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .moderation-queue-item__actions {
+    flex-direction: column;
+  }
+  
+  .moderation-queue-item__action {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .moderation-queue-item__header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .moderation-queue-item__priority,
+  .moderation-queue-item__status {
+    align-self: flex-start;
+  }
+}

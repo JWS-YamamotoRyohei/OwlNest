@@ -1,0 +1,295 @@
+.connection-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.connection-status__indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.connection-status__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.connection-status__text {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.connection-status__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+.connection-status__error {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--error-color, #dc2626);
+  font-size: 0.8125rem;
+}
+
+.connection-status__error-icon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.connection-status__error-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+.connection-status__reconnect {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.8125rem;
+}
+
+.connection-status__retry-button {
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--primary-color, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.connection-status__retry-button:hover {
+  background-color: var(--primary-hover, #2563eb);
+}
+
+.connection-status__retry-button:focus {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+.connection-status__retry-button:disabled {
+  background-color: var(--gray-400, #9ca3af);
+  cursor: not-allowed;
+}
+
+.connection-status__errors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.connection-status__errors-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary, #64748b);
+}
+
+.connection-status__clear-errors {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #64748b);
+  cursor: pointer;
+  padding: 0.125rem;
+  border-radius: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.connection-status__clear-errors:hover {
+  background-color: var(--gray-100, #f3f4f6);
+}
+
+.connection-status__errors-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.connection-status__error-item {
+  font-size: 0.75rem;
+  color: var(--error-color, #dc2626);
+  padding: 0.125rem 0.25rem;
+  background-color: var(--error-bg-light, #fef2f2);
+  border-radius: 0.25rem;
+  border-left: 2px solid var(--error-color, #dc2626);
+}
+
+.connection-status__sync {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--info-color, #0ea5e9);
+  font-size: 0.8125rem;
+}
+
+.connection-status__sync-icon {
+  font-size: 0.875rem;
+  line-height: 1;
+  animation: spin 2s linear infinite;
+}
+
+.connection-status__last-sync {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.75rem;
+}
+
+.connection-status__offline-notice {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Status-specific styles */
+.connection-status.connected {
+  background-color: var(--success-bg, #f0fdf4);
+  border: 1px solid var(--success-border, #bbf7d0);
+}
+
+.connection-status.connected .connection-status__text {
+  color: var(--success-color, #16a34a);
+}
+
+.connection-status.connecting {
+  background-color: var(--warning-bg, #fffbeb);
+  border: 1px solid var(--warning-border, #fed7aa);
+}
+
+.connection-status.connecting .connection-status__text {
+  color: var(--warning-color, #d97706);
+}
+
+.connection-status.disconnected {
+  background-color: var(--error-bg, #fef2f2);
+  border: 1px solid var(--error-border, #fecaca);
+}
+
+.connection-status.disconnected .connection-status__text {
+  color: var(--error-color, #dc2626);
+}
+
+.connection-status.closing {
+  background-color: var(--warning-bg, #fffbeb);
+  border: 1px solid var(--warning-border, #fed7aa);
+}
+
+.connection-status.closing .connection-status__text {
+  color: var(--warning-color, #d97706);
+}
+
+.connection-status.offline {
+  background-color: var(--gray-bg, #f9fafb);
+  border: 1px solid var(--gray-border, #d1d5db);
+}
+
+.connection-status.offline .connection-status__text {
+  color: var(--gray-color, #6b7280);
+}
+
+/* Compact variant */
+.connection-status--compact {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.connection-status--compact .connection-status__indicator {
+  gap: 0.375rem;
+}
+
+.connection-status--compact .connection-status__icon {
+  font-size: 0.875rem;
+}
+
+/* Inline variant */
+.connection-status--inline {
+  display: inline-flex;
+  padding: 0.125rem 0.5rem;
+  background-color: transparent;
+  border: none;
+}
+
+.connection-status--inline .connection-status__indicator {
+  gap: 0.25rem;
+}
+
+/* Animation for connecting state */
+.connection-status.connecting .connection-status__icon {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .connection-status {
+    font-size: 0.8125rem;
+  }
+  
+  .connection-status__details {
+    font-size: 0.75rem;
+  }
+  
+  .connection-status__retry-button {
+    font-size: 0.75rem;
+    padding: 0.1875rem 0.625rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .connection-status {
+    --border-color: #374151;
+    --text-secondary: #9ca3af;
+    --success-bg: #064e3b;
+    --success-border: #065f46;
+    --success-color: #10b981;
+    --warning-bg: #451a03;
+    --warning-border: #92400e;
+    --warning-color: #f59e0b;
+    --error-bg: #450a0a;
+    --error-border: #991b1b;
+    --error-color: #f87171;
+    --error-bg-light: #450a0a;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --gray-400: #6b7280;
+    --gray-bg: #1f2937;
+    --gray-border: #374151;
+    --gray-color: #9ca3af;
+    --gray-100: #374151;
+    --info-color: #0ea5e9;
+  }
+}

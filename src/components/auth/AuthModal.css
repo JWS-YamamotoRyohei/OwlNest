@@ -1,0 +1,111 @@
+/* Authentication modal styles */
+
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.auth-modal-content {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.auth-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+  z-index: 10;
+}
+
+.auth-modal-close:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.auth-modal-close:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.auth-modal-body {
+  padding: 0;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .auth-modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .auth-modal-content {
+    max-height: 95vh;
+  }
+
+  .auth-modal-close {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+/* Animation */
+.auth-modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.auth-modal-content {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .auth-modal-content {
+    border: 2px solid #000;
+  }
+
+  .auth-modal-close {
+    border: 1px solid #000;
+  }
+}

@@ -1,0 +1,207 @@
+# AWS CodeBuild buildspec for OwlNest Discussion Platform
+version: 0.2
+
+env:
+  variables:
+    NODE_VERSION: "18"
+  parameter-store:
+    # Add any sensitive parameters from AWS Systems Manager Parameter Store
+    # EXAMPLE_PARAM: /owlnest/example-param
+  secrets-manager:
+    # Add any secrets from AWS Secrets Manager
+    # EXAMPLE_SECRET: owlnest-secrets:example-key
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: $NODE_VERSION
+    commands:
+      - echo "Installing dependencies..."
+      - npm ci
+      - cd cdk && npm ci && cd ..
+      
+  pre_build:
+    commands:
+      - echo "Running pre-build checks..."
+      - echo "Environment: $ENVIRONMENT"
+      - echo "AWS Region: $AWS_DEFAULT_REGION"
+      
+      # Type checking
+      - echo "Running type checking..."
+      - npm run type-check
+      
+      # Linting
+      - echo "Running linting..."
+      - npm run lint
+      
+      # Security audit
+      - echo "Running security audit..."
+      - npm audit --audit-level=moderate || true
+      - cd cdk && npm audit --audit-level=moderate || true && cd ..
+      
+      # Unit tests
+      - echo "Running unit tests..."
+      - npm run test:coverage
+      
+      # CDK tests
+      - echo "Running CDK tests..."
+      - cd cdk && npm test && cd ..
+      
+  build:
+    commands:
+      - echo "Building application..."
+      
+      # Build frontend
+      - echo "Building frontend..."
+      - npm run build
+      
+      # Build CDK
+      - echo "Building CDK..."
+      - cd cdk && npm run build && cd ..
+      
+      # CDK Synth
+      - echo "Synthesizing CDK templates..."
+      - cd cdk && npx cdk synth --context environment=$ENVIRONMENT && cd ..
+      
+  post_build:
+    commands:
+      - echo "Post-build phase..."
+      
+      # Deploy infrastructure if this is a deployment build
+      - |
+        if [ "$CODEBUILD_WEBHOOK_EVENT" = "PUSH" ] || [ "$DEPLOY_INFRASTRUCTURE" = "true" ]; then
+          echo "Deploying infrastructure..."
+          cd cdk
+          npx cdk bootstrap --context environment=$ENVIRONMENT
+          
+          # Deploy based on environment
+          case $ENVIRONMENT in
+            "production")
+              echo "Deploying production stacks..."
+              npx cdk deploy --all --require-approval never \
+                --context environment=$ENVIRONMENT \
+                --context domainName=${DOMAIN_NAME:-"owlnest.example.com"} \
+                --context alertEmail=${ALERT_EMAIL:-"alerts@owlnest.example.com"} \
+                --context githubOwner=${GITHUB_OWNER:-"your-github-username"} \
+                --context githubRepo=${GITHUB_REPO:-"OwlNest"} \
+                --context githubBranch=${GITHUB_BRANCH:-"main"} \
+                --context budgetLimit=${BUDGET_LIMIT:-"500"} \
+                --app "npx ts-node bin/production.ts" \
+                --outputs-file outputs-$ENVIRONMENT.json
+              ;;
+            *)
+              echo "Deploying standard stacks..."
+              npx cdk deploy --context environment=$ENVIRONMENT --require-approval never --outputs-file outputs-$ENVIRONMENT.json
+              ;;
+          esac
+          cd ..
+        else
+          echo "Skipping infrastructure deployment (not a push event)"
+        fi
+      
+      # Get deployment outputs and create frontend config
+      - |
+        if [ -f "cdk/outputs-$ENVIRONMENT.json" ]; then
+          echo "Creating frontend configuration from stack outputs..."
+          
+          # Extract stack outputs
+          STACK_NAME=$(jq -r 'keys[0]' cdk/outputs-$ENVIRONMENT.json)
+          USER_POOL_ID=$(jq -r ".[\"$STACK_NAME\"].UserPoolId" cdk/outputs-$ENVIRONMENT.json)
+          USER_POOL_CLIENT_ID=$(jq -r ".[\"$STACK_NAME\"].UserPoolClientId" cdk/outputs-$ENVIRONMENT.json)
+          API_URL=$(jq -r ".[\"$STACK_NAME\"].ApiGatewayUrl" cdk/outputs-$ENVIRONMENT.json)
+          WEBSOCKET_URL=$(jq -r ".[\"$STACK_NAME\"].WebSocketApiUrl" cdk/outputs-$ENVIRONMENT.json)
+          BUCKET_NAME=$(jq -r ".[\"$STACK_NAME\"].WebsiteBucketName" cdk/outputs-$ENVIRONMENT.json)
+          DISTRIBUTION_ID=$(jq -r ".[\"$STACK_NAME\"].CloudFrontDistributionId" cdk/outputs-$ENVIRONMENT.json)
+          
+          # Create runtime config
+          mkdir -p build
+          cat > build/config.js << EOF
+          window.APP_CONFIG = {
+            environment: '$ENVIRONMENT',
+            region: '$AWS_DEFAULT_REGION',
+            userPoolId: '$USER_POOL_ID',
+            userPoolClientId: '$USER_POOL_CLIENT_ID',
+            apiUrl: '$API_URL',
+            websocketUrl: '$WEBSOCKET_URL'
+          };
+          EOF
+          
+          echo "Frontend configuration created:"
+          cat build/config.js
+          
+          # Deploy frontend to S3 if bucket exists
+          if [ "$BUCKET_NAME" != "null" ] && [ -n "$BUCKET_NAME" ]; then
+            echo "Deploying frontend to S3: $BUCKET_NAME"
+            aws s3 sync build/ s3://$BUCKET_NAME --delete \
+              --cache-control "public, max-age=31536000" \
+              --exclude "*.html" \
+              --exclude "config.js"
+            
+            # Upload HTML and config with no-cache
+            aws s3 sync build/ s3://$BUCKET_NAME \
+              --cache-control "public, max-age=0, must-revalidate" \
+              --include "*.html" \
+              --include "config.js"
+            
+            echo "Frontend deployment completed"
+          fi
+          
+          # Invalidate CloudFront if distribution exists
+          if [ "$DISTRIBUTION_ID" != "null" ] && [ -n "$DISTRIBUTION_ID" ]; then
+            echo "Invalidating CloudFront distribution: $DISTRIBUTION_ID"
+            aws cloudfront create-invalidation \
+              --distribution-id $DISTRIBUTION_ID \
+              --paths "/*"
+            echo "CloudFront invalidation completed"
+          fi
+        fi
+      
+      # Health check
+      - |
+        if [ -f "cdk/outputs-$ENVIRONMENT.json" ]; then
+          STACK_NAME=$(jq -r 'keys[0]' cdk/outputs-$ENVIRONMENT.json)
+          API_URL=$(jq -r ".[\"$STACK_NAME\"].ApiGatewayUrl" cdk/outputs-$ENVIRONMENT.json)
+          
+          if [ "$API_URL" != "null" ] && [ -n "$API_URL" ]; then
+            echo "Running health check on API: $API_URL"
+            sleep 30  # Wait for deployment to stabilize
+            curl -f "$API_URL/health" || echo "Health check failed - this may be expected if health endpoint is not implemented"
+          fi
+        fi
+      
+      - echo "Build completed successfully!"
+
+artifacts:
+  files:
+    - '**/*'
+  secondary-artifacts:
+    frontend-build:
+      files:
+        - '**/*'
+      base-directory: build
+      name: frontend-build-$ENVIRONMENT
+    cdk-outputs:
+      files:
+        - 'outputs-*.json'
+      base-directory: cdk
+      name: cdk-outputs-$ENVIRONMENT
+    test-reports:
+      files:
+        - 'coverage/**/*'
+      name: test-reports-$ENVIRONMENT
+
+reports:
+  jest-reports:
+    files:
+      - 'coverage/clover.xml'
+    file-format: 'CLOVERXML'
+  jest-coverage:
+    files:
+      - 'coverage/lcov.info'
+    file-format: 'LCOVXML'
+
+cache:
+  paths:
+    - 'node_modules/**/*'
+    - 'cdk/node_modules/**/*'
+    - '$HOME/.npm/**/*'

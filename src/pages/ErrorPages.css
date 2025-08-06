@@ -1,0 +1,171 @@
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  padding: 1rem;
+}
+
+.error-container {
+  text-align: center;
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 1rem 0;
+}
+
+.error-message {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.error-details {
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.error-details p {
+  color: #475569;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.error-details p:last-child {
+  margin-bottom: 0;
+}
+
+.error-details strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.error-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.error-button--primary {
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+}
+
+.error-button--primary:hover {
+  background-color: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+}
+
+.error-button--secondary {
+  background-color: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.error-button--secondary:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .error-page {
+    padding: 0.5rem;
+  }
+  
+  .error-container {
+    padding: 1.5rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-message {
+    font-size: 1rem;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .error-button {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-page {
+    background-color: #0f172a;
+  }
+  
+  .error-title {
+    color: #f1f5f9;
+  }
+  
+  .error-message {
+    color: #94a3b8;
+  }
+  
+  .error-details {
+    background-color: #1e293b;
+  }
+  
+  .error-details p {
+    color: #cbd5e1;
+  }
+  
+  .error-details strong {
+    color: #f1f5f9;
+  }
+  
+  .error-button--secondary {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-color: #475569;
+  }
+  
+  .error-button--secondary:hover {
+    background-color: #334155;
+    border-color: #64748b;
+  }
+}

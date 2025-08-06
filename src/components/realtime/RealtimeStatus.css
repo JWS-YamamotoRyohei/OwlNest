@@ -1,0 +1,130 @@
+.realtime-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: var(--color-background-secondary, #f8fafc);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.realtime-status__connection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.realtime-status__icon {
+  font-size: 0.75rem;
+  animation: pulse 2s infinite;
+}
+
+.realtime-status__text {
+  color: var(--color-text-secondary, #64748b);
+  font-weight: 500;
+}
+
+.realtime-status__users {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.realtime-status__user-icon {
+  font-size: 0.75rem;
+}
+
+.realtime-status__user-count {
+  color: var(--color-text-secondary, #64748b);
+  font-size: 0.75rem;
+}
+
+/* Connection states */
+.realtime-status--connected {
+  border-left: 3px solid var(--color-success, #22c55e);
+}
+
+.realtime-status--connected .realtime-status__text {
+  color: var(--color-success, #22c55e);
+}
+
+.realtime-status--disconnected {
+  border-left: 3px solid var(--color-error, #ef4444);
+}
+
+.realtime-status--disconnected .realtime-status__text {
+  color: var(--color-error, #ef4444);
+}
+
+.realtime-status--disconnected .realtime-status__icon {
+  animation: none;
+}
+
+/* Compact variant */
+.realtime-status--compact {
+  padding: 4px 8px;
+  gap: 8px;
+}
+
+.realtime-status--compact .realtime-status__text {
+  font-size: 0.75rem;
+}
+
+.realtime-status--compact .realtime-status__user-count {
+  font-size: 0.625rem;
+}
+
+/* Minimal variant - only show icon */
+.realtime-status--minimal {
+  padding: 4px;
+  background: transparent;
+  border: none;
+}
+
+.realtime-status--minimal .realtime-status__text,
+.realtime-status--minimal .realtime-status__users {
+  display: none;
+}
+
+.realtime-status--minimal .realtime-status__icon {
+  font-size: 1rem;
+}
+
+/* Pulse animation for connected status */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .realtime-status {
+    background-color: var(--color-background-secondary-dark, #1e293b);
+  }
+
+  .realtime-status__text,
+  .realtime-status__user-count {
+    color: var(--color-text-secondary-dark, #94a3b8);
+  }
+
+  .realtime-status--connected {
+    border-left-color: var(--color-success-dark, #4ade80);
+  }
+
+  .realtime-status--connected .realtime-status__text {
+    color: var(--color-success-dark, #4ade80);
+  }
+
+  .realtime-status--disconnected {
+    border-left-color: var(--color-error-dark, #f87171);
+  }
+
+  .realtime-status--disconnected .realtime-status__text {
+    color: var(--color-error-dark, #f87171);
+  }
+}

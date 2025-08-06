@@ -1,0 +1,231 @@
+.discussion-list {
+  width: 100%;
+}
+
+.discussion-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.discussion-list--loading,
+.discussion-list--empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.discussion-list__empty-state {
+  text-align: center;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.discussion-list__empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.discussion-list__empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.discussion-list__empty-message {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.discussion-list__load-more-trigger {
+  height: 20px;
+  width: 100%;
+}
+
+.discussion-list__loading-more {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.discussion-list__load-more-button-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.discussion-list__load-more-button {
+  background: var(--color-primary-500);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.discussion-list__load-more-button:hover:not(:disabled) {
+  background: var(--color-primary-600);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.discussion-list__load-more-button:active {
+  transform: translateY(0);
+}
+
+.discussion-list__load-more-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.discussion-list__end-message {
+  text-align: center;
+  padding: 2rem 0;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+.discussion-list__end-message p {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .discussion-list__grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .discussion-list__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .discussion-list__empty-state {
+    padding: 1.5rem;
+  }
+  
+  .discussion-list__empty-icon {
+    font-size: 3rem;
+  }
+  
+  .discussion-list__empty-title {
+    font-size: 1.25rem;
+  }
+  
+  .discussion-list__empty-message {
+    font-size: 0.875rem;
+  }
+  
+  .discussion-list__loading-more {
+    padding: 1.5rem 0;
+  }
+  
+  .discussion-list__load-more-button-container {
+    padding: 1.5rem 0;
+  }
+  
+  .discussion-list__load-more-button {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .discussion-list__grid {
+    gap: 0.75rem;
+  }
+  
+  .discussion-list__empty-state {
+    padding: 1rem;
+  }
+  
+  .discussion-list__empty-icon {
+    font-size: 2.5rem;
+  }
+  
+  .discussion-list__empty-title {
+    font-size: 1.125rem;
+  }
+  
+  .discussion-list__load-more-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Animation for new items */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.discussion-list__grid > * {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Staggered animation for multiple items */
+.discussion-list__grid > *:nth-child(1) { animation-delay: 0ms; }
+.discussion-list__grid > *:nth-child(2) { animation-delay: 50ms; }
+.discussion-list__grid > *:nth-child(3) { animation-delay: 100ms; }
+.discussion-list__grid > *:nth-child(4) { animation-delay: 150ms; }
+.discussion-list__grid > *:nth-child(5) { animation-delay: 200ms; }
+.discussion-list__grid > *:nth-child(6) { animation-delay: 250ms; }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .discussion-list__grid > * {
+    animation: none;
+  }
+  
+  .discussion-list__load-more-button:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .discussion-list__load-more-button {
+    border: 2px solid var(--color-primary-700);
+  }
+  
+  .discussion-list__end-message {
+    border-top-width: 2px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .discussion-list__load-more-trigger,
+  .discussion-list__loading-more,
+  .discussion-list__load-more-button-container,
+  .discussion-list__end-message {
+    display: none;
+  }
+  
+  .discussion-list__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

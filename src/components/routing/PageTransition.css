@@ -1,0 +1,62 @@
+.page-transition {
+  --transition-duration: 300ms;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fade transition */
+.page-transition--fade {
+  opacity: 1;
+  transition: opacity var(--transition-duration) ease-in-out;
+}
+
+.page-transition--fade.page-transition--transitioning {
+  opacity: 0;
+}
+
+/* Slide transition */
+.page-transition--slide {
+  transform: translateX(0);
+  transition: transform var(--transition-duration) ease-in-out;
+}
+
+.page-transition--slide.page-transition--transitioning {
+  transform: translateX(-20px);
+}
+
+/* Scale transition */
+.page-transition--scale {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform var(--transition-duration) ease-in-out,
+              opacity var(--transition-duration) ease-in-out;
+}
+
+.page-transition--scale.page-transition--transitioning {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-transition {
+    --transition-duration: 200ms;
+  }
+  
+  .page-transition--slide.page-transition--transitioning {
+    transform: translateX(-10px);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    --transition-duration: 0ms;
+  }
+  
+  .page-transition--fade,
+  .page-transition--slide,
+  .page-transition--scale {
+    transition: none;
+  }
+}

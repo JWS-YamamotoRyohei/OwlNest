@@ -1,0 +1,95 @@
+.moderation-page {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.moderation-page__header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.moderation-page__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.moderation-page__description {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.moderation-page__content {
+  padding: 0 1rem;
+}
+
+.moderation-page__no-auth,
+.moderation-page__no-permission {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.moderation-page__no-auth h1,
+.moderation-page__no-permission h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1rem 0;
+}
+
+.moderation-page__no-auth p,
+.moderation-page__no-permission p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0 0 0.5rem 0;
+  max-width: 500px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .moderation-page__header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .moderation-page__title {
+    font-size: 1.875rem;
+  }
+  
+  .moderation-page__description {
+    font-size: 1rem;
+  }
+  
+  .moderation-page__content {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .moderation-page__title {
+    font-size: 1.5rem;
+  }
+  
+  .moderation-page__no-auth h1,
+  .moderation-page__no-permission h1 {
+    font-size: 1.5rem;
+  }
+  
+  .moderation-page__no-auth p,
+  .moderation-page__no-permission p {
+    font-size: 1rem;
+  }
+}

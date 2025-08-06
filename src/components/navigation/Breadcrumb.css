@@ -1,0 +1,148 @@
+.breadcrumb {
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+.breadcrumb__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.25rem;
+}
+
+.breadcrumb__item {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.breadcrumb__link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #64748b;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.breadcrumb__link:hover {
+  color: #3b82f6;
+  background-color: #f1f5f9;
+  text-decoration: none;
+}
+
+.breadcrumb__link:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.breadcrumb__current {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #1e293b;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+}
+
+.breadcrumb__icon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.breadcrumb__label {
+  white-space: nowrap;
+}
+
+.breadcrumb__separator {
+  color: #94a3b8;
+  margin: 0 0.25rem;
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .breadcrumb {
+    margin-bottom: 0.75rem;
+  }
+  
+  .breadcrumb__list {
+    gap: 0.125rem;
+  }
+  
+  .breadcrumb__item {
+    font-size: 0.8125rem;
+  }
+  
+  .breadcrumb__link,
+  .breadcrumb__current {
+    padding: 0.125rem 0.375rem;
+  }
+  
+  .breadcrumb__icon {
+    font-size: 0.8125rem;
+  }
+  
+  .breadcrumb__separator {
+    margin: 0 0.125rem;
+  }
+  
+  /* Hide icons on very small screens */
+  @media (max-width: 480px) {
+    .breadcrumb__icon {
+      display: none;
+    }
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .breadcrumb__link {
+    color: #94a3b8;
+  }
+  
+  .breadcrumb__link:hover {
+    color: #60a5fa;
+    background-color: #1e293b;
+  }
+  
+  .breadcrumb__current {
+    color: #f1f5f9;
+  }
+  
+  .breadcrumb__separator {
+    color: #64748b;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .breadcrumb__link {
+    color: #000;
+    border: 1px solid transparent;
+  }
+  
+  .breadcrumb__link:hover,
+  .breadcrumb__link:focus {
+    border-color: #000;
+    background-color: #fff;
+  }
+  
+  .breadcrumb__current {
+    color: #000;
+    font-weight: 700;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumb__link {
+    transition: none;
+  }
+}

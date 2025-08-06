@@ -1,0 +1,386 @@
+.background-knowledge-editor {
+  width: 100%;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.background-knowledge-editor.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Header */
+.bg-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.bg-editor-info {
+  flex: 1;
+}
+
+.bg-editor-description {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.bg-count {
+  font-size: 12px;
+  color: #374151;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.add-bg-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.add-bg-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-bg-btn:hover:not(:disabled) {
+  background: #059669;
+}
+
+.add-bg-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Empty state */
+.empty-bg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.empty-bg-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-bg-text h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.empty-bg-text p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* Background knowledge list */
+.bg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Background knowledge item */
+.bg-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.bg-item:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Background knowledge header */
+.bg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bg-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bg-type-icon {
+  font-size: 16px;
+}
+
+.bg-type-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.bg-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bg-move-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+  font-size: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-move-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.bg-move-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-bg-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 16px;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-bg-btn:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.remove-bg-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Background knowledge content */
+.bg-content {
+  padding: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-label .required {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-input:disabled,
+.form-textarea:disabled {
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* File input */
+.file-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-file-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.form-file-input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-file-input:disabled {
+  background: #f9fafb;
+  cursor: not-allowed;
+}
+
+.file-help {
+  font-size: 11px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.form-help {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Help section */
+.bg-editor-help {
+  margin-top: 24px;
+  padding: 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+}
+
+.bg-editor-help h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #166534;
+  margin-bottom: 8px;
+}
+
+.bg-editor-help ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.bg-editor-help li {
+  font-size: 13px;
+  color: #166534;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.bg-editor-help li:last-child {
+  margin-bottom: 0;
+}
+
+.bg-editor-help strong {
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bg-editor-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .add-bg-buttons {
+    justify-content: flex-start;
+  }
+  
+  .bg-header {
+    padding: 10px 12px;
+  }
+  
+  .bg-content {
+    padding: 12px;
+  }
+  
+  .empty-bg {
+    padding: 32px 16px;
+  }
+  
+  .empty-bg-icon {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-bg-buttons {
+    flex-direction: column;
+  }
+  
+  .add-bg-btn {
+    justify-content: center;
+  }
+  
+  .bg-actions {
+    gap: 2px;
+  }
+  
+  .bg-move-btn,
+  .remove-bg-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+}

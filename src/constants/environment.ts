@@ -13,6 +13,7 @@ export const ENV = {
 
   // S3 Configuration
   S3_BUCKET_NAME: process.env.REACT_APP_S3_BUCKET_NAME || '',
+  FILES_BUCKET_NAME: process.env.REACT_APP_FILES_BUCKET_NAME || '',
   CLOUDFRONT_DOMAIN: process.env.REACT_APP_CLOUDFRONT_DOMAIN || '',
 
   // Development Configuration

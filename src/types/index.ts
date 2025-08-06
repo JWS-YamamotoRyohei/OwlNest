@@ -1,12 +1,20 @@
-// Central type exports
+// Common types and enums
+export * from './common';
 
-export * from './auth';
+// User types
+export * from './User';
+
+// Discussion types
 export * from './discussion';
-export * from './categories';
-export * from './follow';
-export * from './notification';
-export * from './websocket';
-export * from './error';
 
-// Re-export legacy types for backward compatibility (with explicit naming to avoid conflicts)
-export type { Discussion as LegacyDiscussion, Post as LegacyPost, Reference, Graph } from './post';
+// Post types
+export * from './post';
+
+// Follow types
+export * from './follow';
+
+// Notification types
+export * from './notification';
+
+// Re-export DynamoDB types for convenience
+export type { DynamoDBItem, DynamoDBConfig } from '../services/dynamodb';

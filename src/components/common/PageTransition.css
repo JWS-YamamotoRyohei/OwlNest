@@ -1,0 +1,44 @@
+.page-transition {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.page-transition__loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.page-transition__content {
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.page-transition__content--loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .page-transition__loading {
+    background-color: rgba(15, 23, 42, 0.8);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition__content {
+    transition: none;
+  }
+}

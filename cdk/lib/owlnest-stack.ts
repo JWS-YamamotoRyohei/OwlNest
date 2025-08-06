@@ -83,7 +83,7 @@ export class OwlNestStack extends cdk.Stack {
       sortKey: { name: 'GSI2SK', type: dynamodb.AttributeType.STRING },
     });
 
-    // Cognito User Pool
+    // Cognito User Pool with enhanced configuration
     this.userPool = new cognito.UserPool(this, 'OwlNestUserPool', {
       userPoolName: `owlnest-users-${environment}`,
       selfSignUpEnabled: true,
@@ -94,22 +94,77 @@ export class OwlNestStack extends cdk.Stack {
         requireLowercase: true,
         requireUppercase: true,
         requireDigits: true,
-        requireSymbols: false,
+        requireSymbols: true,
+        tempPasswordValidity: cdk.Duration.days(7),
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+      mfa: cognito.Mfa.OPTIONAL,
+      mfaSecondFactor: {
+        sms: true,
+        otp: true,
+      },
+      standardAttributes: {
+        email: {
+          required: true,
+          mutable: true,
+        },
+        givenName: {
+          required: false,
+          mutable: true,
+        },
+        familyName: {
+          required: false,
+          mutable: true,
+        },
+      },
+      customAttributes: {
+        // User role: viewer, contributor, creator, admin
+        role: new cognito.StringAttribute({
+          minLen: 1,
+          maxLen: 20,
+          mutable: true,
+        }),
+        // Display name for the platform
+        displayName: new cognito.StringAttribute({
+          minLen: 1,
+          maxLen: 50,
+          mutable: true,
+        }),
+        // User bio/description
+        bio: new cognito.StringAttribute({
+          minLen: 0,
+          maxLen: 500,
+          mutable: true,
+        }),
+        // Avatar URL
+        avatarUrl: new cognito.StringAttribute({
+          minLen: 0,
+          maxLen: 500,
+          mutable: true,
+        }),
+      },
+      userVerification: {
+        emailSubject: 'OwlNest - メールアドレスの確認',
+        emailBody: 'OwlNestへようこそ！以下のコードでメールアドレスを確認してください: {####}',
+        emailStyle: cognito.VerificationEmailStyle.CODE,
+      },
+      userInvitation: {
+        emailSubject: 'OwlNest - アカウント招待',
+        emailBody: 'OwlNestに招待されました。ユーザー名: {username}、仮パスワード: {####}',
+      },
       removalPolicy: this.config.removalPolicy === 'RETAIN' 
         ? cdk.RemovalPolicy.RETAIN 
         : cdk.RemovalPolicy.DESTROY,
     });
 
-    // Add custom attributes for user roles
+    // Add Cognito domain for hosted UI
     this.userPool.addDomain('OwlNestUserPoolDomain', {
       cognitoDomain: {
         domainPrefix: `${this.config.cognitoDomainPrefix}-${this.account}`,
       },
     });
 
-    // User Pool Client
+    // User Pool Client with enhanced configuration
     this.userPoolClient = new cognito.UserPoolClient(this, 'OwlNestUserPoolClient', {
       userPool: this.userPool,
       userPoolClientName: `owlnest-client-${environment}`,
@@ -117,14 +172,49 @@ export class OwlNestStack extends cdk.Stack {
       authFlows: {
         userPassword: true,
         userSrp: true,
+        adminUserPassword: true,
+        custom: true,
       },
       oAuth: {
         flows: {
           authorizationCodeGrant: true,
+          implicitCodeGrant: true,
         },
-        scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
-        callbackUrls: this.config.corsAllowedOrigins,
+        scopes: [
+          cognito.OAuthScope.EMAIL, 
+          cognito.OAuthScope.OPENID, 
+          cognito.OAuthScope.PROFILE,
+          cognito.OAuthScope.PHONE,
+        ],
+        callbackUrls: this.config.corsAllowedOrigins.concat([
+          'http://localhost:3000/auth/callback',
+          'https://localhost:3000/auth/callback',
+        ]),
+        logoutUrls: this.config.corsAllowedOrigins.concat([
+          'http://localhost:3000/auth/logout',
+          'https://localhost:3000/auth/logout',
+        ]),
       },
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
+      readAttributes: new cognito.ClientAttributes()
+        .withStandardAttributes({
+          email: true,
+          emailVerified: true,
+          givenName: true,
+          familyName: true,
+        })
+        .withCustomAttributes('role', 'displayName', 'bio', 'avatarUrl'),
+      writeAttributes: new cognito.ClientAttributes()
+        .withStandardAttributes({
+          email: true,
+          givenName: true,
+          familyName: true,
+        })
+        .withCustomAttributes('role', 'displayName', 'bio', 'avatarUrl'),
+      accessTokenValidity: cdk.Duration.hours(1),
+      idTokenValidity: cdk.Duration.hours(1),
+      refreshTokenValidity: cdk.Duration.days(30),
+      preventUserExistenceErrors: true,
     });
 
     // Identity Pool (using CfnIdentityPool for now)
@@ -269,6 +359,90 @@ export class OwlNestStack extends cdk.Stack {
       description: `OwlNest WebSocket API - ${environment}`,
     });
 
+    // Post-confirmation Lambda trigger to set default user role
+    const postConfirmationLambda = new lambda.Function(this, 'PostConfirmationLambda', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      role: lambdaRole,
+      code: lambda.Code.fromInline(`
+        const AWS = require('aws-sdk');
+        const cognito = new AWS.CognitoIdentityServiceProvider();
+        const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+        exports.handler = async (event) => {
+          console.log('Post-confirmation trigger:', JSON.stringify(event, null, 2));
+          
+          try {
+            const { userPoolId, userName } = event;
+            const { email } = event.request.userAttributes;
+            
+            // Set default role to 'viewer'
+            await cognito.adminUpdateUserAttributes({
+              UserPoolId: userPoolId,
+              Username: userName,
+              UserAttributes: [
+                {
+                  Name: 'custom:role',
+                  Value: 'viewer'
+                },
+                {
+                  Name: 'custom:displayName',
+                  Value: email.split('@')[0] // Use email prefix as default display name
+                }
+              ]
+            }).promise();
+            
+            // Create user profile in DynamoDB
+            const userProfile = {
+              PK: \`USER#\${userName}\`,
+              SK: 'PROFILE',
+              GSI1PK: 'ROLE#viewer',
+              GSI1SK: \`USER#\${userName}\`,
+              EntityType: 'UserProfile',
+              userId: userName,
+              email: email,
+              role: 'viewer',
+              displayName: email.split('@')[0],
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              preferences: {
+                notifications: {
+                  email: true,
+                  push: false,
+                  mentions: true,
+                  replies: true,
+                  follows: true
+                },
+                privacy: {
+                  profileVisible: true,
+                  emailVisible: false
+                }
+              }
+            };
+            
+            await dynamodb.put({
+              TableName: process.env.TABLE_NAME,
+              Item: userProfile
+            }).promise();
+            
+            console.log('User profile created successfully');
+            return event;
+          } catch (error) {
+            console.error('Error in post-confirmation:', error);
+            throw error;
+          }
+        };
+      `),
+      environment: {
+        TABLE_NAME: this.mainTable.tableName,
+      },
+      timeout: cdk.Duration.seconds(30),
+      logRetention: this.getLogRetention(this.config.logRetentionDays),
+    });
+
+    // Add the trigger to the User Pool
+    this.userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, postConfirmationLambda);
+
     // Lambda functions will be created in separate constructs
     this.createLambdaFunctions(lambdaRole, cognitoAuthorizer, environment);
 
@@ -397,6 +571,11 @@ export class OwlNestStack extends cdk.Stack {
       functionName: `owlnest-auth-${environment}`,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/auth')),
+      environment: {
+        ...commonLambdaProps.environment,
+        USER_POOL_ID: this.userPool.userPoolId,
+        CLIENT_ID: this.userPoolClient.userPoolClientId,
+      },
     });
 
     // Discussion Lambda
@@ -415,12 +594,35 @@ export class OwlNestStack extends cdk.Stack {
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/user')),
     });
 
+    // Post Lambda
+    const postLambda = new lambda.Function(this, 'PostLambda', {
+      ...commonLambdaProps,
+      functionName: `owlnest-post-${environment}`,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/post')),
+    });
+
     // File Upload Lambda
     const fileUploadLambda = new lambda.Function(this, 'FileUploadLambda', {
       ...commonLambdaProps,
       functionName: `owlnest-file-upload-${environment}`,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/file-upload')),
+      environment: {
+        ...commonLambdaProps.environment,
+        FILES_BUCKET_NAME: this.filesBucket.bucketName,
+      },
+    });
+
+    // Grant S3 permissions to file upload lambda
+    this.filesBucket.grantReadWrite(fileUploadLambda);
+
+    // Moderation Lambda
+    const moderationLambda = new lambda.Function(this, 'ModerationLambda', {
+      ...commonLambdaProps,
+      functionName: `owlnest-moderation-${environment}`,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/moderation')),
     });
 
     // Notification Lambda
@@ -436,25 +638,23 @@ export class OwlNestStack extends cdk.Stack {
       ...commonLambdaProps,
       functionName: `owlnest-websocket-${environment}`,
       handler: 'index.handler',
-      code: lambda.Code.fromInline(`
-        exports.handler = async (event) => {
-          console.log('WebSocket Lambda - Event:', JSON.stringify(event, null, 2));
-          const { requestContext } = event;
-          const { routeKey, connectionId } = requestContext;
-          
-          switch (routeKey) {
-            case '$connect':
-              return { statusCode: 200 };
-            case '$disconnect':
-              return { statusCode: 200 };
-            case '$default':
-              return { statusCode: 200 };
-            default:
-              return { statusCode: 404 };
-          }
-        };
-      `),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/websocket')),
+      environment: {
+        ...commonLambdaProps.environment,
+        CLIENT_ID: this.userPoolClient.userPoolClientId,
+      },
     });
+
+    // Grant WebSocket Lambda permission to manage API Gateway connections
+    websocketLambda.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'execute-api:ManageConnections',
+      ],
+      resources: [
+        `arn:aws:execute-api:${this.region}:${this.account}:${this.websocketApi.apiId}/*`,
+      ],
+    }));
 
     // API Gateway routes
     const authResource = this.api.root.addResource('auth');
@@ -482,6 +682,18 @@ export class OwlNestStack extends cdk.Stack {
       },
     });
 
+    // Post routes
+    const postsResource = this.api.root.addResource('posts');
+    postsResource.addMethod('ANY', new apigateway.LambdaIntegration(postLambda), {
+      authorizer,
+    });
+    postsResource.addProxy({
+      defaultIntegration: new apigateway.LambdaIntegration(postLambda),
+      defaultMethodOptions: {
+        authorizer,
+      },
+    });
+
     // File upload routes
     const filesResource = this.api.root.addResource('files');
     filesResource.addMethod('ANY', new apigateway.LambdaIntegration(fileUploadLambda), {
@@ -489,6 +701,18 @@ export class OwlNestStack extends cdk.Stack {
     });
     filesResource.addProxy({
       defaultIntegration: new apigateway.LambdaIntegration(fileUploadLambda),
+      defaultMethodOptions: {
+        authorizer,
+      },
+    });
+
+    // Moderation routes
+    const moderationResource = this.api.root.addResource('moderation');
+    moderationResource.addMethod('ANY', new apigateway.LambdaIntegration(moderationLambda), {
+      authorizer,
+    });
+    moderationResource.addProxy({
+      defaultIntegration: new apigateway.LambdaIntegration(moderationLambda),
       defaultMethodOptions: {
         authorizer,
       },

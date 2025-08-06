@@ -1,0 +1,183 @@
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+
+.export-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.export-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Variants */
+.export-button.primary {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.export-button.primary:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.export-button.secondary {
+  background: #64748b;
+  color: #ffffff;
+}
+
+.export-button.secondary:hover:not(:disabled) {
+  background: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+}
+
+.export-button.outline {
+  background: transparent;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+
+.export-button.outline:hover:not(:disabled) {
+  background: #3b82f6;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Sizes */
+.export-button.small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.export-button.small .export-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.export-button.medium {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.export-button.medium .export-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.export-button.large {
+  padding: 12px 20px;
+  font-size: 16px;
+}
+
+.export-button.large .export-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Icon */
+.export-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.export-button:hover:not(:disabled) .export-icon {
+  transform: translateY(1px);
+}
+
+.button-text {
+  line-height: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .export-button.large {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .export-button.large .export-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .export-button.medium {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .export-button.medium .export-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .export-button.small {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .export-button.small .export-icon {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .export-button {
+    gap: 6px;
+  }
+
+  .export-button.large {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .export-button.medium {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .export-button.small {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .button-text {
+    display: none;
+  }
+
+  .export-button {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .export-button.small {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  .export-button.large {
+    width: 40px;
+    height: 40px;
+    padding: 10px;
+  }
+}

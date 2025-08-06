@@ -1,0 +1,279 @@
+/* Permission demo styles */
+
+.permission-demo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.permission-demo__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.permission-demo__header h2 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-button,
+.logout-button,
+.role-change-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.auth-button:hover {
+  background-color: #2563eb;
+}
+
+.logout-button {
+  background-color: #6b7280;
+  color: white;
+}
+
+.logout-button:hover {
+  background-color: #4b5563;
+}
+
+.role-change-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.role-change-button:hover {
+  background-color: #059669;
+}
+
+.permission-demo__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.demo-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.demo-section h3 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Status Grid */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.status-true {
+  color: #059669;
+  font-weight: 600;
+}
+
+.status-false {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Role Demos */
+.role-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.demo-item {
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.demo-item--viewer {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 2px solid #d1d5db;
+}
+
+.demo-item--contributor {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 2px solid #93c5fd;
+}
+
+.demo-item--creator {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 2px solid #86efac;
+}
+
+.demo-item--admin {
+  background-color: #f3e8ff;
+  color: #7c3aed;
+  border: 2px solid #c4b5fd;
+}
+
+.demo-item--success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 2px solid #6ee7b7;
+}
+
+.demo-fallback {
+  padding: 1rem;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 2px solid #fecaca;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Permission Checks */
+.permission-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.permission-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Gate Demos */
+.gate-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Ownership Demos */
+.ownership-demos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Role Management */
+.role-management {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 300px;
+}
+
+/* Role Info Grid */
+.role-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .permission-demo {
+    padding: 1rem;
+  }
+
+  .permission-demo__header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .user-info {
+    justify-content: center;
+  }
+
+  .status-grid,
+  .permission-checks {
+    grid-template-columns: 1fr;
+  }
+
+  .role-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .permission-demo {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+
+  .demo-section {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .demo-section h3,
+  .permission-demo__header h2 {
+    color: #f9fafb;
+  }
+
+  .status-item,
+  .permission-check {
+    background-color: #374151;
+    border-color: #4b5563;
+  }
+
+  .demo-fallback {
+    background-color: #7f1d1d;
+    border-color: #dc2626;
+    color: #fecaca;
+  }
+}
+
+/* Focus visible for accessibility */
+.auth-button:focus-visible,
+.logout-button:focus-visible,
+.role-change-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

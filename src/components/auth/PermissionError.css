@@ -1,0 +1,221 @@
+/* Permission error component styles */
+
+.permission-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.permission-error__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.permission-error__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.permission-error__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.permission-error__message {
+  margin: 0;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+.permission-error__current-role,
+.permission-error__required-role {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #7f1d1d;
+}
+
+.permission-error__upgrade-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #fecaca;
+}
+
+.permission-error__upgrade-message {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+.permission-error__upgrade-button,
+.permission-error__login-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.permission-error__upgrade-button:hover,
+.permission-error__login-button:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.permission-error__upgrade-button:active,
+.permission-error__login-button:active {
+  transform: translateY(0);
+}
+
+.permission-error__actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Variant for login required */
+.permission-error--login-required {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.permission-error--login-required .permission-error__title {
+  color: #1d4ed8;
+}
+
+.permission-error--login-required .permission-error__message,
+.permission-error--login-required .permission-error__current-role,
+.permission-error--login-required .permission-error__required-role,
+.permission-error--login-required .permission-error__upgrade-message {
+  color: #1e40af;
+}
+
+.permission-error--login-required .permission-error__upgrade-info {
+  border-top-color: #bfdbfe;
+}
+
+.permission-error--login-required .permission-error__login-button {
+  background-color: #2563eb;
+}
+
+.permission-error--login-required .permission-error__login-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .permission-error {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .permission-error__icon {
+    font-size: 2.5rem;
+  }
+
+  .permission-error__title {
+    font-size: 1.125rem;
+  }
+
+  .permission-error__current-role,
+  .permission-error__required-role {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .permission-error__actions {
+    flex-direction: column;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .permission-error {
+    background-color: #7f1d1d;
+    border-color: #dc2626;
+  }
+
+  .permission-error__title {
+    color: #fecaca;
+  }
+
+  .permission-error__message,
+  .permission-error__current-role,
+  .permission-error__required-role,
+  .permission-error__upgrade-message {
+    color: #fed7d7;
+  }
+
+  .permission-error__upgrade-info {
+    border-top-color: #dc2626;
+  }
+
+  .permission-error--login-required {
+    background-color: #1e3a8a;
+    border-color: #3b82f6;
+  }
+
+  .permission-error--login-required .permission-error__title {
+    color: #bfdbfe;
+  }
+
+  .permission-error--login-required .permission-error__message,
+  .permission-error--login-required .permission-error__current-role,
+  .permission-error--login-required .permission-error__required-role,
+  .permission-error--login-required .permission-error__upgrade-message {
+    color: #dbeafe;
+  }
+
+  .permission-error--login-required .permission-error__upgrade-info {
+    border-top-color: #3b82f6;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .permission-error {
+    border-width: 2px;
+  }
+
+  .permission-error__upgrade-button,
+  .permission-error__login-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .permission-error__upgrade-button,
+  .permission-error__login-button {
+    transition: none;
+  }
+}
+
+/* Focus visible for accessibility */
+.permission-error__upgrade-button:focus-visible,
+.permission-error__login-button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

@@ -1,0 +1,295 @@
+.file-upload-demo {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.file-upload-demo__header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.file-upload-demo__header h3 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.file-upload-demo__header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.file-upload-demo__controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.file-upload-demo__button {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.file-upload-demo__button:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.file-upload-demo__button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.file-upload-demo__clear {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.file-upload-demo__clear:hover {
+  background: #dc2626;
+}
+
+.file-upload-demo__progress-section,
+.file-upload-demo__attachments-section,
+.file-upload-demo__error,
+.file-upload-demo__instructions,
+.file-upload-demo__tech-info {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.file-upload-demo__progress-section h4,
+.file-upload-demo__attachments-section h4,
+.file-upload-demo__error h4,
+.file-upload-demo__instructions h4,
+.file-upload-demo__tech-info h4 {
+  margin: 0 0 12px 0;
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.file-upload-demo__progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-upload-demo__progress-item {
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.file-upload-demo__progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.file-upload-demo__progress-filename {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  flex: 1;
+  margin-right: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-upload-demo__progress-percentage {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.file-upload-demo__progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.file-upload-demo__progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.file-upload-demo__progress-fill--completed {
+  background: #10b981;
+}
+
+.file-upload-demo__progress-fill--error {
+  background: #ef4444;
+}
+
+.file-upload-demo__progress-status {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.file-upload-demo__error {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.file-upload-demo__error h4 {
+  color: #dc2626;
+}
+
+.file-upload-demo__error p {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.file-upload-demo__instructions ul,
+.file-upload-demo__tech-info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.file-upload-demo__instructions li,
+.file-upload-demo__tech-info li {
+  margin-bottom: 4px;
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.file-upload-demo__tech-info {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.file-upload-demo__tech-info h4 {
+  color: #0369a1;
+}
+
+.file-upload-demo__tech-info li {
+  color: #0c4a6e;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .file-upload-demo {
+    background: #111827;
+    color: #f3f4f6;
+  }
+
+  .file-upload-demo__header h3 {
+    color: #f3f4f6;
+  }
+
+  .file-upload-demo__header p {
+    color: #9ca3af;
+  }
+
+  .file-upload-demo__progress-section,
+  .file-upload-demo__attachments-section,
+  .file-upload-demo__instructions {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .file-upload-demo__progress-section h4,
+  .file-upload-demo__attachments-section h4,
+  .file-upload-demo__instructions h4 {
+    color: #f3f4f6;
+  }
+
+  .file-upload-demo__progress-item {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .file-upload-demo__progress-filename {
+    color: #f3f4f6;
+  }
+
+  .file-upload-demo__progress-percentage,
+  .file-upload-demo__progress-status {
+    color: #d1d5db;
+  }
+
+  .file-upload-demo__progress-bar {
+    background: #4b5563;
+  }
+
+  .file-upload-demo__error {
+    background: #7f1d1d;
+    border-color: #dc2626;
+  }
+
+  .file-upload-demo__instructions li {
+    color: #d1d5db;
+  }
+
+  .file-upload-demo__tech-info {
+    background: #1e3a8a;
+    border-color: #3b82f6;
+  }
+
+  .file-upload-demo__tech-info h4 {
+    color: #93c5fd;
+  }
+
+  .file-upload-demo__tech-info li {
+    color: #dbeafe;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .file-upload-demo {
+    padding: 16px;
+  }
+
+  .file-upload-demo__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-upload-demo__button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .file-upload-demo__progress-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .file-upload-demo__progress-filename {
+    margin-right: 0;
+  }
+}

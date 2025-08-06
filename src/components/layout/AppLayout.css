@@ -1,0 +1,89 @@
+.app-layout {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.app-layout__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 15;
+  transition: opacity 0.3s ease;
+}
+
+.app-layout__sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10rem; /* sidebarWidth */
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.app-layout__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: transform 0.3s ease;
+}
+
+.app-layout__main--shifted {
+  transform: translateX(10rem); /* sidebarWidth */
+}
+
+.app-layout__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-layout__main--shifted {
+    transform: translateX(10rem); /* Keep same shift on mobile */
+  }
+}
+
+@media (min-width: 1024px) {
+  /* On larger screens, we might want different behavior */
+  .app-layout__sidebar {
+    /* Could be always visible on desktop if desired */
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .app-layout__sidebar {
+    background-color: #1e293b;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .app-layout__overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .app-layout__overlay,
+  .app-layout__sidebar,
+  .app-layout__main {
+    transition: none;
+  }
+}
+
+/* Focus management for accessibility */
+.app-layout__sidebar:focus-within {
+  outline: 2px solid #60a5fa;
+  outline-offset: -2px;
+}

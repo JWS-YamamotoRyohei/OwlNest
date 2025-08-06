@@ -1,0 +1,312 @@
+.timeline-filters {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.timeline-filters__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-secondary-200);
+}
+
+.timeline-filters__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-secondary-900);
+}
+
+.timeline-filters__clear {
+  background: none;
+  border: none;
+  color: var(--color-primary-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.timeline-filters__clear:hover {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.timeline-filters__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timeline-filters__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.timeline-filters__section-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-secondary-700);
+}
+
+/* Checkbox Group */
+.timeline-filters__checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeline-filters__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.timeline-filters__checkbox input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.timeline-filters__checkbox-label {
+  font-size: 0.875rem;
+  color: var(--color-secondary-700);
+  cursor: pointer;
+}
+
+/* Radio Group */
+.timeline-filters__radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeline-filters__radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.timeline-filters__radio input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.timeline-filters__radio-label {
+  font-size: 0.875rem;
+  color: var(--color-secondary-700);
+  cursor: pointer;
+}
+
+/* Date Range */
+.timeline-filters__date-range {
+  display: flex;
+  gap: 1rem;
+}
+
+.timeline-filters__date-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timeline-filters__date-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-secondary-600);
+}
+
+.timeline-filters__date-field {
+  padding: 0.5rem;
+  border: 1px solid var(--color-secondary-300);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--color-secondary-700);
+  background-color: white;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.timeline-filters__date-field:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px var(--color-primary-100);
+}
+
+/* Sort Options */
+.timeline-filters__sort-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.timeline-filters__sort-field,
+.timeline-filters__sort-direction {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timeline-filters__sort-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-secondary-600);
+}
+
+.timeline-filters__sort-select {
+  padding: 0.5rem;
+  border: 1px solid var(--color-secondary-300);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--color-secondary-700);
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.timeline-filters__sort-select:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px var(--color-primary-100);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .timeline-filters {
+    padding: 0.75rem;
+  }
+  
+  .timeline-filters__content {
+    gap: 1rem;
+  }
+  
+  .timeline-filters__date-range {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .timeline-filters__sort-options {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-filters__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .timeline-filters__checkbox-group,
+  .timeline-filters__radio-group {
+    gap: 0.375rem;
+  }
+  
+  .timeline-filters__checkbox,
+  .timeline-filters__radio {
+    padding: 0.125rem 0;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .timeline-filters {
+    background: var(--color-secondary-800);
+  }
+  
+  .timeline-filters__header {
+    border-color: var(--color-secondary-700);
+  }
+  
+  .timeline-filters__title {
+    color: var(--color-secondary-100);
+  }
+  
+  .timeline-filters__clear {
+    color: var(--color-primary-400);
+  }
+  
+  .timeline-filters__clear:hover {
+    background-color: var(--color-primary-900);
+    color: var(--color-primary-300);
+  }
+  
+  .timeline-filters__section-title {
+    color: var(--color-secondary-300);
+  }
+  
+  .timeline-filters__checkbox-label,
+  .timeline-filters__radio-label {
+    color: var(--color-secondary-300);
+  }
+  
+  .timeline-filters__date-label,
+  .timeline-filters__sort-label {
+    color: var(--color-secondary-400);
+  }
+  
+  .timeline-filters__date-field,
+  .timeline-filters__sort-select {
+    background-color: var(--color-secondary-700);
+    border-color: var(--color-secondary-600);
+    color: var(--color-secondary-200);
+  }
+  
+  .timeline-filters__date-field:focus,
+  .timeline-filters__sort-select:focus {
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 2px var(--color-primary-900);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .timeline-filters {
+    border: 2px solid var(--color-secondary-300);
+  }
+  
+  .timeline-filters__header {
+    border-width: 2px;
+  }
+  
+  .timeline-filters__date-field,
+  .timeline-filters__sort-select {
+    border-width: 2px;
+  }
+  
+  .timeline-filters__title {
+    font-weight: 700;
+  }
+  
+  .timeline-filters__section-title {
+    font-weight: 700;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-filters__clear {
+    transition: none;
+  }
+  
+  .timeline-filters__date-field {
+    transition: none;
+  }
+  
+  .timeline-filters__sort-select {
+    transition: none;
+  }
+}

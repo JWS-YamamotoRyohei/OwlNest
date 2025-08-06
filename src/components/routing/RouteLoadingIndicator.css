@@ -1,0 +1,75 @@
+.route-loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(59, 130, 246, 0.1);
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.route-loading-indicator__bar {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #3b82f6 0%,
+    #60a5fa 50%,
+    #93c5fd 100%
+  );
+  transition: width 0.3s ease-out;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Animation for the loading bar */
+.route-loading-indicator__bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .route-loading-indicator {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  .route-loading-indicator__bar {
+    background: linear-gradient(
+      90deg,
+      #60a5fa 0%,
+      #93c5fd 50%,
+      #bfdbfe 100%
+    );
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .route-loading-indicator__bar {
+    transition: none;
+  }
+  
+  .route-loading-indicator__bar::after {
+    animation: none;
+  }
+}

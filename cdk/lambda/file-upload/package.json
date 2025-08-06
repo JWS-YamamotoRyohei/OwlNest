@@ -1,0 +1,22 @@
+{
+  "name": "owlnest-file-upload-lambda",
+  "version": "1.0.0",
+  "description": "File upload Lambda function for OwlNest",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.450.0",
+    "@aws-sdk/s3-request-presigner": "^3.450.0",
+    "@aws-sdk/client-dynamodb": "^3.450.0",
+    "@aws-sdk/lib-dynamodb": "^3.450.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.126",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.2.2"
+  }
+}

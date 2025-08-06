@@ -1,0 +1,328 @@
+.discussion-point-selector {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.discussion-point-selector--error {
+  border-color: #ef4444;
+}
+
+.discussion-point-selector--empty {
+  padding: 24px;
+  text-align: center;
+}
+
+.discussion-point-selector__empty-message {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.discussion-point-selector__header {
+  padding: 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.discussion-point-selector__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.discussion-point-selector__subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.discussion-point-selector__points {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.discussion-point-selector__point-container {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.discussion-point-selector__point-container:last-child {
+  border-bottom: none;
+}
+
+.discussion-point-selector__point {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.discussion-point-selector__point:hover:not(.discussion-point-selector__point--disabled) {
+  background: #f9fafb;
+}
+
+.discussion-point-selector__point--selected {
+  background: #eff6ff;
+  border-left: 3px solid #3b82f6;
+}
+
+.discussion-point-selector__point--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.discussion-point-selector__expand-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.discussion-point-selector__expand-button:hover:not(:disabled) {
+  color: #374151;
+}
+
+.discussion-point-selector__expand-button--expanded {
+  transform: rotate(90deg);
+}
+
+.discussion-point-selector__expand-button:disabled {
+  cursor: not-allowed;
+}
+
+.discussion-point-selector__point-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.discussion-point-selector__point-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.discussion-point-selector__radio {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.discussion-point-selector__point-title {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.discussion-point-selector__point-stats {
+  font-size: 0.75rem;
+  color: #6b7280;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.discussion-point-selector__point-description {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-left: 24px;
+  margin-top: 4px;
+}
+
+.discussion-point-selector__children {
+  background: #fafbfc;
+}
+
+.discussion-point-selector__selected-info {
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border-top: 1px solid #e0f2fe;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.discussion-point-selector__selected-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0369a1;
+}
+
+.discussion-point-selector__selected-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0c4a6e;
+}
+
+/* Scrollbar styling */
+.discussion-point-selector__points::-webkit-scrollbar {
+  width: 6px;
+}
+
+.discussion-point-selector__points::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.discussion-point-selector__points::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.discussion-point-selector__points::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .discussion-point-selector__header {
+    padding: 12px;
+  }
+
+  .discussion-point-selector__point {
+    padding: 10px 12px;
+  }
+
+  .discussion-point-selector__point-title {
+    font-size: 0.8125rem;
+  }
+
+  .discussion-point-selector__point-description {
+    font-size: 0.6875rem;
+    margin-left: 20px;
+  }
+
+  .discussion-point-selector__selected-info {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .discussion-point-selector {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .discussion-point-selector__header {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .discussion-point-selector__title {
+    color: #f1f5f9;
+  }
+
+  .discussion-point-selector__subtitle {
+    color: #94a3b8;
+  }
+
+  .discussion-point-selector__empty-message {
+    color: #94a3b8;
+  }
+
+  .discussion-point-selector__point-container {
+    border-color: #334155;
+  }
+
+  .discussion-point-selector__point:hover:not(.discussion-point-selector__point--disabled) {
+    background: #334155;
+  }
+
+  .discussion-point-selector__point--selected {
+    background: #1e40af;
+    border-color: #3b82f6;
+  }
+
+  .discussion-point-selector__expand-button {
+    color: #94a3b8;
+  }
+
+  .discussion-point-selector__expand-button:hover:not(:disabled) {
+    color: #cbd5e1;
+  }
+
+  .discussion-point-selector__point-title {
+    color: #f1f5f9;
+  }
+
+  .discussion-point-selector__point-stats {
+    color: #94a3b8;
+  }
+
+  .discussion-point-selector__point-description {
+    color: #94a3b8;
+  }
+
+  .discussion-point-selector__children {
+    background: #0f172a;
+  }
+
+  .discussion-point-selector__selected-info {
+    background: #0c4a6e;
+    border-color: #0369a1;
+  }
+
+  .discussion-point-selector__selected-label {
+    color: #bae6fd;
+  }
+
+  .discussion-point-selector__selected-title {
+    color: #e0f2fe;
+  }
+
+  .discussion-point-selector__points::-webkit-scrollbar-track {
+    background: #334155;
+  }
+
+  .discussion-point-selector__points::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+
+  .discussion-point-selector__points::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .discussion-point-selector__point {
+    border: 1px solid transparent;
+  }
+
+  .discussion-point-selector__point--selected {
+    border: 2px solid #000000;
+    border-left-width: 4px;
+  }
+
+  .discussion-point-selector__point-title {
+    font-weight: 700;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .discussion-point-selector__point {
+    transition: none;
+  }
+
+  .discussion-point-selector__expand-button {
+    transition: none;
+  }
+}

@@ -1,0 +1,296 @@
+.sanction-notification-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.sanction-notification-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sanction-notification-card.unread {
+  border-left: 4px solid #3b82f6;
+  background: #f8fafc;
+}
+
+.sanction-notification-card.sanction-notification {
+  border-left-color: #ef4444;
+}
+
+.sanction-notification-card.revocation-notification {
+  border-left-color: #22c55e;
+}
+
+.sanction-notification-card.appeal-notification {
+  border-left-color: #f59e0b;
+}
+
+.notification-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.notification-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notification-title {
+  flex: 1;
+}
+
+.notification-title h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.notification-actions .btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #6b7280;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-actions .btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.notification-content {
+  margin-bottom: 12px;
+}
+
+.notification-message {
+  margin: 0 0 12px 0;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.sanction-details {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.sanction-info {
+  margin-bottom: 8px;
+}
+
+.sanction-type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sanction-type-badge.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.sanction-type-badge.suspension {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #f87171;
+}
+
+.sanction-type-badge.ban {
+  background: #fecaca;
+  color: #7f1d1d;
+  border: 1px solid #ef4444;
+}
+
+.sanction-reason,
+.sanction-duration,
+.revocation-reason,
+.appeal-status,
+.appeal-notes {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.sanction-reason:last-child,
+.sanction-duration:last-child,
+.revocation-reason:last-child,
+.appeal-status:last-child,
+.appeal-notes:last-child {
+  margin-bottom: 0;
+}
+
+.appeal-status-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.appeal-status-badge.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.appeal-status-badge.denied {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.notification-footer {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.suspension-info,
+.ban-info,
+.revocation-info {
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.suspension-info {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+}
+
+.ban-info {
+  background: #fee2e2;
+  border: 1px solid #f87171;
+}
+
+.revocation-info {
+  background: #dcfce7;
+  border: 1px solid #22c55e;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.4;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .sanction-notification-card {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .sanction-notification-card.unread {
+    background: #111827;
+  }
+
+  .notification-title h4 {
+    color: #f9fafb;
+  }
+
+  .notification-time {
+    color: #9ca3af;
+  }
+
+  .notification-actions .btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #d1d5db;
+  }
+
+  .notification-actions .btn:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+  }
+
+  .notification-message {
+    color: #e5e7eb;
+  }
+
+  .sanction-details {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .sanction-reason,
+  .sanction-duration,
+  .revocation-reason,
+  .appeal-status,
+  .appeal-notes {
+    color: #e5e7eb;
+  }
+
+  .info-text {
+    color: #d1d5db;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sanction-notification-card {
+    padding: 12px;
+  }
+
+  .notification-header {
+    gap: 8px;
+  }
+
+  .notification-title h4 {
+    font-size: 14px;
+  }
+
+  .notification-time {
+    font-size: 11px;
+  }
+
+  .notification-actions {
+    gap: 4px;
+  }
+
+  .notification-actions .btn {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .sanction-details {
+    padding: 8px;
+  }
+
+  .sanction-reason,
+  .sanction-duration,
+  .revocation-reason,
+  .appeal-status,
+  .appeal-notes {
+    font-size: 13px;
+  }
+}

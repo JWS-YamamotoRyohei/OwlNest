@@ -1,0 +1,321 @@
+.rich-text-editor {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.rich-text-editor--error {
+  border-color: #ef4444;
+}
+
+.rich-text-editor__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rich-text-editor__tool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.rich-text-editor__tool:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.rich-text-editor__tool--active {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.rich-text-editor__font-size {
+  display: flex;
+  align-items: center;
+}
+
+.rich-text-editor__font-size-select {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.rich-text-editor__font-size-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.rich-text-editor__textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background: transparent;
+}
+
+.rich-text-editor__textarea::placeholder {
+  color: #9ca3af;
+}
+
+.rich-text-editor__attachments {
+  padding: 12px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.rich-text-editor__attachments-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.rich-text-editor__attachments-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rich-text-editor__attachment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.rich-text-editor__attachment-name {
+  color: #374151;
+}
+
+.rich-text-editor__attachment-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.rich-text-editor__attachment-remove:hover {
+  background: #dc2626;
+}
+
+.rich-text-editor__link-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.rich-text-editor__link-dialog-content {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.rich-text-editor__link-dialog-content h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.rich-text-editor__link-field {
+  margin-bottom: 16px;
+}
+
+.rich-text-editor__link-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.rich-text-editor__link-field input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.rich-text-editor__link-field input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.rich-text-editor__link-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.rich-text-editor__link-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rich-text-editor__link-actions button:first-child {
+  background: #ffffff;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.rich-text-editor__link-actions button:first-child:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.rich-text-editor__link-actions button:last-child {
+  background: #3b82f6;
+  color: #ffffff;
+  border: 1px solid #3b82f6;
+}
+
+.rich-text-editor__link-actions button:last-child:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.rich-text-editor__link-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .rich-text-editor {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .rich-text-editor__toolbar {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .rich-text-editor__tool {
+    background: #475569;
+    border-color: #64748b;
+    color: #cbd5e1;
+  }
+
+  .rich-text-editor__tool:hover {
+    background: #64748b;
+    border-color: #94a3b8;
+  }
+
+  .rich-text-editor__font-size-select {
+    background: #475569;
+    border-color: #64748b;
+    color: #cbd5e1;
+  }
+
+  .rich-text-editor__textarea {
+    color: #f1f5f9;
+  }
+
+  .rich-text-editor__textarea::placeholder {
+    color: #64748b;
+  }
+
+  .rich-text-editor__attachments {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .rich-text-editor__attachments-title {
+    color: #94a3b8;
+  }
+
+  .rich-text-editor__attachment {
+    background: #475569;
+    border-color: #64748b;
+  }
+
+  .rich-text-editor__attachment-name {
+    color: #cbd5e1;
+  }
+
+  .rich-text-editor__link-dialog-content {
+    background: #1e293b;
+  }
+
+  .rich-text-editor__link-dialog-content h4 {
+    color: #f1f5f9;
+  }
+
+  .rich-text-editor__link-field label {
+    color: #cbd5e1;
+  }
+
+  .rich-text-editor__link-field input {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+
+  .rich-text-editor__link-field input:focus {
+    border-color: #3b82f6;
+  }
+
+  .rich-text-editor__link-actions button:first-child {
+    background: #334155;
+    color: #cbd5e1;
+    border-color: #475569;
+  }
+
+  .rich-text-editor__link-actions button:first-child:hover {
+    background: #475569;
+    border-color: #64748b;
+  }
+}

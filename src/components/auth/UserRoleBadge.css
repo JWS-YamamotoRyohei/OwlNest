@@ -1,0 +1,220 @@
+/* User role badge styles */
+
+.user-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+/* Size variations */
+.user-role-badge--small {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+  gap: 0.125rem;
+}
+
+.user-role-badge--medium {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  gap: 0.25rem;
+}
+
+.user-role-badge--large {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  gap: 0.375rem;
+}
+
+/* Color variations */
+.user-role-badge--gray {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.user-role-badge--blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.user-role-badge--green {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.user-role-badge--purple {
+  background-color: #f3e8ff;
+  color: #7c3aed;
+  border-color: #c4b5fd;
+}
+
+/* Icon and text elements */
+.user-role-badge__icon {
+  font-size: 1em;
+  line-height: 1;
+}
+
+.user-role-badge__text {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* User role display */
+.user-role-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-role-display__description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Role selector */
+.role-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.role-selector__label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.role-selector__select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: white;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.role-selector__select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.role-selector__select:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.role-selector__description {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Hover effects */
+.user-role-badge--gray:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.user-role-badge--blue:hover {
+  background-color: #bfdbfe;
+  border-color: #60a5fa;
+}
+
+.user-role-badge--green:hover {
+  background-color: #bbf7d0;
+  border-color: #4ade80;
+}
+
+.user-role-badge--purple:hover {
+  background-color: #e9d5ff;
+  border-color: #a78bfa;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .user-role-badge--gray {
+    background-color: #374151;
+    color: #f3f4f6;
+    border-color: #4b5563;
+  }
+
+  .user-role-badge--blue {
+    background-color: #1e3a8a;
+    color: #dbeafe;
+    border-color: #3b82f6;
+  }
+
+  .user-role-badge--green {
+    background-color: #14532d;
+    color: #dcfce7;
+    border-color: #22c55e;
+  }
+
+  .user-role-badge--purple {
+    background-color: #581c87;
+    color: #f3e8ff;
+    border-color: #8b5cf6;
+  }
+
+  .user-role-display__description,
+  .role-selector__description {
+    color: #9ca3af;
+  }
+
+  .role-selector__label {
+    color: #f3f4f6;
+  }
+
+  .role-selector__select {
+    background-color: #374151;
+    color: #f3f4f6;
+    border-color: #4b5563;
+  }
+
+  .role-selector__select:disabled {
+    background-color: #1f2937;
+    color: #6b7280;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .user-role-badge {
+    border-width: 2px;
+  }
+
+  .role-selector__select {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .user-role-badge,
+  .role-selector__select {
+    transition: none;
+  }
+}
+
+/* Focus visible for accessibility */
+.role-selector__select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

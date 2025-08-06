@@ -1,159 +1,371 @@
-// Discussion and post related types
+import { DynamoDBItem } from '../services/dynamodb';
+import {
+  Stance,
+  DiscussionCategory,
+  AccessControlType,
+  EntityType,
+  BaseEntity,
+  Statistics,
+  ModerationStatus,
+  FileAttachment,
+} from './common';
 
-export type Stance = 'pros' | 'cons' | 'neutral' | 'unknown' | 'hidden';
-
-export interface DiscussionPoint {
-  id: string;
-  title: string;
-  description?: string;
-  parentId?: string;
-  level: number;
-  order: number;
-}
-
-export interface BackgroundKnowledge {
-  id: string;
-  type: 'text' | 'file' | 'url';
-  content: string;
-  title?: string;
-  order: number;
-}
-
-export interface AccessControl {
-  type: 'blacklist' | 'whitelist' | 'open';
-  userIds: string[];
-}
-
-export interface Discussion {
-  id: string;
+/**
+ * Discussion metadata stored in DynamoDB
+ * PK: DISCUSSION#{discussionId}
+ * SK: METADATA
+ * GSI1PK: CATEGORY#{categoryId}
+ * GSI1SK: DISCUSSION#{discussionId}
+ * GSI2PK: OWNER#{ownerId}
+ * GSI2SK: DISCUSSION#{discussionId}
+ */
+export interface Discussion extends DynamoDBItem, BaseEntity {
+  PK: `DISCUSSION#${string}`;
+  SK: 'METADATA';
+  GSI1PK: `CATEGORY#${string}`;
+  GSI1SK: `DISCUSSION#${string}`;
+  GSI2PK: `OWNER#${string}`;
+  GSI2SK: `DISCUSSION#${string}`;
+  EntityType: EntityType.DISCUSSION;
+  
+  // Core discussion information
+  discussionId: string;
   title: string;
   description: string;
   ownerId: string;
+  ownerDisplayName: string;
   ownerStance: Stance;
-  categories: string[];
-  discussionPoints: DiscussionPoint[];
-  backgroundKnowledge: BackgroundKnowledge[];
+  
+  // Categorization
+  categories: DiscussionCategory[];
+  tags?: string[];
+  
+  // Access control
   accessControl: AccessControl;
-  metadata: {
-    createdAt: string;
-    updatedAt: string;
-    participantCount: number;
-    postCount: number;
-    isActive: boolean;
-  };
+  
+  // Discussion status
+  isActive: boolean;
+  isLocked: boolean;
+  isPinned: boolean;
+  isFeatured: boolean;
+  
+  // Moderation
+  moderation: ModerationStatus;
+  
+  // Statistics
+  statistics: DiscussionStatistics;
+  
+  // Metadata
+  metadata: DiscussionMetadata;
 }
 
-export interface TextFormatting {
-  bold?: boolean;
-  fontSize?: 'small' | 'medium' | 'large';
-}
-
-export interface PostContent {
-  text: string;
-  formatting: TextFormatting;
-  attachments: string[]; // S3 URLs
-}
-
-export interface PostModeration {
-  isHidden: boolean;
-  hiddenBy?: string;
-  hiddenAt?: string;
-  hiddenReason?: string;
-  isDeleted: boolean;
-  deletedBy?: string;
-  deletedAt?: string;
-}
-
-export interface Post {
-  id: string;
+/**
+ * Discussion point (論点) stored in DynamoDB
+ * PK: DISCUSSION#{discussionId}
+ * SK: POINT#{pointId}
+ * GSI1PK: DISCUSSION#{discussionId}
+ * GSI1SK: POINT#{order}
+ */
+export interface DiscussionPoint extends DynamoDBItem, BaseEntity {
+  PK: `DISCUSSION#${string}`;
+  SK: `POINT#${string}`;
+  GSI1PK: `DISCUSSION#${string}`;
+  GSI1SK: `POINT#${string}`;
+  EntityType: EntityType.DISCUSSION_POINT;
+  
+  // Core point information
+  pointId: string;
   discussionId: string;
-  discussionPointId: string;
-  authorId: string;
-  content: PostContent;
-  stance: Stance;
-  replyToId?: string;
-  reactions: Record<string, ReactionType>;
-  moderation: PostModeration;
-  metadata: {
-    createdAt: string;
-    updatedAt: string;
-    isEdited: boolean;
+  title: string;
+  description?: string;
+  
+  // Hierarchy
+  parentId?: string;
+  level: number;
+  order: number;
+  
+  // Statistics
+  postCount: number;
+  prosCount: number;
+  consCount: number;
+  neutralCount: number;
+  
+  // Status
+  isActive: boolean;
+}
+
+/**
+ * Background knowledge stored in DynamoDB
+ * PK: DISCUSSION#{discussionId}
+ * SK: KNOWLEDGE#{knowledgeId}
+ */
+export interface BackgroundKnowledge extends DynamoDBItem, BaseEntity {
+  PK: `DISCUSSION#${string}`;
+  SK: `KNOWLEDGE#${string}`;
+  EntityType: EntityType.BACKGROUND_KNOWLEDGE;
+  
+  // Core information
+  knowledgeId: string;
+  discussionId: string;
+  type: 'text' | 'file' | 'url';
+  title?: string;
+  content: string;
+  order: number;
+  
+  // File information (if type is 'file')
+  fileAttachment?: FileAttachment;
+  
+  // URL information (if type is 'url')
+  urlMetadata?: {
+    title?: string;
+    description?: string;
+    image?: string;
+    siteName?: string;
   };
 }
 
-export type ReactionType = 'like' | 'agree' | 'disagree' | 'insightful';
-
-export interface PostReaction {
-  postId: string;
-  userId: string;
-  reactionType: ReactionType;
-  createdAt: string;
+/**
+ * Access control configuration
+ */
+export interface AccessControl {
+  type: AccessControlType;
+  userIds: string[];
+  allowedRoles?: string[];
+  requireApproval?: boolean;
 }
 
+/**
+ * Discussion statistics
+ */
+export interface DiscussionStatistics extends Statistics {
+  prosCount: number;
+  consCount: number;
+  neutralCount: number;
+  unknownCount: number;
+  pointsCount: number;
+  followersCount: number;
+  uniqueParticipants: number;
+  averagePostLength: number;
+  engagementRate: number;
+}
+
+/**
+ * Discussion metadata
+ */
+export interface DiscussionMetadata {
+  version: number;
+  language: string;
+  region?: string;
+  source?: string;
+  externalId?: string;
+  importedAt?: string;
+  lastModifiedBy: string;
+  changeLog: DiscussionChangeLog[];
+}
+
+/**
+ * Discussion change log entry
+ */
+export interface DiscussionChangeLog {
+  timestamp: string;
+  userId: string;
+  action: string;
+  changes: Record<string, { from: any; to: any }>;
+  reason?: string;
+}
+
+/**
+ * Discussion creation data
+ */
 export interface CreateDiscussionData {
   title: string;
   description: string;
   ownerStance: Stance;
-  categories: string[];
-  discussionPoints: Omit<DiscussionPoint, 'id'>[];
-  backgroundKnowledge?: Omit<BackgroundKnowledge, 'id'>[];
-  accessControl?: AccessControl;
+  categories: DiscussionCategory[];
+  points: CreateDiscussionPointData[];
+  backgroundKnowledge?: CreateBackgroundKnowledgeData[];
+  accessControl?: Partial<AccessControl>;
+  tags?: string[];
 }
 
+/**
+ * Discussion point creation data
+ */
+export interface CreateDiscussionPointData {
+  title: string;
+  description?: string;
+  parentId?: string;
+  order: number;
+}
+
+/**
+ * Background knowledge creation data
+ */
+export interface CreateBackgroundKnowledgeData {
+  type: 'text' | 'file' | 'url';
+  title?: string;
+  content: string;
+  order: number;
+  fileAttachment?: FileAttachment;
+}
+
+/**
+ * Discussion update data
+ */
 export interface UpdateDiscussionData {
   title?: string;
   description?: string;
   ownerStance?: Stance;
-  categories?: string[];
-  discussionPoints?: DiscussionPoint[];
-  backgroundKnowledge?: BackgroundKnowledge[];
-  accessControl?: AccessControl;
-}
-
-export interface CreatePostData {
-  discussionId: string;
-  discussionPointId: string;
-  content: PostContent;
-  stance: Stance;
-  replyToId?: string;
-}
-
-export interface UpdatePostData {
-  content?: PostContent;
-  stance?: Stance;
-}
-
-export interface DiscussionFilters {
-  categories?: string[];
-  ownerId?: string;
+  categories?: DiscussionCategory[];
+  accessControl?: Partial<AccessControl>;
+  tags?: string[];
   isActive?: boolean;
-  search?: string;
+  isLocked?: boolean;
+  isPinned?: boolean;
+  isFeatured?: boolean;
 }
 
-export interface PostFilters {
-  discussionPointId?: string;
-  authorId?: string;
-  stance?: Stance;
-  hasAttachments?: boolean;
+/**
+ * Discussion search filters
+ */
+export interface DiscussionSearchFilters {
+  categories?: DiscussionCategory[];
+  ownerId?: string;
+  ownerStance?: Stance;
+  isActive?: boolean;
+  isLocked?: boolean;
+  isPinned?: boolean;
+  isFeatured?: boolean;
+  createdAfter?: string;
+  createdBefore?: string;
+  lastActivityAfter?: string;
+  lastActivityBefore?: string;
+  minParticipants?: number;
+  maxParticipants?: number;
+  minPosts?: number;
+  maxPosts?: number;
+  tags?: string[];
+  titleContains?: string;
+  descriptionContains?: string;
 }
 
-export type PostSortOption = 'createdAt' | 'reactions' | 'replies';
-
-export interface DiscussionContextType {
-  discussions: Discussion[];
-  currentDiscussion: Discussion | null;
-  createDiscussion: (data: CreateDiscussionData) => Promise<Discussion>;
-  updateDiscussion: (id: string, data: UpdateDiscussionData) => Promise<void>;
-  deleteDiscussion: (id: string) => Promise<void>;
-  loadDiscussion: (id: string) => Promise<void>;
-  filterDiscussions: (filters: DiscussionFilters) => Discussion[];
+/**
+ * Discussion list item (for discussion lists and search results)
+ */
+export interface DiscussionListItem {
+  discussionId: string;
+  title: string;
+  description: string;
+  ownerId: string;
+  ownerDisplayName: string;
+  ownerStance: Stance;
+  categories: DiscussionCategory[];
+  tags?: string[];
+  isActive: boolean;
+  isLocked: boolean;
+  isPinned: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  lastActivityAt: string;
+  statistics: {
+    participantCount: number;
+    postCount: number;
+    prosCount: number;
+    consCount: number;
+    neutralCount: number;
+    followersCount: number;
+  };
 }
 
-export interface PostContextType {
-  posts: Post[];
-  createPost: (data: CreatePostData) => Promise<Post>;
-  updatePost: (id: string, data: UpdatePostData) => Promise<void>;
-  deletePost: (id: string) => Promise<void>;
-  filterPosts: (filters: PostFilters) => Post[];
-  sortPosts: (sortBy: PostSortOption) => Post[];
+/**
+ * Discussion summary (for cards and previews)
+ */
+export interface DiscussionSummary {
+  discussionId: string;
+  title: string;
+  description: string;
+  ownerId: string;
+  ownerDisplayName: string;
+  ownerStance: Stance;
+  categories: DiscussionCategory[];
+  pointsCount: number;
+  participantCount: number;
+  postCount: number;
+  lastActivityAt: string;
+  createdAt: string;
+  isFollowing?: boolean;
+}
+
+/**
+ * Discussion detail view (full discussion with points)
+ */
+export interface DiscussionDetail extends Discussion {
+  points: DiscussionPoint[];
+  backgroundKnowledge: BackgroundKnowledge[];
+  recentPosts: Array<{
+    postId: string;
+    authorId: string;
+    authorDisplayName: string;
+    content: string;
+    stance: Stance;
+    createdAt: string;
+    pointId: string;
+    pointTitle: string;
+  }>;
+  topContributors: Array<{
+    userId: string;
+    displayName: string;
+    avatar?: string;
+    postCount: number;
+    reactionCount: number;
+  }>;
+  isFollowing?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  canModerate?: boolean;
+}
+
+/**
+ * Discussion analytics data
+ */
+export interface DiscussionAnalytics {
+  discussionId: string;
+  title: string;
+  timeRange: {
+    startDate: string;
+    endDate: string;
+  };
+  engagement: {
+    totalViews: number;
+    uniqueViewers: number;
+    totalPosts: number;
+    uniquePosters: number;
+    averagePostsPerUser: number;
+    engagementRate: number;
+  };
+  stanceDistribution: {
+    pros: number;
+    cons: number;
+    neutral: number;
+    unknown: number;
+  };
+  activityTimeline: Array<{
+    date: string;
+    posts: number;
+    views: number;
+    participants: number;
+  }>;
+  topPoints: Array<{
+    pointId: string;
+    title: string;
+    postCount: number;
+    engagementScore: number;
+  }>;
+  participantAnalytics: {
+    newParticipants: number;
+    returningParticipants: number;
+    averageSessionDuration: number;
+    bounceRate: number;
+  };
 }

@@ -1,6 +1,7 @@
 // Application constants
 
 export * from './environment';
+export * from './categories';
 
 // API endpoints
 export const API_ENDPOINTS = {

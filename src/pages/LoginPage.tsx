@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LoginCredentials } from '../types/auth';
+import { ENV } from '../constants/environment';
 import './AuthPages.css';
 
 export const LoginPage: React.FC = () => {
@@ -38,6 +39,23 @@ export const LoginPage: React.FC = () => {
     }));
   };
 
+  // Development mode quick login
+  const handleQuickLogin = async (userType: 'user' | 'admin') => {
+    clearError();
+    
+    const quickCredentials: LoginCredentials = {
+      email: userType === 'admin' ? 'admin@example.com' : 'user@example.com',
+      password: 'password123'
+    };
+
+    try {
+      await login(quickCredentials);
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.error('Quick login failed:', error);
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -45,6 +63,34 @@ export const LoginPage: React.FC = () => {
           <h1>OwlNest にログイン</h1>
           <p>アカウントにログインして議論に参加しましょう</p>
         </div>
+
+        {/* Development mode quick login */}
+        {ENV.ENVIRONMENT === 'development' && (
+          <div className="dev-quick-login">
+            <h3>🔧 開発環境クイックログイン</h3>
+            <div className="quick-login-buttons">
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('user')}
+                disabled={isLoading}
+                className="auth-button auth-button--secondary"
+              >
+                👤 一般ユーザーでログイン
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('admin')}
+                disabled={isLoading}
+                className="auth-button auth-button--secondary"
+              >
+                👑 管理者でログイン
+              </button>
+            </div>
+            <div className="dev-divider">
+              <span>または通常ログイン</span>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && (

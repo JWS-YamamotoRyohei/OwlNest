@@ -2,7 +2,26 @@
 
 ---
 
-## 1. システムの全体像 🏗️
+## 目次
+
+- [1. システムの全体像](#1-システムの全体像)
+  - [機能概要](#-機能概要)
+    - フロントエンド機能
+    - バックエンドインフラ
+    - 本番環境機能
+- [2. 現在の状況](#2-現在の状況-)
+- [3. 開発環境でのアクセス](#3-開発環境でのアクセス)
+- [4. デプロイ手順](#4-デプロイ手順-)
+  - [4.1 開発環境のデプロイ](#41-開発環境のデプロイ)
+  - [4.2 本番環境のデプロイ（任意）](#42-本番環境のデプロイ任意)
+- [5. CloudWatch ダッシュボード](#5-cloudwatch-ダッシュボード)
+- [6. セットアップ手順](#6-セットアップ手順-)
+- [7. 機能別ガイド](#7-機能別ガイド-)
+- [8. トラブルシューティング](#8-トラブルシューティング-)
+- [9. 推奨される次のアクション](#9-推奨される次のアクション-)
+- [10. まとめ](#10-まとめ-)
+
+## 1. システムの全体像
 
 ### 🎯 機能概要
 
@@ -10,24 +29,24 @@
 
 #### フロントエンド機能
 
-- 📱 レスポンシブWebアプリケーション（React + TypeScript）
-- 🔐 ユーザー認証（登録・ログイン・プロフィール管理）
-- 💬 ディスカッション（作成・参加・カテゴリ分類）
-- 📝 投稿（テキスト・ファイル添付・リアルタイム更新）
-- 🔍 高度な検索（フィルタ・オートコンプリート・履歴）
-- 👥 フォロー（ユーザー・タイムライン）
-- 🔔 通知（リアルタイム通知・設定）
-- 🛡️ モデレーション（報告・審査・制裁）
-- 📊 分析ダッシュボード（統計・トレンド・エクスポート）
+- レスポンシブWebアプリケーション（React + TypeScript）
+- ユーザー認証（登録・ログイン・プロフィール管理）
+- ディスカッション（作成・参加・カテゴリ分類）
+- 投稿（テキスト・ファイル添付・リアルタイム更新）
+- 高度な検索（フィルタ・オートコンプリート・履歴）
+- フォロー（ユーザー・タイムライン）
+- 通知（リアルタイム通知・設定）
+- モデレーション（報告・審査・制裁）
+- 分析ダッシュボード（統計・トレンド・エクスポート）
 
 #### バックエンドインフラ
 
-- ☁️ サーバーレス（AWS Lambda + API Gateway）
-- 🗄️ NoSQLデータベース（DynamoDB + GSI）
-- 🔐 認証・認可（Amazon Cognito）
-- 📁 ストレージ（Amazon S3）
-- 🌐 CDN配信（CloudFront）
-- ⚡ リアルタイム通信（WebSocket API）
+- サーバーレス（AWS Lambda + API Gateway）
+- NoSQLデータベース（DynamoDB + GSI）
+- 認証・認可（Amazon Cognito）
+- ストレージ（Amazon S3）
+- CDN配信（CloudFront）
+- リアルタイム通信（WebSocket API）
 
 #### 本番環境機能
 
@@ -57,14 +76,16 @@
 
 ---
 
-## 3. 開発環境でのアクセス 🖥️
+## 3. 開発環境(ローカル)でのアクセス
 
 ### フロントエンド起動
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
+
+参照する環境変数ファイル：env.development
 
 ### アクセスURL（ローカル）
 
@@ -264,3 +285,156 @@ npx cdk deploy --context environment=development
 ---
 
 💬 不明点がある場合や、個別機能の確認・支援が必要な場合は、お気軽にご相談ください！
+
+
+
+1. 環境変数ファイルの使い分け 📁
+.env (ベース環境変数)
+用途: 全環境で共通の設定値
+優先度: 最も低い（他のファイルで上書きされる）
+内容例: デフォルト値、共通設定
+.env.development (開発環境専用)
+用途: 開発環境でのみ使用される設定
+優先度: 開発時は.envより高い
+内容例:
+ローカルAPI URL
+デバッグモード有効
+モック設定
+.env.production (本番環境専用)
+用途: 本番環境でのみ使用される設定
+優先度: 本番ビルド時は.envより高い
+内容例:
+本番API URL
+デバッグモード無効
+最適化設定
+.env.example (テンプレート)
+用途: 環境変数のテンプレート・ドキュメント
+特徴:
+実際には読み込まれない
+新しい開発者向けの設定例
+機密情報は含まない
+1. Viteの環境変数読み込み優先順位 🔄
+2. .env.[mode].local     (最高優先度)
+3. .env.local
+4. .env.[mode]           (.env.development / .env.production)
+5. .env                  (最低優先度)
+例: 開発環境 (NODE_ENV=development) の場合
+
+.env.development.local (Git無視推奨)
+.env.local (Git無視推奨)
+.env.development
+.env
+3. 実行コマンドと環境変数の関係 ⚙️
+現在のpackage.jsonスクリプト:
+{
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  }
+}
+コマンド別の動作:
+npm run dev / npm run start
+環境: development
+読み込まれる環境変数:
+.env.development.local
+.env.local
+.env.development
+.env
+特徴:
+開発サーバー起動
+ホットリロード有効
+デバッグ情報表示
+npm run build
+環境: production
+読み込まれる環境変数:
+.env.production.local
+.env.local
+.env.production
+.env
+特徴:
+本番用ビルド
+コード最適化
+デバッグ情報削除
+4. npm run start vs npm run dev の違い 🔍
+現在の設定では:
+"dev": "vite",
+"start": "vite"
+結論: 現在は全く同じ動作をします。
+
+一般的な使い分け:
+npm run dev (開発用)
+開発者が日常的に使用
+開発専用の設定・機能
+より詳細なログ出力
+npm run start (汎用)
+本番環境でも使用可能
+より汎用的な起動コマンド
+CI/CDでも使用される
+推奨される設定例:
+{
+  "scripts": {
+    "dev": "vite --mode development",
+    "start": "vite --host 0.0.0.0",
+    "start-host0": "vite --host 0.0.0.0",
+    "build": "tsc && vite build --mode production",
+    "preview": "vite preview"
+  }
+}
+5. 実際の環境変数ファイル例 📝
+.env (共通設定)
+# 共通設定
+VITE_APP_NAME=OwlNest
+VITE_AWS_REGION=ap-northeast-1
+
+# デフォルト値
+VITE_DEBUG_MODE=false
+VITE_LOG_LEVEL=info
+.env.development (開発環境)
+# 開発環境設定
+VITE_NODE_ENV=development
+VITE_DEBUG_MODE=true
+VITE_LOG_LEVEL=debug
+
+# ローカルAPI
+VITE_API_GATEWAY_URL=http://localhost:3001/api
+VITE_WEBSOCKET_API_URL=ws://localhost:3001/ws
+
+# モック設定
+VITE_USE_MOCK_API=true
+.env.production (本番環境)
+# 本番環境設定
+VITE_NODE_ENV=production
+VITE_DEBUG_MODE=false
+VITE_LOG_LEVEL=error
+
+# 本番API (デプロイ時に設定)
+VITE_USE_MOCK_API=false
+.env.example (テンプレート)
+# AWS設定 (実際の値を設定してください)
+VITE_AWS_REGION=ap-northeast-1
+VITE_AWS_USER_POOL_ID=your_user_pool_id
+VITE_AWS_USER_POOL_CLIENT_ID=your_client_id
+
+# API設定
+VITE_API_GATEWAY_URL=your_api_url
+VITE_WEBSOCKET_API_URL=your_websocket_url
+
+# 機能フラグ
+VITE_ENABLE_ANALYTICS=true
+VITE_ENABLE_REALTIME=true
+6. 環境変数の確認方法 🔍
+開発中に環境変数を確認:
+
+// コンソールで確認
+console.log('Environment:', import.meta.env.VITE_NODE_ENV);
+console.log('All env vars:', import.meta.env);
+
+// コード内で使用
+const isProduction = import.meta.env.VITE_NODE_ENV === 'production';
+ブラウザの開発者ツールで確認:
+F12で開発者ツールを開く
+Consoleタブで import.meta.env を実行
+設定された環境変数が表示される
+この仕組みにより、環境ごとに適切な設定を自動的に適用できます！

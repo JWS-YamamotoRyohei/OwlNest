@@ -29,10 +29,10 @@ import {
 } from '../types/auth';
 
 // Configuration - these should come from environment variables
-const AWS_REGION = process.env.REACT_APP_AWS_REGION || 'ap-northeast-1';
-const USER_POOL_ID = process.env.REACT_APP_USER_POOL_ID || '';
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID || '';
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
+const AWS_REGION = import.meta.env.VITE_AWS_REGION || 'ap-northeast-1';
+const USER_POOL_ID = import.meta.env.VITE_AWS_USER_POOL_ID || '';
+const CLIENT_ID = import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID || '';
+const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL || '';
 
 // Initialize Cognito client
 const cognitoClient = new CognitoIdentityProviderClient({
@@ -44,14 +44,24 @@ class AuthService {
   private refreshToken: string | null = null;
   private idToken: string | null = null;
   private tokenExpiry: number | null = null;
+  private isDevelopmentMode: boolean;
 
   constructor() {
     // Load tokens from localStorage on initialization
     this.loadTokensFromStorage();
+    
+    // Check if we're in development mode without AWS configuration
+    this.isDevelopmentMode = import.meta.env.VITE_NODE_ENV === 'development' && 
+                             (!USER_POOL_ID || !CLIENT_ID);
   }
 
   // Login with email and password
   async login(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens } | AuthChallenge> {
+    // Development mode mock login
+    if (this.isDevelopmentMode) {
+      return this.mockLogin(credentials);
+    }
+
     try {
       const command = new InitiateAuthCommand({
         AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
@@ -210,6 +220,11 @@ class AuthService {
 
   // Get current user
   async getCurrentUser(): Promise<User> {
+    // Development mode mock
+    if (this.isDevelopmentMode) {
+      return this.mockGetCurrentUser();
+    }
+
     try {
       if (!this.accessToken) {
         throw new Error('Not authenticated');
@@ -355,6 +370,11 @@ class AuthService {
 
   // Check if user is authenticated
   isAuthenticated(): boolean {
+    // Development mode: check for mock user data
+    if (this.isDevelopmentMode) {
+      return !!localStorage.getItem('owlnest_mock_user') && !!this.accessToken;
+    }
+    
     return !!this.accessToken && !this.isTokenExpired();
   }
 
@@ -438,6 +458,92 @@ class AuthService {
       code: error.name || 'AuthError',
       message: error.message || 'Authentication error occurred',
       name: error.name || 'AuthError',
+    };
+  }
+
+  // Mock login for development environment
+  private async mockLogin(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens }> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Mock user data based on email
+    const mockUser: User = {
+      userId: 'mock-user-1',
+      givenName: "mock",
+      familyName: "user",
+      email: credentials.email,
+      displayName: credentials.email.split('@')[0],
+      role: credentials.email.includes('admin') ? UserRole.ADMIN : UserRole.CONTRIBUTOR,
+      bio: 'Mock user for development',
+      avatarUrl: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      preferences: {
+        notifications: {
+          email: true,
+          push: false,
+          mentions: true,
+          replies: true,
+          follows: true,
+        },
+        privacy: {
+          profileVisible: true,
+          emailVisible: false,
+        },
+      },
+    };
+
+    // Mock tokens
+    const mockTokens: AuthTokens = {
+      accessToken: 'mock-access-token',
+      idToken: 'mock-id-token',
+      refreshToken: 'mock-refresh-token',
+      expiresIn: 3600,
+    };
+
+    // Store tokens
+    this.setTokens(mockTokens);
+
+    // Store mock user data
+    localStorage.setItem('owlnest_mock_user', JSON.stringify(mockUser));
+
+    console.log('🔧 Development mode: Mock login successful', { user: mockUser });
+
+    return { user: mockUser, tokens: mockTokens };
+  }
+
+  // Mock getCurrentUser for development
+  private async mockGetCurrentUser(): Promise<User> {
+    const mockUserData = localStorage.getItem('owlnest_mock_user');
+    if (mockUserData) {
+      return JSON.parse(mockUserData);
+    }
+
+    // Default mock user if no stored data
+    return {
+      userId: 'mock-user-1',
+      givenName: "mock",
+      familyName: "user",
+      email: 'dev@example.com',
+      displayName: 'Development User',
+      role: UserRole.CONTRIBUTOR,
+      bio: 'Mock user for development',
+      avatarUrl: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      preferences: {
+        notifications: {
+          email: true,
+          push: false,
+          mentions: true,
+          replies: true,
+          follows: true,
+        },
+        privacy: {
+          profileVisible: true,
+          emailVisible: false,
+        },
+      },
     };
   }
 }

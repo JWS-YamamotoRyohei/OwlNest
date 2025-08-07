@@ -2,16 +2,13 @@
  * Integration tests for discussion flow
  */
 
-import React from 'react';
-import { screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { screen,, waitFor,} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { 
   renderWithProviders, 
   createMockUser, 
   createMockDiscussion,
   createMockPost,
-  mockApiResponse,
-  mockApiError,
   setupTestEnvironment,
   cleanup
 } from '../../utils/testUtils';

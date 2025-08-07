@@ -1,29 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { PostListItem, CreatePostData } from '../../types/post';
+import { PostListItem, CreatePostData, PostFilters, PostSortOptions } from '../../types/post';
 import { Stance, ReactionType } from '../../types/common';
 import { DiscussionPoint } from '../../types/discussion';
 import { useAuth } from '../../hooks/useAuth';
 import { PostCard } from './PostCard';
 import { PostCreationForm } from './PostCreationForm';
 import './PostList.css';
-
-export interface PostFilters {
-  discussionPointId?: string;
-  authorId?: string;
-  stance?: Stance;
-  hasAttachments?: boolean;
-  hasLinks?: boolean;
-  searchText?: string;
-  dateRange?: {
-    start: string;
-    end: string;
-  };
-}
-
-export interface PostSortOptions {
-  field: 'createdAt' | 'updatedAt' | 'reactions' | 'replies';
-  direction: 'asc' | 'desc';
-}
 
 interface PostListProps {
   posts: PostListItem[];
@@ -79,7 +61,7 @@ export const PostList: React.FC<PostListProps> = ({
   const [selectedStance, setSelectedStance] = useState<Stance | ''>(filters.stance || '');
   const [selectedAuthor, setSelectedAuthor] = useState(filters.authorId || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  console.log('discussionPoints', discussionPoints);
   // Update local state when filters change
   useEffect(() => {
     setSearchText(filters.searchText || '');
@@ -106,19 +88,24 @@ export const PostList: React.FC<PostListProps> = ({
     }
 
     if (filters.hasAttachments) {
-      filtered = filtered.filter(post => post.content.hasAttachments);
+      filtered = filtered.filter(post => post.attachments && post.attachments.length > 0);
     }
 
     if (filters.hasLinks) {
-      filtered = filtered.filter(post => post.content.hasLinks);
+      filtered = filtered.filter(post => {
+        // Check if content contains URLs
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return urlRegex.test(post.content);
+      });
     }
 
     if (filters.searchText) {
       const searchLower = filters.searchText.toLowerCase();
-      filtered = filtered.filter(post => 
-        post.content.text.toLowerCase().includes(searchLower) ||
-        post.authorDisplayName.toLowerCase().includes(searchLower) ||
-        post.discussionPointTitle.toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        post =>
+          post.content.toLowerCase().includes(searchLower) ||
+          post.authorDisplayName.toLowerCase().includes(searchLower) ||
+          post.discussionPointTitle.toLowerCase().includes(searchLower)
       );
     }
 
@@ -146,12 +133,22 @@ export const PostList: React.FC<PostListProps> = ({
           bValue = new Date(b.updatedAt).getTime();
           break;
         case 'reactions':
-          aValue = a.reactions.totalCount;
-          bValue = b.reactions.totalCount;
+          aValue =
+            a.statistics.likeCount +
+            a.statistics.agreeCount +
+            a.statistics.disagreeCount +
+            a.statistics.insightfulCount +
+            a.statistics.funnyCount;
+          bValue =
+            b.statistics.likeCount +
+            b.statistics.agreeCount +
+            b.statistics.disagreeCount +
+            b.statistics.insightfulCount +
+            b.statistics.funnyCount;
           break;
         case 'replies':
-          aValue = a.replyCount;
-          bValue = b.replyCount;
+          aValue = a.statistics.replyCount;
+          bValue = b.statistics.replyCount;
           break;
         default:
           aValue = new Date(a.createdAt).getTime();
@@ -175,7 +172,7 @@ export const PostList: React.FC<PostListProps> = ({
     }
 
     const groups: Record<string, PostListItem[]> = {};
-    
+
     filteredAndSortedPosts.forEach(post => {
       const pointId = post.discussionPointId;
       if (!groups[pointId]) {
@@ -202,7 +199,8 @@ export const PostList: React.FC<PostListProps> = ({
   };
 
   const handleSortChange = (field: PostSortOptions['field']) => {
-    const newDirection: 'asc' | 'desc' = sortOptions.field === field && sortOptions.direction === 'desc' ? 'asc' : 'desc';
+    const newDirection: 'asc' | 'desc' =
+      sortOptions.field === field && sortOptions.direction === 'desc' ? 'asc' : 'desc';
     const newSortOptions = { field, direction: newDirection };
     onSortChange?.(newSortOptions);
   };
@@ -234,7 +232,7 @@ export const PostList: React.FC<PostListProps> = ({
   };
 
   const getPointTitle = (pointId: string): string => {
-    const point = discussionPoints.find(p => p.id === pointId);
+    const point = discussionPoints.find(p => p.pointId === pointId);
     return point?.title || '不明な論点';
   };
 
@@ -250,7 +248,7 @@ export const PostList: React.FC<PostListProps> = ({
                   type="text"
                   placeholder="投稿を検索..."
                   value={searchText}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSearchText(e.target.value);
                     handleFilterChange({ searchText: e.target.value });
                   }}
@@ -261,7 +259,7 @@ export const PostList: React.FC<PostListProps> = ({
               <div className="post-list__filter-group">
                 <select
                   value={selectedPointId}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSelectedPointId(e.target.value);
                     handleFilterChange({ discussionPointId: e.target.value || undefined });
                   }}
@@ -269,7 +267,7 @@ export const PostList: React.FC<PostListProps> = ({
                 >
                   <option value="">すべての論点</option>
                   {discussionPoints.map(point => (
-                    <option key={point.id} value={point.id}>
+                    <option key={point.pointId} value={point.pointId}>
                       {point.title}
                     </option>
                   ))}
@@ -279,7 +277,7 @@ export const PostList: React.FC<PostListProps> = ({
               <div className="post-list__filter-group">
                 <select
                   value={selectedStance}
-                  onChange={(e) => {
+                  onChange={e => {
                     const stance = e.target.value as Stance | '';
                     setSelectedStance(stance);
                     handleFilterChange({ stance: stance || undefined });
@@ -297,7 +295,7 @@ export const PostList: React.FC<PostListProps> = ({
               <div className="post-list__filter-group">
                 <select
                   value={selectedAuthor}
-                  onChange={(e) => {
+                  onChange={e => {
                     setSelectedAuthor(e.target.value);
                     handleFilterChange({ authorId: e.target.value || undefined });
                   }}
@@ -401,8 +399,7 @@ export const PostList: React.FC<PostListProps> = ({
             <div className="post-list__empty-description">
               {filters.searchText || filters.stance || filters.authorId || filters.discussionPointId
                 ? 'フィルター条件に一致する投稿が見つかりませんでした。'
-                : 'まだ投稿がありません。最初の投稿を作成してみましょう。'
-              }
+                : 'まだ投稿がありません。最初の投稿を作成してみましょう。'}
             </div>
           </div>
         ) : (
@@ -410,15 +407,11 @@ export const PostList: React.FC<PostListProps> = ({
             <div key={pointId || 'no-point'} className="post-list__point-group">
               {groupByPoint && pointId && (
                 <div className="post-list__point-header">
-                  <h3 className="post-list__point-title">
-                    {getPointTitle(pointId)}
-                  </h3>
-                  <div className="post-list__point-count">
-                    {pointPosts.length}件の投稿
-                  </div>
+                  <h3 className="post-list__point-title">{getPointTitle(pointId)}</h3>
+                  <div className="post-list__point-count">{pointPosts.length}件の投稿</div>
                 </div>
               )}
-              
+
               <div className="post-list__point-posts">
                 {pointPosts.map(post => (
                   <PostCard
@@ -432,8 +425,8 @@ export const PostList: React.FC<PostListProps> = ({
                     onShow={onShowPost}
                     showActions={true}
                     showReplies={true}
-                    isReply={post.threadLevel > 0}
-                    level={post.threadLevel}
+                    isReply={post.level > 0}
+                    level={post.level}
                     maxLevel={maxReplyLevel}
                   />
                 ))}
@@ -448,9 +441,7 @@ export const PostList: React.FC<PostListProps> = ({
         <div className="post-list__summary">
           {filteredAndSortedPosts.length}件の投稿を表示中
           {posts.length !== filteredAndSortedPosts.length && (
-            <span className="post-list__filtered-count">
-              （全{posts.length}件中）
-            </span>
+            <span className="post-list__filtered-count">（全{posts.length}件中）</span>
           )}
         </div>
       )}

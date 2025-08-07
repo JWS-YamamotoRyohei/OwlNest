@@ -2,7 +2,6 @@
  * Unit tests for DiscussionCard component
  */
 
-import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { DiscussionCard } from '../DiscussionCard';
 import { 

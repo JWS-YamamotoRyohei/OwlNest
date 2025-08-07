@@ -25,7 +25,9 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
   compact = false
 }) => {
   const { user } = useAuth();
-
+  console.log("discussion!1",discussion)
+  console.log("discussion!2",discussion.categories)
+  console.log("discussion!3",discussion.categories.slice(0, 3))
   const getStanceColor = (stance: Stance): string => {
     switch (stance) {
       case Stance.PROS:

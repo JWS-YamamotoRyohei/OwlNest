@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DiscussionDetail, DiscussionPoint } from '../types/discussion';
+import { DiscussionDetail } from '../types/discussion';
 import { PostListItem, PostFilters, PostSortOptions } from '../types/post';
 import { Stance } from '../types/common';
 import { PostList } from '../components/posts/PostList';
@@ -10,10 +10,11 @@ import { SEO } from '../components/common/SEO';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { useAuth } from '../contexts/AuthContext';
 import { useRealtimeDiscussion } from '../hooks/useRealtimeDiscussion';
-import { ConnectionStatus } from '../components/websocket/ConnectionStatus';
+
 import { TypingIndicator } from '../components/realtime/TypingIndicator';
 import { RealtimeStatus } from '../components/realtime/RealtimeStatus';
 import { Post } from '../types/post';
+import { createPostListItemFromMinimalData } from '../utils/postUtils';
 import './DiscussionPage.css';
 
 const DiscussionPage: React.FC = () => {
@@ -28,7 +29,7 @@ const DiscussionPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [showPostForm, setShowPostForm] = useState(false);
-
+  
   // Post filters and sorting
   const [postFilters, setPostFilters] = useState<PostFilters>({});
   const [postSort, setPostSort] = useState<PostSortOptions>({
@@ -38,10 +39,6 @@ const DiscussionPage: React.FC = () => {
 
   // Real-time discussion updates
   const {
-    joinDiscussion,
-    leaveDiscussion,
-    broadcastPost,
-    broadcastTyping,
     isConnected: isRealtimeConnected,
     connectedUsers,
     typingUsers
@@ -56,7 +53,32 @@ const DiscussionPage: React.FC = () => {
           if (prevPosts.some(p => p.postId === post.postId)) {
             return prevPosts;
           }
-          return [post as PostListItem, ...prevPosts];
+          
+          // Convert Post to PostListItem with required additional data
+          const discussionTitle = discussion?.title || '';
+          const discussionPointTitle = discussion?.points.find(p => p.pointId === post.discussionPointId)?.title || '';
+          
+          const postListItem = createPostListItemFromMinimalData(
+            {
+              postId: post.postId,
+              discussionId: post.discussionId,
+              discussionPointId: post.discussionPointId,
+              authorId: post.authorId,
+              authorDisplayName: post.authorDisplayName,
+              content: post.content,
+              stance: post.stance,
+              createdAt: post.createdAt,
+              updatedAt: post.updatedAt,
+              isEdited: post.isEdited,
+              editedAt: post.editedAt,
+              parentId: post.parentId,
+              level: post.level,
+            },
+            discussionTitle,
+            discussionPointTitle
+          );
+          
+          return [postListItem, ...prevPosts];
         });
       }
     },
@@ -64,7 +86,34 @@ const DiscussionPage: React.FC = () => {
       console.log('Post updated:', post);
       // Update the post in the current posts list
       setPosts(prevPosts => 
-        prevPosts.map(p => p.postId === post.postId ? post as PostListItem : p)
+        prevPosts.map(p => {
+          if (p.postId === post.postId) {
+            // Convert Post to PostListItem with required additional data
+            const discussionTitle = discussion?.title || '';
+            const discussionPointTitle = discussion?.points.find(pt => pt.pointId === post.discussionPointId)?.title || '';
+            
+            return createPostListItemFromMinimalData(
+              {
+                postId: post.postId,
+                discussionId: post.discussionId,
+                discussionPointId: post.discussionPointId,
+                authorId: post.authorId,
+                authorDisplayName: post.authorDisplayName,
+                content: post.content,
+                stance: post.stance,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
+                isEdited: post.isEdited,
+                editedAt: post.editedAt,
+                parentId: post.parentId,
+                level: post.level,
+              },
+              discussionTitle,
+              discussionPointTitle
+            );
+          }
+          return p;
+        })
       );
     },
     onPostDeleted: (postId: string) => {
@@ -79,13 +128,45 @@ const DiscussionPage: React.FC = () => {
         prevPosts.map(p => {
           if (p.postId === postId) {
             // Update reaction counts based on the reaction data
-            const updatedReactions = { ...p.reactions };
+            const updatedStatistics = { ...p.statistics };
             if (reactionData.action === 'add') {
-              updatedReactions[reactionData.reactionType] = (updatedReactions[reactionData.reactionType] || 0) + 1;
+              switch (reactionData.reactionType) {
+                case 'like':
+                  updatedStatistics.likeCount = (updatedStatistics.likeCount || 0) + 1;
+                  break;
+                case 'agree':
+                  updatedStatistics.agreeCount = (updatedStatistics.agreeCount || 0) + 1;
+                  break;
+                case 'disagree':
+                  updatedStatistics.disagreeCount = (updatedStatistics.disagreeCount || 0) + 1;
+                  break;
+                case 'insightful':
+                  updatedStatistics.insightfulCount = (updatedStatistics.insightfulCount || 0) + 1;
+                  break;
+                case 'funny':
+                  updatedStatistics.funnyCount = (updatedStatistics.funnyCount || 0) + 1;
+                  break;
+              }
             } else if (reactionData.action === 'remove') {
-              updatedReactions[reactionData.reactionType] = Math.max(0, (updatedReactions[reactionData.reactionType] || 0) - 1);
+              switch (reactionData.reactionType) {
+                case 'like':
+                  updatedStatistics.likeCount = Math.max(0, (updatedStatistics.likeCount || 0) - 1);
+                  break;
+                case 'agree':
+                  updatedStatistics.agreeCount = Math.max(0, (updatedStatistics.agreeCount || 0) - 1);
+                  break;
+                case 'disagree':
+                  updatedStatistics.disagreeCount = Math.max(0, (updatedStatistics.disagreeCount || 0) - 1);
+                  break;
+                case 'insightful':
+                  updatedStatistics.insightfulCount = Math.max(0, (updatedStatistics.insightfulCount || 0) - 1);
+                  break;
+                case 'funny':
+                  updatedStatistics.funnyCount = Math.max(0, (updatedStatistics.funnyCount || 0) - 1);
+                  break;
+              }
             }
-            return { ...p, reactions: updatedReactions };
+            return { ...p, statistics: updatedStatistics };
           }
           return p;
         })
@@ -291,29 +372,29 @@ const DiscussionPage: React.FC = () => {
         authorId: `user_${Math.floor(Math.random() * 5) + 1}`,
         authorDisplayName: `ユーザー${Math.floor(Math.random() * 5) + 1}`,
         authorAvatar: undefined,
-        content: {
-          text: `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`,
-          formatting: {},
-          attachments: []
-        },
+        content: `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`,
         stance: [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][Math.floor(Math.random() * 4)],
-        reactions: {},
-        reactionCounts: {
-          like: Math.floor(Math.random() * 10),
-          agree: Math.floor(Math.random() * 8),
-          disagree: Math.floor(Math.random() * 5),
-          insightful: Math.floor(Math.random() * 3),
-          funny: Math.floor(Math.random() * 2)
-        },
-        replyCount: Math.floor(Math.random() * 5),
+        parentId: undefined,
+        level: 0,
+        attachments: [],
+        isActive: true,
         isEdited: Math.random() > 0.8,
+        editedAt: Math.random() > 0.8 ? new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString() : undefined,
         createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+        statistics: {
+          replyCount: Math.floor(Math.random() * 5),
+          likeCount: Math.floor(Math.random() * 10),
+          agreeCount: Math.floor(Math.random() * 8),
+          disagreeCount: Math.floor(Math.random() * 5),
+          insightfulCount: Math.floor(Math.random() * 3),
+          funnyCount: Math.floor(Math.random() * 2),
+          viewCount: Math.floor(Math.random() * 50) + 10
+        },
+        userReaction: undefined,
         canEdit: Math.random() > 0.7,
         canDelete: Math.random() > 0.8,
-        canModerate: hasPermission('canModerate'),
-        replies: [],
-        parentPost: undefined
+        canReply: true
       }));
 
       setPosts(mockPosts);
@@ -567,12 +648,12 @@ const DiscussionPage: React.FC = () => {
 
                 <PostList
                   posts={posts}
+                  discussionPoints={discussion.points}
                   filters={postFilters}
                   sortOptions={postSort}
                   onFiltersChange={setPostFilters}
                   onSortChange={setPostSort}
                   showFilters={true}
-                  showSort={true}
                 />
               </>
             )}

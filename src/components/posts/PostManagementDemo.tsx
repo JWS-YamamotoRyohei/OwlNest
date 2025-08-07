@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PostList, PostFilters, PostSortOptions } from './PostList';
+import { PostList } from './PostList';
 import { PostThread } from './PostThread';
-import { PostListItem, CreatePostData } from '../../types/post';
+import { PostListItem, CreatePostData, PostSortOptions, PostFilters } from '../../types/post';
 import { DiscussionPoint } from '../../types/discussion';
 import { Stance, ReactionType } from '../../types/common';
 import { TestDataFactory } from '../../utils/testDataFactory';
@@ -22,7 +22,7 @@ export const PostManagementDemo: React.FC = () => {
   useEffect(() => {
     const demoDiscussionPoints = TestDataFactory.createDiscussionPoints(5);
     setDiscussionPoints(demoDiscussionPoints);
-
+    console.log("demoDiscussionPoints",demoDiscussionPoints)
     const demoPosts = TestDataFactory.createPosts(20, {
       discussionId: 'demo-discussion',
       discussionPoints: demoDiscussionPoints,

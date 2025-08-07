@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { DiscussionCategory } from '../../types/common';
 import {
   getAllCategories,
-  getCategoryInfo,
   searchCategories,
 } from '../../constants/categories';
 import './CategoryFilter.css';

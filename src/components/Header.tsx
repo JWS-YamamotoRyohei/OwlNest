@@ -40,13 +40,14 @@ export const Header: FC<HeaderProps> = ({ onButtonClick, onIconClick }) => {
     cursor: "pointer",
     height: "90%",
     position: "relative",
+    fontSize:"100%"
   };
 
   return (
     <header style={style}>
       <img src="/owlnest/logo192.png" alt="logo" style={logo} onClick={onIconClick} />
       <button style={button} onClick={onButtonClick}>
-        Pros &amp; Cons
+        OwlNest
       </button>
     </header>
   );

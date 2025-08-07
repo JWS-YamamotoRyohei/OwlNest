@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigationPreloader } from '../hooks/useNavigationPreloader';
 import './Sidebar.css';
@@ -31,7 +31,7 @@ const sidebarItems: SidebarItem[] = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     const { hasPermission, user } = useAuth();
-    const location = useLocation();
+    // const location = useLocation();
     const { handleLinkHover } = useNavigationPreloader();
 
     const filteredItems = sidebarItems.filter(item => 

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { DiscussionListItem, DiscussionSearchFilters } from '../types/discussion';
 import { DiscussionList } from '../components/discussions/DiscussionList';
 import { DiscussionFilters } from '../components/discussions/DiscussionFilters';
 import { DiscussionSort, DiscussionSortOptions } from '../components/discussions/DiscussionSort';
 import { Breadcrumb } from '../components/navigation/Breadcrumb';
 import { SEO } from '../components/common/SEO';
-import { useAuth } from '../contexts/AuthContext';
 import './DiscussionListPage.css';
+import { DiscussionCategory } from '@/types/common';
 
 const DiscussionListPage: React.FC = () => {
-  const { user } = useAuth();
   
   // State management
   const [discussions, setDiscussions] = useState<DiscussionListItem[]>([]);
@@ -34,7 +32,9 @@ const DiscussionListPage: React.FC = () => {
     ownerId: `user_${Math.floor(Math.random() * 10) + 1}`,
     ownerDisplayName: `ユーザー${Math.floor(Math.random() * 10) + 1}`,
     ownerStance: ['pros', 'cons', 'neutral', 'unknown'][Math.floor(Math.random() * 4)] as any,
-    categories: ['politics', 'economy', 'society'][Math.floor(Math.random() * 3)] as any,
+    categories:  [
+      ['politics', 'economy', 'society'][Math.floor(Math.random() * 3)]
+    ] as DiscussionCategory[],
     tags: [`タグ${id}`, `関連${id}`],
     isActive: Math.random() > 0.2,
     isLocked: Math.random() > 0.9,
@@ -70,7 +70,7 @@ const DiscussionListPage: React.FC = () => {
       const newDiscussions = Array.from({ length: pageSize }, (_, i) => 
         generateMockDiscussion(startId + i)
       );
-      
+      console.log("newDiscussions!",newDiscussions)
       if (reset) {
         setDiscussions(newDiscussions);
         setCurrentPage(2);

@@ -3,16 +3,9 @@ import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi, expect } from 'vitest';
-import { T } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js';
-import { ok } from 'assert';
-import { getItem } from 'cdk/lambda/shared/dynamoOptimizations';
-import { resolve } from 'dns';
-import { json } from 'stream/consumers';
-// Import contexts - we'll create mock versions for testing
-// import { AuthProvider } from '../contexts/AuthContext';
-// import { NotificationProvider } from '../contexts/NotificationContext';
-// import { WebSocketProvider } from '../contexts/WebSocketContext';
-// import { FollowProvider } from '../contexts/FollowContext';
+import { DiscussionCategory, Stance } from '@/types/common';
+import { DiscussionListItem } from '@/types';
+import { User, UserRole } from '@/types/auth';
 
 // Mock providers for testing
 const MockAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
@@ -57,11 +50,13 @@ export const renderWithProviders = (
 };
 
 // Mock data factories
-export const createMockUser = (overrides = {}) => ({
-  id: 'user-1',
+export const createMockUser = (overrides = {}) :User=> ({
+  userId: 'user-1',
   email: 'test@example.com',
   displayName: 'Test User',
-  role: 'viewer',
+  givenName: "givenName-mock",
+  familyName: "givenName-mock",
+  role: UserRole.VIEWER,
   bio: 'Test user bio',
   avatarUrl: '',
   createdAt: new Date().toISOString(),
@@ -82,18 +77,33 @@ export const createMockUser = (overrides = {}) => ({
   ...overrides,
 });
 
-export const createMockDiscussion = (overrides = {}) => ({
-  id: 'discussion-1',
+export const createMockDiscussion = (overrides = {}):DiscussionListItem => ({
+  discussionId: 'discussion-1',
   title: 'Test Discussion',
   description: 'This is a test discussion',
-  category: 'general',
-  createdBy: 'user-1',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  postCount: 0,
-  participantCount: 1,
+  ownerId:"user-1",
+  ownerDisplayName:"",
+  ownerStance:Stance.NEUTRAL,
+  categories: [DiscussionCategory.POLITICS],
   tags: ['test'],
   isActive: true,
+  isLocked: false,
+  isPinned: false,
+  isFeatured: false,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  lastActivityAt: "",
+  statistics: {
+    participantCount: 1,
+    postCount: 9,
+    prosCount: 0,
+    consCount: 0,
+    neutralCount:0,
+    followersCount: 0,
+  },
+
+  // postCount: 0,
+  // participantCount: 1,
   ...overrides,
 });
 

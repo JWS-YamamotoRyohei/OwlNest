@@ -59,7 +59,7 @@ export const PostThread: React.FC<PostThreadProps> = ({
       
       // Find direct replies to this post
       replies
-        .filter(reply => reply.replyToId === post.postId)
+        .filter(reply => reply.parentId === post.postId)
         .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
         .forEach(reply => {
           if (level < maxLevel) {

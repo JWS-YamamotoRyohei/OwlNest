@@ -360,7 +360,8 @@ const DiscussionPage: React.FC = () => {
   // Load posts for selected point
   const loadPosts = useCallback(async () => {
     if (!selectedPointId || !discussion) return;
-
+    const replyCount=Math.floor(Math.random() * 5)
+    const text = `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`;
     try {
       // Mock posts data
       const mockPosts: PostListItem[] = Array.from({ length: 10 }, (_, i) => ({
@@ -372,8 +373,13 @@ const DiscussionPage: React.FC = () => {
         authorId: `user_${Math.floor(Math.random() * 5) + 1}`,
         authorDisplayName: `ユーザー${Math.floor(Math.random() * 5) + 1}`,
         authorAvatar: undefined,
-        content: `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`,
-        stance: [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][Math.floor(Math.random() * 4)],
+        content:  {
+          text,
+          preview: text.slice(0, 100), // 任意でプレビュー生成
+          hasAttachments: 0,
+          hasLinks: /(https?:\/\/[^\s]+)/g.test(text) ? 1 : 0,
+          attachmentCount: 0,
+        },stance: [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][Math.floor(Math.random() * 4)],
         parentId: undefined,
         level: 0,
         attachments: [],
@@ -383,7 +389,7 @@ const DiscussionPage: React.FC = () => {
         createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
         statistics: {
-          replyCount: Math.floor(Math.random() * 5),
+          replyCount:replyCount,
           likeCount: Math.floor(Math.random() * 10),
           agreeCount: Math.floor(Math.random() * 8),
           disagreeCount: Math.floor(Math.random() * 5),
@@ -391,6 +397,7 @@ const DiscussionPage: React.FC = () => {
           funnyCount: Math.floor(Math.random() * 2),
           viewCount: Math.floor(Math.random() * 50) + 10
         },
+        replyCount:replyCount,
         userReaction: undefined,
         canEdit: Math.random() > 0.7,
         canDelete: Math.random() > 0.8,
@@ -647,6 +654,7 @@ const DiscussionPage: React.FC = () => {
                 />
 
                 <PostList
+                 discussionId={discussion.discussionId}
                   posts={posts}
                   discussionPoints={discussion.points}
                   filters={postFilters}

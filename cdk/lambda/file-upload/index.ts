@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, UpdateCommand, DeleteCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
@@ -21,18 +21,18 @@ const ALLOWED_FILE_TYPES = {
   'image/png': { extension: 'png', maxSize: 10 * 1024 * 1024 },
   'image/gif': { extension: 'gif', maxSize: 5 * 1024 * 1024 }, // 5MB
   'image/webp': { extension: 'webp', maxSize: 10 * 1024 * 1024 },
-  
+
   // Documents
   'application/pdf': { extension: 'pdf', maxSize: 20 * 1024 * 1024 }, // 20MB
   'text/plain': { extension: 'txt', maxSize: 1 * 1024 * 1024 }, // 1MB
   'application/msword': { extension: 'doc', maxSize: 10 * 1024 * 1024 },
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { extension: 'docx', maxSize: 10 * 1024 * 1024 },
-  
+
   // Audio
   'audio/mpeg': { extension: 'mp3', maxSize: 50 * 1024 * 1024 }, // 50MB
   'audio/wav': { extension: 'wav', maxSize: 50 * 1024 * 1024 },
   'audio/ogg': { extension: 'ogg', maxSize: 50 * 1024 * 1024 },
-  
+
   // Video
   'video/mp4': { extension: 'mp4', maxSize: 100 * 1024 * 1024 }, // 100MB
   'video/webm': { extension: 'webm', maxSize: 100 * 1024 * 1024 },
@@ -61,7 +61,7 @@ interface FileMetadata {
   isPublic: boolean;
   status: 'uploading' | 'completed' | 'failed' | 'deleted';
 }
-
+type AllowedContentType = keyof typeof ALLOWED_FILE_TYPES;
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
@@ -85,6 +85,8 @@ export const handler = async (
         body: JSON.stringify({ error: 'Unauthorized' }),
       };
     }
+
+
 
     switch (httpMethod) {
       case 'OPTIONS':
@@ -134,7 +136,7 @@ export const handler = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),
@@ -158,24 +160,33 @@ const handleGetPresignedUrl = async (
 
     const request: PresignedUrlRequest = JSON.parse(body);
     const { filename, contentType, size, discussionId, postId } = request;
-
+    if (!(contentType in ALLOWED_FILE_TYPES)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({
+          error: `File type ${contentType} is not allowed`,
+          allowedTypes: Object.keys(ALLOWED_FILE_TYPES)
+        }),
+      };
+    }
     // Validate required fields
     if (!filename || !contentType || !size) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ 
-          error: 'Missing required fields: filename, contentType, size' 
+        body: JSON.stringify({
+          error: 'Missing required fields: filename, contentType, size'
         }),
       };
     }
 
     // Validate file type
-    if (!ALLOWED_FILE_TYPES[contentType]) {
+    if (!ALLOWED_FILE_TYPES[contentType as AllowedContentType]) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           error: `File type ${contentType} is not allowed`,
           allowedTypes: Object.keys(ALLOWED_FILE_TYPES)
         }),
@@ -183,12 +194,12 @@ const handleGetPresignedUrl = async (
     }
 
     // Validate file size
-    const maxSize = ALLOWED_FILE_TYPES[contentType].maxSize;
+    const maxSize = ALLOWED_FILE_TYPES[contentType as AllowedContentType].maxSize;
     if (size > maxSize) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           error: `File size ${size} exceeds maximum allowed size ${maxSize}`,
           maxSize
         }),
@@ -198,7 +209,7 @@ const handleGetPresignedUrl = async (
     // Generate unique file ID and S3 key
     const fileId = uuidv4();
     const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const extension = ALLOWED_FILE_TYPES[contentType].extension;
+    const extension = ALLOWED_FILE_TYPES[contentType as AllowedContentType].extension;
     const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
     const s3Key = `uploads/${timestamp}/${userId}/${fileId}_${sanitizedFilename}`;
 
@@ -217,7 +228,7 @@ const handleGetPresignedUrl = async (
       },
     });
 
-    const presignedUrl = await getSignedUrl(s3Client, putCommand, { 
+    const presignedUrl = await getSignedUrl(s3Client, putCommand, {
       expiresIn: 3600 // 1 hour
     });
 
@@ -272,7 +283,7 @@ const handleGetPresignedUrl = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to generate presigned URL',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),
@@ -344,7 +355,7 @@ const handleCompleteUpload = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to complete upload',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),
@@ -411,7 +422,7 @@ const handleGetFileInfo = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to get file info',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),
@@ -496,7 +507,7 @@ const handleDeleteFile = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to delete file',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),

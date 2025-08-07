@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Post, PostListItem, PostReaction } from '../../types/post';
+import { PostListItem } from '../../types/post';
 import { Stance, ReactionType } from '../../types/common';
 import { useAuth } from '../../contexts/AuthContext';
 import { PostReportDialog } from '../moderation/PostReportDialog';
@@ -121,7 +121,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     if (diffMins < 60) return `${diffMins}分前`;
     if (diffHours < 24) return `${diffHours}時間前`;
     if (diffDays < 7) return `${diffDays}日前`;
-    
+
     return date.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'short',
@@ -221,12 +221,13 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
 
   const shouldTruncateContent = post.content.text.length > 300;
-  const displayContent = showFullContent || !shouldTruncateContent 
-    ? post.content.text 
-    : post.content.text.substring(0, 300) + '...';
+  const displayContent =
+    showFullContent || !shouldTruncateContent
+      ? post.content.text
+      : post.content.text.substring(0, 300) + '...';
 
   return (
-    <article 
+    <article
       className={`post-card ${className} ${isReply ? 'post-card--reply' : ''}`}
       style={{ '--reply-level': level } as React.CSSProperties}
     >
@@ -241,9 +242,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             />
           )}
           <div className="post-card__author-info">
-            <div className="post-card__author-name">
-              {post.authorDisplayName}
-            </div>
+            <div className="post-card__author-name">{post.authorDisplayName}</div>
             <div className="post-card__meta">
               <time className="post-card__timestamp" dateTime={post.createdAt}>
                 {formatDate(post.createdAt)}
@@ -258,7 +257,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
 
         <div className="post-card__stance">
-          <span 
+          <span
             className="post-card__stance-badge"
             style={{ backgroundColor: getStanceColor(post.stance) }}
           >
@@ -275,10 +274,8 @@ export const PostCard: React.FC<PostCardProps> = ({
 
       {/* Post Content */}
       <div className="post-card__content">
-        <div className="post-card__text">
-          {displayContent}
-        </div>
-        
+        <div className="post-card__text">{displayContent}</div>
+
         {shouldTruncateContent && (
           <button
             type="button"
@@ -290,7 +287,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         )}
 
         {/* File Attachments */}
-        {post.content.hasAttachments && (
+        {post.attachments && (
           <div className="post-card__attachments">
             <FileAttachmentDisplay
               attachments={[]} // TODO: Load actual attachments
@@ -307,9 +304,11 @@ export const PostCard: React.FC<PostCardProps> = ({
         <footer className="post-card__actions">
           {/* Reactions */}
           <div className="post-card__reactions">
-            {Object.entries(ReactionType).map(([key, reactionType]) => {
-              const count = post.reactions[reactionType] || 0;
-              const isUserReaction = post.reactions.userReaction === reactionType;
+            {/* {Object.entries(ReactionType).map(([key, reactionType]) => {
+              const count = post?.userReaction[reactionType] || 0;
+              const count = post?.statistics?.[reactionType.toLowerCase() + 'Count'] || 0;
+
+              const isUserReaction = post.userReaction === reactionType;
               const isLoading = isReacting === reactionType;
 
               return (
@@ -329,6 +328,34 @@ export const PostCard: React.FC<PostCardProps> = ({
                   {count > 0 && (
                     <span className="post-card__reaction-count">{count}</span>
                   )}
+                </button>
+              );
+            })} */}
+            {Object.entries(ReactionType).map(([key, reactionType]) => {
+              const reactionKeyMap: Record<ReactionType, keyof PostListItem['statistics']> = {
+                [ReactionType.LIKE]: 'likeCount',
+                [ReactionType.AGREE]: 'agreeCount',
+                [ReactionType.DISAGREE]: 'disagreeCount',
+                [ReactionType.INSIGHTFUL]: 'insightfulCount',
+                [ReactionType.FUNNY]: 'funnyCount',
+              };
+              const count = post?.statistics?.[reactionKeyMap[reactionType]] || 0;
+              const isUserReaction = post.userReaction === reactionType;
+              const isLoading = isReacting === reactionType;
+
+              return (
+                <button
+                  key={reactionType}
+                  type="button"
+                  className={`post-card__reaction ${
+                    isUserReaction ? 'post-card__reaction--active' : ''
+                  } ${isLoading ? 'post-card__reaction--loading' : ''}`}
+                  onClick={() => handleReaction(reactionType)}
+                  disabled={!canReact || isLoading}
+                  title={`${key} (${count})`}
+                >
+                  <span className="post-card__reaction-icon">{getReactionIcon(reactionType)}</span>
+                  {count > 0 && <span className="post-card__reaction-count">{count}</span>}
                 </button>
               );
             })}

@@ -120,11 +120,11 @@ export const PostCreationDemo: React.FC = () => {
                   <div className="post-creation-demo__post-content">
                     {post.content.text}
                   </div>
-                  {post.content.attachments && post.content.attachments.length > 0 && (
+                  {post.attachments && post.attachments.length > 0 && (
                     <div className="post-creation-demo__post-attachments">
                       <strong>添付ファイル:</strong>
                       <ul>
-                        {post.content.attachments.map(attachment => (
+                        {post.attachments.map(attachment => (
                           <li key={attachment.id}>
                             {attachment.filename} ({Math.round(attachment.size / 1024)}KB)
                           </li>

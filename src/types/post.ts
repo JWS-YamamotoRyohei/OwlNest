@@ -102,16 +102,22 @@ export interface PostListItem {
   authorId: string;
   authorDisplayName: string;
   authorAvatar?: string;
-  content: string;
+  content: {
+        text: string,
+        preview: string,
+        hasAttachments: number,
+        hasLinks: number,
+        attachmentCount: number,
+      };
   stance: Stance;
   parentId?: string;
   level: number;
   attachments?: FileAttachment[];
   isActive: boolean;
   isEdited: boolean;
-  editedAt?: string;
   createdAt: string;
   updatedAt: string;
+  replyCount:number;
   statistics: {
     replyCount: number;
     likeCount: number;
@@ -121,10 +127,12 @@ export interface PostListItem {
     funnyCount: number;
     viewCount: number;
   };
+  editedAt?: string;
   userReaction?: ReactionType;
   canEdit?: boolean;
   canDelete?: boolean;
   canReply?: boolean;
+  canReact?:boolean
 }
 
 /**
@@ -133,10 +141,17 @@ export interface PostListItem {
 export interface CreatePostData {
   discussionId: string;
   discussionPointId: string;
-  content: string;
+  content: {
+    text: string,
+    preview: string,
+    hasAttachments: number,
+    hasLinks: number,
+    attachmentCount: number,
+  };
+  attachments: FileAttachment[];
   stance: Stance;
   parentId?: string;
-  attachments?: FileAttachment[];
+  replyToId:string
 }
 
 /**

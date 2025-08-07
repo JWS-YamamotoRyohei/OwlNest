@@ -1,23 +1,23 @@
 // Post management Lambda function
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { 
-  DynamoDBDocumentClient, 
-  GetCommand, 
-  PutCommand, 
-  UpdateCommand, 
-  DeleteCommand, 
-  QueryCommand, 
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand,
+  UpdateCommand,
+  DeleteCommand,
+  QueryCommand,
   ScanCommand,
   TransactWriteCommand
 } from '@aws-sdk/lib-dynamodb';
-import { 
+import {
   CognitoIdentityProviderClient,
-  GetUserCommand 
+  GetUserCommand
 } from '@aws-sdk/client-cognito-identity-provider';
-import { 
-  ApiGatewayManagementApiClient, 
-  PostToConnectionCommand 
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand
 } from '@aws-sdk/client-apigatewaymanagementapi';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -102,7 +102,7 @@ export const handler = async (
   };
 
   try {
-    const { httpMethod, path, body, pathParameters, queryStringParameters, headers: requestHeaders } = event;
+    const { httpMethod, body, pathParameters, queryStringParameters, headers: requestHeaders } = event;
 
     // Handle CORS preflight
     if (httpMethod === 'OPTIONS') {
@@ -137,7 +137,7 @@ export const handler = async (
         if (pathParameters?.proxy) {
           const pathParts = pathParameters.proxy.split('/');
           const postId = pathParts[0];
-          
+
           if (pathParts.length === 1) {
             return handleGetPost(postId, currentUser, headers);
           } else if (pathParts[1] === 'reactions') {
@@ -146,7 +146,17 @@ export const handler = async (
             return handleGetPostReplies(postId, currentUser, headers);
           }
         } else {
-          return handleGetPosts(queryStringParameters, currentUser, headers);
+          const sanitizedQueryParams: { [key: string]: string } | null =
+            queryStringParameters
+              ? Object.entries(queryStringParameters).reduce((acc, [key, value]) => {
+                if (value !== undefined) {
+                  acc[key] = value;
+                }
+                return acc;
+              }, {} as { [key: string]: string })
+              : null;
+
+          return handleGetPosts(sanitizedQueryParams, currentUser, headers);
         }
         break;
 
@@ -158,7 +168,7 @@ export const handler = async (
             body: JSON.stringify({ error: 'Authentication required' }),
           };
         }
-        
+
         if (currentUser.role === UserRole.VIEWER) {
           return {
             statusCode: 403,
@@ -170,7 +180,7 @@ export const handler = async (
         if (pathParameters?.proxy) {
           const pathParts = pathParameters.proxy.split('/');
           const postId = pathParts[0];
-          
+
           if (pathParts[1] === 'reactions') {
             return handleAddReaction(postId, body, currentUser, headers);
           }
@@ -206,7 +216,7 @@ export const handler = async (
         if (pathParameters?.proxy) {
           const pathParts = pathParameters.proxy.split('/');
           const postId = pathParts[0];
-          
+
           if (pathParts[1] === 'reactions') {
             return handleRemoveReaction(postId, currentUser, headers);
           } else {
@@ -233,7 +243,7 @@ export const handler = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Internal server error',
         message: error instanceof Error ? error.message : 'Unknown error'
       }),
@@ -260,7 +270,7 @@ const handleGetPosts = async (
     };
 
     let queryCommand;
-    
+
     if (filters.discussionId && filters.discussionPointId) {
       // Query posts by discussion point using GSI1
       queryCommand = new QueryCommand({
@@ -345,7 +355,7 @@ const handleGetPosts = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to get posts',
         message: error.message
       }),
@@ -370,7 +380,7 @@ const handleGetPost = async (
     });
 
     const result = await dynamoClient.send(scanCommand);
-    
+
     if (!result.Items || result.Items.length === 0) {
       return {
         statusCode: 404,
@@ -402,7 +412,7 @@ const handleGetPost = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to get post',
         message: error.message
       }),
@@ -427,7 +437,7 @@ const handleGetPostReactions = async (
     });
 
     const postResult = await dynamoClient.send(scanCommand);
-    
+
     if (!postResult.Items || postResult.Items.length === 0) {
       return {
         statusCode: 404,
@@ -462,7 +472,7 @@ const handleGetPostReactions = async (
 
     // Group reactions by type
     const reactionSummary: Record<string, { count: number; users: string[] }> = {};
-    
+
     reactions.forEach(reaction => {
       const type = reaction.reactionType;
       if (!reactionSummary[type]) {
@@ -485,7 +495,7 @@ const handleGetPostReactions = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to get post reactions',
         message: error.message
       }),
@@ -510,7 +520,7 @@ const handleGetPostReplies = async (
     });
 
     const postResult = await dynamoClient.send(scanCommand);
-    
+
     if (!postResult.Items || postResult.Items.length === 0) {
       return {
         statusCode: 404,
@@ -565,7 +575,7 @@ const handleGetPostReplies = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to get post replies',
         message: error.message
       }),
@@ -711,7 +721,7 @@ const handleCreatePost = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to create post',
         message: error.message
       }),
@@ -745,7 +755,7 @@ const handleUpdatePost = async (
     });
 
     const result = await dynamoClient.send(scanCommand);
-    
+
     if (!result.Items || result.Items.length === 0) {
       return {
         statusCode: 404,
@@ -840,7 +850,7 @@ const handleUpdatePost = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to update post',
         message: error.message
       }),
@@ -865,7 +875,7 @@ const handleDeletePost = async (
     });
 
     const result = await dynamoClient.send(scanCommand);
-    
+
     if (!result.Items || result.Items.length === 0) {
       return {
         statusCode: 404,
@@ -879,7 +889,7 @@ const handleDeletePost = async (
     // Check ownership, discussion ownership, or admin permission
     const isAuthor = post.authorId === currentUser.userId;
     const isAdmin = currentUser.role === UserRole.ADMIN;
-    
+
     // Check if user is discussion owner
     const discussionOwnerCheck = await checkDiscussionOwnership(post.discussionId, currentUser.userId);
     const isDiscussionOwner = discussionOwnerCheck.isOwner;
@@ -958,7 +968,7 @@ const handleDeletePost = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to delete post',
         message: error.message
       }),
@@ -1002,7 +1012,7 @@ const handleAddReaction = async (
     });
 
     const result = await dynamoClient.send(scanCommand);
-    
+
     if (!result.Items || result.Items.length === 0) {
       return {
         statusCode: 404,
@@ -1065,7 +1075,7 @@ const handleAddReaction = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to add reaction',
         message: error.message
       }),
@@ -1103,7 +1113,7 @@ const handleRemoveReaction = async (
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         error: 'Failed to remove reaction',
         message: error.message
       }),
@@ -1131,10 +1141,10 @@ const hasPostAccess = async (post: any, currentUser: any): Promise<boolean> => {
   // Check if post is hidden and user is not the author, discussion owner, or admin
   if (post.moderation?.isHidden) {
     if (!currentUser) return false;
-    
+
     const isAuthor = post.authorId === currentUser.userId;
     const isAdmin = currentUser.role === UserRole.ADMIN;
-    
+
     if (!isAuthor && !isAdmin) {
       // Check if user is discussion owner
       const discussionOwnerCheck = await checkDiscussionOwnership(post.discussionId, currentUser.userId);
@@ -1163,7 +1173,7 @@ const hasDiscussionAccess = async (discussionId: string, currentUser: any): Prom
   });
 
   const result = await dynamoClient.send(getCommand);
-  
+
   if (!result.Item) {
     return false;
   }
@@ -1204,7 +1214,7 @@ const checkDiscussionAccess = async (discussionId: string, currentUser: any) => 
   });
 
   const result = await dynamoClient.send(getCommand);
-  
+
   if (!result.Item) {
     return {
       hasAccess: false,
@@ -1214,7 +1224,7 @@ const checkDiscussionAccess = async (discussionId: string, currentUser: any) => 
   }
 
   const hasAccess = await hasDiscussionAccess(discussionId, currentUser);
-  
+
   if (!hasAccess) {
     return {
       hasAccess: false,
@@ -1225,6 +1235,7 @@ const checkDiscussionAccess = async (discussionId: string, currentUser: any) => 
 
   return {
     hasAccess: true,
+    statusCode: 200,
     discussion: result.Item,
   };
 };
@@ -1239,7 +1250,7 @@ const checkDiscussionOwnership = async (discussionId: string, userId: string) =>
   });
 
   const result = await dynamoClient.send(getCommand);
-  
+
   return {
     isOwner: result.Item?.ownerId === userId,
     discussion: result.Item,
@@ -1256,7 +1267,7 @@ const verifyDiscussionPoint = async (discussionId: string, pointId: string) => {
   });
 
   const result = await dynamoClient.send(getCommand);
-  
+
   return {
     exists: !!result.Item,
     point: result.Item,
@@ -1273,7 +1284,7 @@ const verifyPostExists = async (discussionId: string, postId: string) => {
   });
 
   const result = await dynamoClient.send(getCommand);
-  
+
   return {
     exists: !!result.Item,
     post: result.Item,
@@ -1348,7 +1359,7 @@ const broadcastToDiscussion = async (
       return;
     }
 
-    const connections = result.Items.filter(item => 
+    const connections = result.Items.filter(item =>
       item.connectionId !== excludeConnectionId
     );
 
@@ -1363,7 +1374,7 @@ const broadcastToDiscussion = async (
         }));
       } catch (error: any) {
         console.error(`Failed to send to connection ${connection.connectionId}:`, error);
-        
+
         // If connection is stale, clean it up
         if (error.name === 'GoneException') {
           await cleanupStaleConnection(connection.connectionId, discussionId);

@@ -95,7 +95,7 @@ export const PostList: React.FC<PostListProps> = ({
       filtered = filtered.filter(post => {
         // Check if content contains URLs
         const urlRegex = /(https?:\/\/[^\s]+)/g;
-        return urlRegex.test(post.content);
+        return urlRegex.test(post.content.text);
       });
     }
 
@@ -103,7 +103,7 @@ export const PostList: React.FC<PostListProps> = ({
       const searchLower = filters.searchText.toLowerCase();
       filtered = filtered.filter(
         post =>
-          post.content.toLowerCase().includes(searchLower) ||
+          post.content.text.toLowerCase().includes(searchLower) ||
           post.authorDisplayName.toLowerCase().includes(searchLower) ||
           post.discussionPointTitle.toLowerCase().includes(searchLower)
       );

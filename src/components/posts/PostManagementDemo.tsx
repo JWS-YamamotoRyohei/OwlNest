@@ -45,7 +45,10 @@ export const PostManagementDemo: React.FC = () => {
     const newPost = TestDataFactory.createPost({
       discussionId: data.discussionId,
       discussionPointId: data.discussionPointId,
-      content: data.content,
+      content: {
+        text: data.content.text,
+        attachments: [], // または data.attachments があればそれを使ってください
+      },
       stance: data.stance,
       replyToId: data.replyToId,
     });
@@ -56,35 +59,52 @@ export const PostManagementDemo: React.FC = () => {
   const handleReactToPost = async (postId: string, reactionType: ReactionType): Promise<void> => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
-
-    setPosts(prev => prev.map(post => {
-      if (post.postId === postId) {
-        const currentReaction = post.reactions.userReaction;
-        const newReactions = { ...post.reactions };
-
-        // Remove previous reaction
+  
+    // マッピング：ReactionType → statisticsのキー
+    const reactionCountKeyMap: Record<ReactionType, keyof PostListItem['statistics']> = {
+      [ReactionType.LIKE]: 'likeCount',
+      [ReactionType.AGREE]: 'agreeCount',
+      [ReactionType.DISAGREE]: 'disagreeCount',
+      [ReactionType.INSIGHTFUL]: 'insightfulCount',
+      [ReactionType.FUNNY]: 'funnyCount',
+    };
+  
+    setPosts(prev =>
+      prev.map(post => {
+        if (post.postId !== postId) return post;
+  
+        const currentReaction = post.userReaction;
+        const newStatistics = { ...post.statistics };
+  
+        // 以前のリアクションを減算
         if (currentReaction) {
-          newReactions[currentReaction] = Math.max(0, newReactions[currentReaction] - 1);
-          newReactions.totalCount = Math.max(0, newReactions.totalCount - 1);
+          const key = reactionCountKeyMap[currentReaction];
+          newStatistics[key] = Math.max(0, newStatistics[key] - 1);
         }
-
-        // Add new reaction if different
-        if (currentReaction !== reactionType) {
-          newReactions[reactionType] = (newReactions[reactionType] || 0) + 1;
-          newReactions.totalCount += 1;
-          newReactions.userReaction = reactionType;
+  
+        // リアクションのトグル処理
+        if (currentReaction === reactionType) {
+          // 同じリアクションをもう一度押した＝取り消し
+          return {
+            ...post,
+            statistics: newStatistics,
+            userReaction: undefined,
+          };
         } else {
-          newReactions.userReaction = undefined;
+          // 新しいリアクションを追加
+          const key = reactionCountKeyMap[reactionType];
+          newStatistics[key] = (newStatistics[key] || 0) + 1;
+  
+          return {
+            ...post,
+            statistics: newStatistics,
+            userReaction: reactionType,
+          };
         }
-
-        return {
-          ...post,
-          reactions: newReactions,
-        };
-      }
-      return post;
-    }));
+      })
+    );
   };
+  
 
   const handleEditPost = (postId: string) => {
     alert(`編集機能は実装予定です。投稿ID: ${postId}`);
@@ -147,25 +167,32 @@ export const PostManagementDemo: React.FC = () => {
     console.log(`投稿を復元しました。投稿ID: ${postId}`);
   };
 
-  const handleViewThread = (post: PostListItem) => {
-    setSelectedPost(post);
-    setViewMode('thread');
-  };
-
   const getRepliesForPost = (postId: string): PostListItem[] => {
-    return posts.filter(post => post.replyToId === postId);
+    return posts.filter(post => post.parentId === postId);
   };
 
   const getPostStats = () => {
     const totalPosts = posts.length;
+  
     const stanceDistribution = posts.reduce((acc, post) => {
       acc[post.stance] = (acc[post.stance] || 0) + 1;
       return acc;
     }, {} as Record<Stance, number>);
-
-    const totalReactions = posts.reduce((sum, post) => sum + post.reactions.totalCount, 0);
+  
+    const totalReactions = posts.reduce((sum, post) => {
+      const stats = post.statistics;
+      return (
+        sum +
+        stats.likeCount +
+        stats.agreeCount +
+        stats.disagreeCount +
+        stats.insightfulCount +
+        stats.funnyCount
+      );
+    }, 0);
+  
     const totalReplies = posts.reduce((sum, post) => sum + post.replyCount, 0);
-
+  
     return {
       totalPosts,
       stanceDistribution,
@@ -173,6 +200,7 @@ export const PostManagementDemo: React.FC = () => {
       totalReplies,
     };
   };
+  
 
   const stats = getPostStats();
 

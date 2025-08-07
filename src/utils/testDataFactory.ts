@@ -583,6 +583,7 @@ export class TestDataFactory {
   /**
    * Create a single post
    */
+  
   static createPost(data: {
     discussionId: string;
     discussionPointId: string;
@@ -595,9 +596,12 @@ export class TestDataFactory {
     replyToId?: string;
   }): PostListItem {
     const postId = `post_${Date.now()}_${this.randomString(6)}`;
-    const authorId = 'user_1'; // Current user
+    const authorId = 'user_1';
     const authorDisplayName = '現在のユーザー';
-    
+    const createdAt = new Date().toISOString();
+  
+    const attachmentCount = data.content.attachments?.length || 0;
+  
     return {
       postId,
       discussionId: data.discussionId,
@@ -610,32 +614,37 @@ export class TestDataFactory {
       content: {
         text: data.content.text,
         preview: data.content.text.substring(0, 100) + (data.content.text.length > 100 ? '...' : ''),
-        hasAttachments: (data.content.attachments?.length || 0) > 0,
-        hasLinks: data.content.text.includes('http'),
-        attachmentCount: data.content.attachments?.length || 0,
+        hasAttachments: attachmentCount > 0 ? 1 : 0,
+        hasLinks: data.content.text.includes('http') ? 1 : 0,
+        attachmentCount,
       },
       stance: data.stance,
-      replyToId: data.replyToId,
-      threadLevel: data.replyToId ? 1 : 0,
-      reactions: {
-        [ReactionType.LIKE]: 0,
-        [ReactionType.AGREE]: 0,
-        [ReactionType.DISAGREE]: 0,
-        [ReactionType.INSIGHTFUL]: 0,
-        [ReactionType.FUNNY]: 0,
-        totalCount: 0,
-        userReaction: undefined,
-      },
-      replyCount: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      parentId: data.replyToId,
+      level: data.replyToId ? 1 : 0,
+      attachments: data.content.attachments || [],
+      isActive: true,
       isEdited: false,
+      createdAt,
+      updatedAt: createdAt,
+      replyCount: 0,
+      statistics: {
+        replyCount: 0,
+        likeCount: 0,
+        agreeCount: 0,
+        disagreeCount: 0,
+        insightfulCount: 0,
+        funnyCount: 0,
+        viewCount: 0,
+      },
+      editedAt: undefined,
+      userReaction: undefined,
       canEdit: true,
       canDelete: true,
-      canReact: true,
       canReply: true,
+      canReact: true,
     };
   }
+  
 
   /**
    * Generate random post content

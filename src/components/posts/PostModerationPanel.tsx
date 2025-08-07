@@ -311,7 +311,11 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">リアクション数:</span>
                 <span className="post-moderation-panel__info-value">
-                  {post.reactions.totalCount}
+                {post.statistics.likeCount +
+          post.statistics.agreeCount +
+          post.statistics.disagreeCount +
+          post.statistics.insightfulCount +
+          post.statistics.funnyCount}
                 </span>
               </div>
               <div className="post-moderation-panel__info-item">

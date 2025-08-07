@@ -5,6 +5,7 @@ import { reportService } from '../../../services/reportService';
 import { useAuth } from '../../../contexts/AuthContext';
 import { PostListItem } from '../../../types/post';
 import { ReactionType, Stance } from '../../../types/common';
+import { UserRole } from '@/types/auth';
 
 // Mock dependencies
 jest.mock('../../../services/reportService');
@@ -19,20 +20,20 @@ const mockPost: PostListItem = {
   discussionPointId: 'test-point-1',
   authorId: 'test-author',
   authorDisplayName: 'Test Author',
-  content: {
-    text: 'This is a test post content',
-    preview: 'This is a test post content',
-    formatting: {},
-    attachments: [],
-  },
+  // content: {
+  //   text: 'This is a test post content',
+  //   preview: 'This is a test post content',
+  //   formatting: {},
+  //   attachments: [],
+  // },
   stance: Stance.PROS,
-  reactions: {},
-  reactionCounts: {
-    [ReactionType.LIKE]: 5,
-    [ReactionType.DISLIKE]: 1,
-    [ReactionType.AGREE]: 3,
-    [ReactionType.DISAGREE]: 2,
-  },
+  // reactions: {},
+  // reactionCounts: {
+  //   [ReactionType.LIKE]: 5,
+  //   [ReactionType.DISLIKE]: 1,
+  //   [ReactionType.AGREE]: 3,
+  //   [ReactionType.DISAGREE]: 2,
+  // },
   totalReactions: 11,
   replyCount: 2,
   moderation: {
@@ -50,7 +51,25 @@ const mockPost: PostListItem = {
 const mockUser = {
   userId: 'test-user',
   displayName: 'Test User',
-  role: 'contributor',
+  role: UserRole.VIEWER,
+  email: 'test@example.com',
+  givenName: "givenName-mock",
+  familyName: "givenName-mock",
+  avatarUrl: '',
+  preferences: {
+    notifications: {
+      email: true,
+      push: false,
+      mentions: true,
+      replies: true,
+      follows: true,
+    },
+    privacy: {
+      profileVisible: true,
+      emailVisible: false,
+    },
+  },
+  bio: 'Test user bio',
 };
 
 describe('PostReportDialog', () => {

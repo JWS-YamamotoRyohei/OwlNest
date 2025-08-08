@@ -1,23 +1,24 @@
-# デプロイメントガイド
+# CI/CD・デプロイメントガイド
 
-> OwlNestプロジェクトの本番環境へのデプロイ手順
+> OwlNestプロジェクトのCI/CDパイプライン設定と本番環境デプロイの統合ガイド
 
 ## 📋 目次
 
-1. [デプロイメント概要](#デプロイメント概要)
-2. [環境構成](#環境構成)
-3. [事前準備](#事前準備)
-4. [本番デプロイ手順](#本番デプロイ手順)
-5. [ロールバック手順](#ロールバック手順)
-6. [監視・運用](#監視運用)
-7. [トラブルシューティング](#トラブルシューティング)
+1. [概要](#概要)
+2. [CI/CDアーキテクチャ](#cicdアーキテクチャ)
+3. [GitHub Actions セットアップ](#github-actions-セットアップ)
+4. [AWS CodePipeline セットアップ](#aws-codepipeline-セットアップ)
+5. [環境構成](#環境構成)
+6. [本番デプロイ手順](#本番デプロイ手順)
+7. [ロールバック手順](#ロールバック手順)
+8. [監視・運用](#監視運用)
+9. [トラブルシューティング](#トラブルシューティング)
 
 ---
 
-## デプロイメント概要
+## 概要
 
-### デプロイメント戦略
-OwlNestは**Blue-Green デプロイメント**を採用し、ダウンタイムゼロでの本番リリースを実現します。
+OwlNestは**Blue-Green デプロイメント**を採用し、ダウンタイムゼロでの本番リリースを実現します。CI/CDパイプラインは GitHub Actions と AWS CodePipeline の2つのソリューションを提供しています。
 
 ### デプロイメントフロー
 ```
@@ -26,10 +27,147 @@ OwlNestは**Blue-Green デプロイメント**を採用し、ダウンタイム�
 
 ### 使用技術
 - **AWS CDK**: インフラストラクチャ as Code
-- **AWS CodePipeline**: CI/CDパイプライン
+- **GitHub Actions / AWS CodePipeline**: CI/CDパイプライン
 - **AWS Lambda**: サーバーレス実行環境
 - **Amazon S3 + CloudFront**: 静的サイトホスティング
 - **Amazon DynamoDB**: データベース
+
+---
+
+## CI/CDアーキテクチャ
+
+### GitHub Actions Pipeline
+
+```mermaid
+graph TD
+    A[Push to develop] --> B[CI Workflow]
+    C[Push to main] --> B
+    D[Pull Request] --> B
+    
+    B --> E[Frontend CI]
+    B --> F[Infrastructure CI]
+    B --> G[Security Checks]
+    
+    E --> H[Type Check]
+    E --> I[Lint]
+    E --> J[Test]
+    E --> K[Build]
+    
+    F --> L[CDK Test]
+    F --> M[CDK Build]
+    F --> N[CDK Synth]
+    
+    A --> O[Deploy to Development]
+    C --> P[Deploy to Staging]
+    
+    Q[Manual Trigger] --> R[Deploy to Production]
+    R --> S[Manual Approval]
+    S --> T[Production Deployment]
+```
+
+### AWS CodePipeline Architecture
+
+```mermaid
+graph TD
+    A[GitHub Repository] --> B[CodePipeline]
+    B --> C[Source Stage]
+    C --> D[Build Stage - CodeBuild]
+    D --> E[Manual Approval - Production Only]
+    E --> F[Deploy Stage]
+    
+    D --> G[Run Tests]
+    D --> H[Build Frontend]
+    D --> I[Build CDK]
+    D --> J[Deploy Infrastructure]
+    
+    K[SNS Notifications] --> L[Email Alerts]
+    B --> K
+```
+
+---
+
+## GitHub Actions セットアップ
+
+### 前提条件
+
+1. GitHub repository with the OwlNest code
+2. AWS account with appropriate permissions
+3. GitHub repository secrets configured
+
+### 必要な GitHub Secrets
+
+Configure the following secrets in your GitHub repository settings:
+
+```
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_REGION=ap-northeast-1
+GITHUB_TOKEN=your-github-token
+```
+
+### 環境構成
+
+The pipeline supports three environments:
+
+- **Development**: Triggered by pushes to `develop` branch
+- **Staging**: Triggered by pushes to `main` branch  
+- **Production**: Manual trigger only with approval gate
+
+### Workflow Files
+
+1. **`.github/workflows/ci.yml`**: Main CI workflow
+2. **`.github/workflows/cd-development.yml`**: Development deployment
+3. **`.github/workflows/cd-staging.yml`**: Staging deployment
+4. **`.github/workflows/cd-production.yml`**: Production deployment
+
+### GitHub Actions Features
+
+- ✅ Automated testing (unit, integration, security)
+- ✅ Multi-environment deployment
+- ✅ Manual approval for production
+- ✅ Artifact management
+- ✅ Deployment summaries
+- ✅ Post-deployment verification
+
+---
+
+## AWS CodePipeline セットアップ
+
+### 前提条件
+
+1. AWS CLI configured with appropriate permissions
+2. GitHub personal access token
+3. CDK installed and bootstrapped
+
+### デプロイ手順
+
+1. **Store GitHub Token in Secrets Manager**:
+   ```bash
+   aws secretsmanager create-secret \
+     --name github-token \
+     --secret-string "your-github-personal-access-token"
+   ```
+
+2. **Deploy the Pipeline Stack**:
+   ```powershell
+   # Windows PowerShell
+   cd cdk
+   .\scripts\deploy-pipeline.ps1 development default your-github-username owlnest admin@example.com
+   ```
+
+3. **Verify Pipeline Creation**:
+   - Check AWS CodePipeline console
+   - Verify CodeBuild project creation
+   - Test pipeline execution
+
+### Pipeline Features
+
+- ✅ Automated builds on push/PR
+- ✅ Multi-stage pipeline (Source → Build → Deploy)
+- ✅ Manual approval for production
+- ✅ SNS notifications
+- ✅ CloudWatch monitoring
+- ✅ Artifact storage in S3
 
 ---
 
@@ -78,35 +216,10 @@ CloudWatch
 └── Alarms
 ```
 
----
+### 必要な AWS 権限
 
-## 事前準備
+The deployment user/role needs the following permissions:
 
-### 必要なツール・権限
-
-#### 1. 開発環境の準備
-```bash
-# 必要なツールのインストール確認
-node --version    # v18.16.0+
-npm --version     # 9.5.1+
-aws --version     # AWS CLI v2.0+
-
-# AWS CDK のインストール
-npm install -g aws-cdk
-cdk --version     # 2.100.0+
-```
-
-#### 2. AWS 認証情報の設定
-```bash
-# AWS CLI の設定
-aws configure
-# または
-export AWS_ACCESS_KEY_ID=your-access-key
-export AWS_SECRET_ACCESS_KEY=your-secret-key
-export AWS_DEFAULT_REGION=ap-northeast-1
-```
-
-#### 3. 必要な AWS 権限
 ```json
 {
   "Version": "2012-10-17",
@@ -120,10 +233,26 @@ export AWS_DEFAULT_REGION=ap-northeast-1
         "apigateway:*",
         "dynamodb:*",
         "cognito-idp:*",
+        "cognito-identity:*",
         "cloudfront:*",
         "route53:*",
+        "acm:*",
+        "wafv2:*",
+        "guardduty:*",
+        "config:*",
+        "cloudtrail:*",
+        "backup:*",
         "iam:*",
-        "logs:*"
+        "logs:*",
+        "events:*",
+        "sns:*",
+        "budgets:*",
+        "xray:*",
+        "kms:*",
+        "secretsmanager:*",
+        "ssm:*",
+        "codebuild:*",
+        "codepipeline:*"
       ],
       "Resource": "*"
     }
@@ -131,9 +260,38 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 }
 ```
 
-### 環境変数の設定
+---
 
-#### 1. 本番環境用環境変数
+## 本番デプロイ手順
+
+### 事前準備
+
+#### 必要なツール・権限
+
+```bash
+# 必要なツールのインストール確認
+node --version    # v18.16.0+
+npm --version     # 9.5.1+
+aws --version     # AWS CLI v2.0+
+
+# AWS CDK のインストール
+npm install -g aws-cdk
+cdk --version     # 2.100.0+
+```
+
+#### AWS 認証情報の設定
+```bash
+# AWS CLI の設定
+aws configure
+# または
+export AWS_ACCESS_KEY_ID=your-access-key
+export AWS_SECRET_ACCESS_KEY=your-secret-key
+export AWS_DEFAULT_REGION=ap-northeast-1
+```
+
+#### 環境変数の設定
+
+**本番環境用環境変数**
 ```bash
 # .env.production
 VITE_NODE_ENV=production
@@ -158,7 +316,7 @@ VITE_ENABLE_NOTIFICATIONS=true
 VITE_ENABLE_FILE_UPLOAD=true
 ```
 
-#### 2. CDK用環境変数
+**CDK用環境変数**
 ```bash
 # cdk/.env
 CDK_DEFAULT_ACCOUNT=123456789012
@@ -167,13 +325,9 @@ DOMAIN_NAME=owlnest.example.com
 CERTIFICATE_ARN=arn:aws:acm:us-east-1:123456789012:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 ```
 
----
-
-## 本番デプロイ手順
-
 ### 自動デプロイ（推奨）
 
-#### 1. GitHub Actions による自動デプロイ
+#### GitHub Actions による自動デプロイ
 ```yaml
 # .github/workflows/deploy-production.yml
 name: Deploy to Production
@@ -224,7 +378,7 @@ jobs:
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 ```
 
-#### 2. デプロイの実行
+#### デプロイの実行
 ```bash
 # main ブランチにプッシュすると自動実行
 git push origin main
@@ -484,6 +638,69 @@ aws cloudwatch put-metric-alarm \
   --evaluation-periods 2
 ```
 
+### セキュリティ設定
+
+#### Web Application Firewall (WAF)
+
+Configured rules include:
+
+- **AWS Managed Core Rule Set**: Common attack patterns
+- **Known Bad Inputs**: Malicious request patterns
+- **Rate Limiting**: 2000 requests per 5 minutes per IP
+- **Geographic Blocking**: Configurable country restrictions
+
+#### GuardDuty
+
+Threat detection for:
+
+- Malicious IP addresses
+- Cryptocurrency mining
+- Compromised instances
+- Data exfiltration attempts
+
+#### AWS Config
+
+Compliance monitoring for:
+
+- S3 bucket public access
+- DynamoDB encryption
+- Lambda function security
+- IAM best practices
+
+#### CloudTrail
+
+Audit logging for:
+
+- API calls
+- Console access
+- Resource changes
+- Authentication events
+
+### バックアップと災害復旧
+
+#### 自動バックアップ
+
+- **DynamoDB**: Point-in-time recovery enabled
+- **Daily Backups**: Automated via AWS Backup
+- **Weekly Backups**: Long-term retention
+- **Cross-region Replication**: For production data
+
+#### 復旧手順
+
+1. **Database Recovery**
+   ```bash
+   # Restore from point-in-time
+   aws dynamodb restore-table-to-point-in-time \
+     --source-table-name owlnest-main-table-production \
+     --target-table-name owlnest-main-table-restored \
+     --restore-date-time 2024-01-01T00:00:00Z
+   ```
+
+2. **Application Recovery**
+   - Redeploy CDK stacks
+   - Update DNS if needed
+   - Verify functionality
+
 ---
 
 ## トラブルシューティング
@@ -555,110 +772,75 @@ aws lambda invoke \
   response.json
 ```
 
-#### 4. データベース接続エラー
+### デバッグコマンド
 
-**症状**: DynamoDB への接続でエラーが発生
-
-**原因と解決方法**:
 ```bash
-# 1. DynamoDB テーブルの確認
-aws dynamodb list-tables
-aws dynamodb describe-table --table-name OwlNest-Users
+# Check AWS credentials
+aws sts get-caller-identity
 
-# 2. IAM ロールの権限確認
-aws iam get-role --role-name OwlNestLambdaExecutionRole
+# Test CDK synthesis
+cd cdk && npx cdk synth --context environment=development
 
-# 3. VPC 設定の確認（VPC 内の Lambda の場合）
-aws ec2 describe-vpc-endpoints
+# Check pipeline status
+aws codepipeline get-pipeline-state --name owlnest-pipeline-development
 
-# 4. DynamoDB の手動テスト
-aws dynamodb scan --table-name OwlNest-Users --limit 1
+# View build logs
+aws logs describe-log-groups --log-group-name-prefix /aws/codebuild/owlnest-build
 ```
 
-### パフォーマンス問題の対処
+### 復旧手順
 
-#### 1. 応答時間が遅い
+1. **Failed Deployment**: Check CloudFormation events and rollback if needed
+2. **Pipeline Stuck**: Cancel execution and restart
+3. **Build Failures**: Check build logs and fix issues
+4. **Permission Issues**: Review IAM roles and policies
 
-**調査方法**:
-```bash
-# CloudWatch メトリクスの確認
-aws cloudwatch get-metric-statistics \
-  --namespace AWS/Lambda \
-  --metric-name Duration \
-  --dimensions Name=FunctionName,Value=owlnest-auth-handler \
-  --start-time 2025-08-06T00:00:00Z \
-  --end-time 2025-08-06T23:59:59Z \
-  --period 3600 \
-  --statistics Average,Maximum
+---
 
-# X-Ray トレースの確認
-aws xray get-trace-summaries \
-  --time-range-type TimeRangeByStartTime \
-  --start-time 2025-08-06T00:00:00Z \
-  --end-time 2025-08-06T23:59:59Z
-```
+## ベストプラクティス
 
-**対処方法**:
-```bash
-# Lambda 関数のメモリ増加
-aws lambda update-function-configuration \
-  --function-name owlnest-auth-handler \
-  --memory-size 512
+### コード品質
 
-# DynamoDB の読み取り/書き込み容量増加
-aws dynamodb update-table \
-  --table-name OwlNest-Users \
-  --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5
-```
+- ✅ All code must pass linting and type checking
+- ✅ Minimum 80% test coverage required
+- ✅ Security audit must pass
+- ✅ No high-severity vulnerabilities allowed
 
-#### 2. メモリ不足エラー
+### デプロイメント安全性
 
-**症状**: Lambda 関数でメモリ不足エラーが発生
+- ✅ Development environment for testing
+- ✅ Staging environment for pre-production validation
+- ✅ Manual approval for production deployments
+- ✅ Rollback procedures documented
+- ✅ Post-deployment verification
 
-**対処方法**:
-```bash
-# メモリサイズの増加
-aws lambda update-function-configuration \
-  --function-name owlnest-auth-handler \
-  --memory-size 1024
+### 監視
 
-# タイムアウト時間の調整
-aws lambda update-function-configuration \
-  --function-name owlnest-auth-handler \
-  --timeout 30
-```
+- ✅ Pipeline execution monitoring
+- ✅ Build duration tracking
+- ✅ Success/failure rate monitoring
+- ✅ Cost monitoring for AWS resources
 
-### セキュリティ問題の対処
+### セキュリティ考慮事項
 
-#### 1. 不正アクセスの検出
+#### Secrets Management
 
-**調査方法**:
-```bash
-# CloudTrail ログの確認
-aws logs filter-log-events \
-  --log-group-name CloudTrail/OwlNestAuditLog \
-  --filter-pattern "{ $.errorCode = \"*UnauthorizedOperation\" }"
+- GitHub secrets for AWS credentials
+- AWS Secrets Manager for sensitive configuration
+- No hardcoded secrets in code or configuration
 
-# WAF ログの確認
-aws logs filter-log-events \
-  --log-group-name aws-waf-logs-owlnest \
-  --filter-pattern "{ $.action = \"BLOCK\" }"
-```
+#### Access Control
 
-**対処方法**:
-```bash
-# IP アドレスのブロック
-aws wafv2 update-ip-set \
-  --scope CLOUDFRONT \
-  --id blocked-ips-set \
-  --addresses "192.0.2.1/32,203.0.113.0/24"
+- Least privilege IAM roles
+- Environment-specific permissions
+- Manual approval gates for production
+- Audit logging enabled
 
-# レート制限の強化
-aws wafv2 update-rule-group \
-  --scope CLOUDFRONT \
-  --id rate-limit-rule \
-  --rules file://enhanced-rate-limit.json
-```
+#### Network Security
+
+- VPC deployment for production (if required)
+- Security groups with minimal access
+- HTTPS/TLS for all communications
 
 ---
 
@@ -691,5 +873,5 @@ aws wafv2 update-rule-group \
 ---
 
 **最終更新**: 2025-08-06  
-**バージョン**: 1.0  
+**バージョン**: 2.0  
 **作成者**: OwlNest開発チーム

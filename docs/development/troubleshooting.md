@@ -1155,6 +1155,6 @@ aws dynamodb update-continuous-backups \
 
 ---
 
-**最終更新**: 2025-08-06  
+**最終更新**: 2025-08-09  
 **バージョン**: 1.0  
 **作成者**: OwlNest開発チーム

@@ -2,51 +2,75 @@
  * Integration tests for discussion flow
  */
 
-import { screen, waitFor,} from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { 
-  renderWithProviders, 
-  createMockUser, 
+import {
+  renderWithProviders,
+  createMockUser,
   createMockDiscussion,
   createMockPost,
   setupTestEnvironment,
-  cleanup
+  cleanup,
 } from '../../utils/testUtils';
-import { UserRole } from '../../types/auth';
-// import * as discussionService from '../../services/discussionService';
-import * as postService from '../../services/postService';
+import { UserRole } from '../../types/common';
+// Mock services before importing
+jest.mock('../../services/discussionService', () => ({
+  getDiscussions: jest.fn(),
+  getDiscussion: jest.fn(),
+  createDiscussion: jest.fn(),
+  searchDiscussions: jest.fn(),
+}));
+
+jest.mock('../../services/postService', () => ({
+  postService: {
+    getDiscussionPosts: jest.fn(),
+    createPost: jest.fn(),
+  },
+}));
+
+import { postService } from '../../services/postService';
 
 // Setup test environment
 setupTestEnvironment();
 
-// Mock services
-jest.mock('../../services/discussionService');
-jest.mock('../../services/postService');
+// Get mocked services
+const mockDiscussionService = {
+  getDiscussions: jest.fn(),
+  getDiscussion: jest.fn(),
+  createDiscussion: jest.fn(),
+  searchDiscussions: jest.fn(),
+};
 
-const mockDiscussionService = discussionService as jest.Mocked<typeof discussionService>;
 const mockPostService = postService as jest.Mocked<typeof postService>;
 
 describe('Discussion Flow Integration', () => {
-  const mockUser = createMockUser({ role: UserRole.CREATOR });
   const mockDiscussion = createMockDiscussion();
   const mockPost = createMockPost();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup default mock responses
     mockDiscussionService.getDiscussions.mockResolvedValue({
       discussions: [mockDiscussion],
       total: 1,
-      hasMore: false
+      hasMore: false,
     });
-    
+
     mockDiscussionService.getDiscussion.mockResolvedValue(mockDiscussion);
-    mockPostService.getPosts.mockResolvedValue({
-      posts: [mockPost],
+    mockDiscussionService.createDiscussion.mockResolvedValue(mockDiscussion);
+    mockDiscussionService.searchDiscussions.mockResolvedValue({
+      discussions: [mockDiscussion],
       total: 1,
-      hasMore: false
+      hasMore: false,
     });
+
+    mockPostService.getDiscussionPosts.mockResolvedValue({
+      posts: [mockPost],
+      totalCount: 1,
+      hasMore: false,
+    });
+    mockPostService.createPost.mockResolvedValue(mockPost);
   });
 
   afterEach(() => {
@@ -55,25 +79,22 @@ describe('Discussion Flow Integration', () => {
 
   describe('Discussion List to Detail Flow', () => {
     it('navigates from discussion list to detail page', async () => {
-      const user = userEvent.setup();
-      
+      const user = userEvent;
+
       // Mock router navigation
       const mockNavigate = jest.fn();
       jest.mock('react-router-dom', () => ({
         ...jest.requireActual('react-router-dom'),
-        useNavigate: () => mockNavigate
+        useNavigate: () => mockNavigate,
       }));
 
       renderWithProviders(
         <div>
           {/* This would be the actual DiscussionListPage component */}
           <div data-testid="discussion-list">
-            <a href={`/discussion/${mockDiscussion.discussionId}`}>
-              {mockDiscussion.title}
-            </a>
+            <a href={`/discussion/${mockDiscussion.discussionId}`}>{mockDiscussion.title}</a>
           </div>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       // Click on discussion link
@@ -90,8 +111,7 @@ describe('Discussion Flow Integration', () => {
           {/* Mock discussion detail page */}
           <h1>{mockDiscussion.title}</h1>
           <p>{mockDiscussion.description}</p>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       await waitFor(() => {
@@ -103,10 +123,10 @@ describe('Discussion Flow Integration', () => {
 
   describe('Discussion Creation Flow', () => {
     it('creates a new discussion successfully', async () => {
-      const user = userEvent.setup();
+      const user = userEvent;
       const newDiscussion = createMockDiscussion({
         title: 'New Test Discussion',
-        description: 'This is a new discussion'
+        description: 'This is a new discussion',
       });
 
       mockDiscussionService.createDiscussion.mockResolvedValue(newDiscussion);
@@ -114,22 +134,13 @@ describe('Discussion Flow Integration', () => {
       renderWithProviders(
         <div data-testid="create-discussion-form">
           <form>
-            <input 
-              name="title" 
-              placeholder="議論のタイトル"
-              data-testid="title-input"
-            />
-            <textarea 
-              name="description" 
-              placeholder="議論の説明"
-              data-testid="description-input"
-            />
+            <input name="title" placeholder="議論のタイトル" data-testid="title-input" />
+            <textarea name="description" placeholder="議論の説明" data-testid="description-input" />
             <button type="submit" data-testid="submit-button">
               議論を作成
             </button>
           </form>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       // Fill out form
@@ -150,8 +161,8 @@ describe('Discussion Flow Integration', () => {
     });
 
     it('handles discussion creation errors', async () => {
-      const user = userEvent.setup();
-      
+      const user = userEvent;
+
       mockDiscussionService.createDiscussion.mockRejectedValue(
         new Error('Failed to create discussion')
       );
@@ -159,11 +170,7 @@ describe('Discussion Flow Integration', () => {
       renderWithProviders(
         <div data-testid="create-discussion-form">
           <form>
-            <input 
-              name="title" 
-              placeholder="議論のタイトル"
-              data-testid="title-input"
-            />
+            <input name="title" placeholder="議論のタイトル" data-testid="title-input" />
             <button type="submit" data-testid="submit-button">
               議論を作成
             </button>
@@ -171,8 +178,7 @@ describe('Discussion Flow Integration', () => {
               エラーが発生しました
             </div>
           </form>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       const titleInput = screen.getByTestId('title-input');
@@ -188,9 +194,9 @@ describe('Discussion Flow Integration', () => {
 
   describe('Post Creation Flow', () => {
     it('creates a new post in discussion', async () => {
-      const user = userEvent.setup();
+      const user = userEvent;
       const newPost = createMockPost({
-        content: { text: 'This is a new post', formatting: {}, attachments: [] }
+        content: 'This is a new post',
       });
 
       mockPostService.createPost.mockResolvedValue(newPost);
@@ -198,13 +204,10 @@ describe('Discussion Flow Integration', () => {
       renderWithProviders(
         <div data-testid="discussion-with-posts">
           <div data-testid="existing-posts">
-            <div>{mockPost.content.text}</div>
+            <div>{mockPost.content}</div>
           </div>
           <form data-testid="post-form">
-            <textarea 
-              placeholder="投稿内容を入力"
-              data-testid="post-content"
-            />
+            <textarea placeholder="投稿内容を入力" data-testid="post-content" />
             <select data-testid="stance-select">
               <option value="neutral">中立</option>
               <option value="pros">賛成</option>
@@ -214,8 +217,7 @@ describe('Discussion Flow Integration', () => {
               投稿する
             </button>
           </form>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       // Fill out post form
@@ -223,12 +225,12 @@ describe('Discussion Flow Integration', () => {
       const stanceSelect = screen.getByTestId('stance-select');
       const submitButton = screen.getByTestId('post-submit');
 
-      await user.type(contentInput, newPost.content.text);
+      await user.type(contentInput, newPost.content);
       await user.selectOptions(stanceSelect, 'pros');
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(contentInput).toHaveValue(newPost.content.text);
+        expect(contentInput).toHaveValue(newPost.content);
         expect(stanceSelect).toHaveValue('pros');
       });
     });
@@ -240,22 +242,18 @@ describe('Discussion Flow Integration', () => {
         isConnected: true,
         subscribe: jest.fn(),
         unsubscribe: jest.fn(),
-        emit: jest.fn()
+        emit: jest.fn(),
       };
 
       renderWithProviders(
         <div data-testid="discussion-realtime">
           <div data-testid="posts-container">
-            <div>{mockPost.content.text}</div>
+            <div>{mockPost.content}</div>
           </div>
           <div data-testid="connection-status">
             {mockWebSocket.isConnected ? '接続中' : '切断中'}
           </div>
-        </div>,
-        { 
-          initialUser: mockUser,
-          mockWebSocket
-        }
+        </div>
       );
 
       expect(screen.getByText('接続中')).toBeInTheDocument();
@@ -267,7 +265,7 @@ describe('Discussion Flow Integration', () => {
         isConnected: false,
         subscribe: jest.fn(),
         unsubscribe: jest.fn(),
-        emit: jest.fn()
+        emit: jest.fn(),
       };
 
       renderWithProviders(
@@ -278,11 +276,7 @@ describe('Discussion Flow Integration', () => {
           <div data-testid="reconnect-button">
             <button>再接続</button>
           </div>
-        </div>,
-        { 
-          initialUser: mockUser,
-          mockWebSocket
-        }
+        </div>
       );
 
       expect(screen.getByText('切断中')).toBeInTheDocument();
@@ -292,35 +286,28 @@ describe('Discussion Flow Integration', () => {
 
   describe('Search and Filter Flow', () => {
     it('searches discussions and displays results', async () => {
-      const user = userEvent.setup();
+      const user = userEvent;
       const searchResults = [
         createMockDiscussion({ title: 'Search Result 1' }),
-        createMockDiscussion({ title: 'Search Result 2' })
+        createMockDiscussion({ title: 'Search Result 2' }),
       ];
 
       mockDiscussionService.searchDiscussions.mockResolvedValue({
         discussions: searchResults,
         total: 2,
-        hasMore: false
+        hasMore: false,
       });
 
       renderWithProviders(
         <div data-testid="search-page">
           <form data-testid="search-form">
-            <input 
-              type="text" 
-              placeholder="検索キーワード"
-              data-testid="search-input"
-            />
+            <input type="text" placeholder="検索キーワード" data-testid="search-input" />
             <button type="submit" data-testid="search-button">
               検索
             </button>
           </form>
-          <div data-testid="search-results">
-            {/* Results would be rendered here */}
-          </div>
-        </div>,
-        { initialUser: mockUser }
+          <div data-testid="search-results">{/* Results would be rendered here */}</div>
+        </div>
       );
 
       const searchInput = screen.getByTestId('search-input');
@@ -335,18 +322,18 @@ describe('Discussion Flow Integration', () => {
     });
 
     it('filters discussions by category', async () => {
-      const user = userEvent.setup();
+      const user = userEvent;
       const filteredResults = [
-        createMockDiscussion({ 
+        createMockDiscussion({
           title: 'Filtered Discussion',
-          categories: ['テクノロジー']
-        })
+          categories: ['technology' as any],
+        }),
       ];
 
       mockDiscussionService.getDiscussions.mockResolvedValue({
         discussions: filteredResults,
         total: 1,
-        hasMore: false
+        hasMore: false,
       });
 
       renderWithProviders(
@@ -361,8 +348,7 @@ describe('Discussion Flow Integration', () => {
           <div data-testid="discussion-results">
             {/* Filtered results would be rendered here */}
           </div>
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       const categorySelect = screen.getByTestId('category-select');
@@ -376,20 +362,13 @@ describe('Discussion Flow Integration', () => {
 
   describe('Error Handling', () => {
     it('handles network errors gracefully', async () => {
-      mockDiscussionService.getDiscussions.mockRejectedValue(
-        new Error('Network error')
-      );
+      mockDiscussionService.getDiscussions.mockRejectedValue(new Error('Network error'));
 
       renderWithProviders(
         <div data-testid="discussion-list-with-error">
-          <div data-testid="error-state">
-            ネットワークエラーが発生しました
-          </div>
-          <button data-testid="retry-button">
-            再試行
-          </button>
-        </div>,
-        { initialUser: mockUser }
+          <div data-testid="error-state">ネットワークエラーが発生しました</div>
+          <button data-testid="retry-button">再試行</button>
+        </div>
       );
 
       expect(screen.getByText('ネットワークエラーが発生しました')).toBeInTheDocument();
@@ -403,14 +382,9 @@ describe('Discussion Flow Integration', () => {
 
       renderWithProviders(
         <div data-testid="auth-error">
-          <div data-testid="auth-error-message">
-            認証が必要です
-          </div>
-          <button data-testid="login-button">
-            ログイン
-          </button>
-        </div>,
-        { initialUser: null }
+          <div data-testid="auth-error-message">認証が必要です</div>
+          <button data-testid="login-button">ログイン</button>
+        </div>
       );
 
       expect(screen.getByText('認証が必要です')).toBeInTheDocument();
@@ -420,34 +394,31 @@ describe('Discussion Flow Integration', () => {
 
   describe('Performance', () => {
     it('handles large datasets efficiently', async () => {
-      const largeDataset = Array.from({ length: 100 }, (_, i) => 
-        createMockDiscussion({ 
+      const largeDataset = Array.from({ length: 100 }, (_, i) =>
+        createMockDiscussion({
           discussionId: `discussion-${i}`,
-          title: `Discussion ${i + 1}` 
+          title: `Discussion ${i + 1}`,
         })
       );
 
       mockDiscussionService.getDiscussions.mockResolvedValue({
         discussions: largeDataset,
         total: 100,
-        hasMore: false
+        hasMore: false,
       });
 
       const renderStart = performance.now();
-      
+
       renderWithProviders(
         <div data-testid="large-discussion-list">
           {largeDataset.map(discussion => (
-            <div key={discussion.discussionId}>
-              {discussion.title}
-            </div>
+            <div key={discussion.discussionId}>{discussion.title}</div>
           ))}
-        </div>,
-        { initialUser: mockUser }
+        </div>
       );
 
       const renderTime = performance.now() - renderStart;
-      
+
       // Should render within reasonable time
       expect(renderTime).toBeLessThan(1000); // 1 second
       expect(screen.getByText('Discussion 1')).toBeInTheDocument();

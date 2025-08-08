@@ -58,7 +58,7 @@ export const useRealtimeDiscussion = (
 
   const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map());
-  const typingTimeoutRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const typingTimeoutRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const handlersRef = useRef({
     onNewPost,
@@ -361,11 +361,12 @@ export const useRealtimeDiscussion = (
     };
   }, [autoJoin, isConnected, joinDiscussion, leaveDiscussion]);
 
-  // Cleanup typing timeouts on unmount
   useEffect(() => {
+    const map = typingTimeoutRef.current;
+  
     return () => {
-      typingTimeoutRef.current.forEach(timeout => clearTimeout(timeout));
-      typingTimeoutRef.current.clear();
+      map.forEach((t) => clearTimeout(t));
+      map.clear();
     };
   }, []);
 

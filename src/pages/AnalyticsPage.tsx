@@ -4,7 +4,6 @@ import { useMultipleDiscussionStatistics } from '../hooks/useAnalytics';
 import StatisticsDashboard from '../components/analytics/StatisticsDashboard';
 import DiscussionStatisticsCard from '../components/analytics/DiscussionStatisticsCard';
 import TrendAnalysisDashboard from '../components/analytics/TrendAnalysisDashboard';
-import { Discussion } from '../types/discussion';
 import './AnalyticsPage.css';
 
 const AnalyticsPage: React.FC = () => {

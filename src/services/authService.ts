@@ -8,7 +8,6 @@ import {
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
   ChangePasswordCommand,
-  GetUserCommand,
   GlobalSignOutCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';

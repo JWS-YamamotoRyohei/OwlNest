@@ -1,11 +1,11 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PostReportDialog } from '../PostReportDialog';
 import { reportService } from '../../../services/reportService';
 import { useAuth } from '../../../contexts/AuthContext';
 import { PostListItem } from '../../../types/post';
-import { ReactionType, Stance } from '../../../types/common';
 import { UserRole } from '@/types/auth';
+import { Stance } from '@/types/common';
+import { makeAuthCtx } from '@/utils/testUtils';
 
 // Mock dependencies
 jest.mock('../../../services/reportService');
@@ -17,35 +17,43 @@ const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 const mockPost: PostListItem = {
   postId: 'test-post-1',
   discussionId: 'test-discussion-1',
+  discussionTitle: "test-disucussionTitle",
+  isActive:true,
   discussionPointId: 'test-point-1',
   authorId: 'test-author',
-  authorDisplayName: 'Test Author',
+  authorDisplayName: 'Test-Author',
+  discussionPointTitle:"Test-discussionPointTitle",
+  isEdited: Math.random() > 0.8,
+  level:0,
+  content: {
+    text:'This is a test post content',
+    preview: 'This is a test post content'.slice(0, 100),
+    hasAttachments: 0,
+    hasLinks: /(https?:\/\/[^\s]+)/g.test('This is a test post content') ? 1 : 0,
+    attachmentCount: 0,
+  },
   // content: {
   //   text: 'This is a test post content',
   //   preview: 'This is a test post content',
   //   formatting: {},
   //   attachments: [],
   // },
-  stance: Stance.PROS,
-  // reactions: {},
-  // reactionCounts: {
-  //   [ReactionType.LIKE]: 5,
-  //   [ReactionType.DISLIKE]: 1,
-  //   [ReactionType.AGREE]: 3,
-  //   [ReactionType.DISAGREE]: 2,
-  // },
-  totalReactions: 11,
+  stance:  [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][
+    Math.floor(Math.random() * 4)
+  ],
   replyCount: 2,
-  moderation: {
-    isHidden: false,
-    isDeleted: false,
-    isFlagged: false,
+  statistics: {
+    replyCount:2,
+    likeCount: Math.floor(Math.random() * 10),
+    agreeCount: Math.floor(Math.random() * 8),
+    disagreeCount: Math.floor(Math.random() * 5),
+    insightfulCount: Math.floor(Math.random() * 3),
+    funnyCount: Math.floor(Math.random() * 2),
+    viewCount: Math.floor(Math.random() * 50) + 10,
   },
-  metadata: {
-    createdAt: '2024-01-01T10:00:00Z',
-    updatedAt: '2024-01-01T10:00:00Z',
-    isEdited: false,
-  },
+  createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+  updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+  
 };
 
 const mockUser = {
@@ -75,15 +83,12 @@ const mockUser = {
 describe('PostReportDialog', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseAuth.mockReturnValue({
+    mockUseAuth.mockReturnValue(   makeAuthCtx({
       user: mockUser,
       isAuthenticated: true,
       hasPermission: jest.fn().mockReturnValue(true),
-      login: jest.fn(),
-      logout: jest.fn(),
-      register: jest.fn(),
-      updateUserRole: jest.fn(),
-    });
+      updateUserRole: jest.fn().mockResolvedValue(undefined),
+    }));
 
     mockReportService.getReportCategories.mockReturnValue([
       {

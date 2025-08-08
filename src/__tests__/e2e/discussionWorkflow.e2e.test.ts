@@ -11,16 +11,80 @@ setupTestEnvironment();
 
 describe('Discussion Workflow E2E', () => {
   // Mock browser environment
-  const mockBrowser = {
-    visit: jest.fn(),
-    get: jest.fn(),
-    type: jest.fn(),
-    click: jest.fn(),
-    should: jest.fn(),
-    wait: jest.fn(),
-    url: jest.fn(),
-    contains: jest.fn(),
-  };
+  // const mockBrowser = {
+  //   visit: jest.fn(),
+  //   get: jest.fn(),
+  //   type: jest.fn(),
+  //   click: jest.fn(),
+  //   should: jest.fn(),
+  //   wait: jest.fn(),
+  //   url: jest.fn(),
+  //   contains: jest.fn(),
+  // };
+  // Mock browser API (Cypressっぽいチェーンを再現)
+type ShouldFn = jest.Mock<any, any>;
+type SimpleFn = jest.Mock<any, any>;
+
+const sharedType: SimpleFn = jest.fn();
+const sharedClick: SimpleFn = jest.fn();
+const sharedSelect: SimpleFn = jest.fn();
+const sharedShould: ShouldFn = jest.fn();
+const sharedEach: SimpleFn = jest.fn();
+const sharedTab: SimpleFn = jest.fn();
+
+type Chainable = {
+  type: typeof sharedType;
+  click: typeof sharedClick;
+  select: typeof sharedSelect;
+  should: typeof sharedShould;
+  each: typeof sharedEach;
+  tab: typeof sharedTab;
+};
+
+// チェーン用オブジェクト（自分自身を返す）
+const chainable: Chainable = {
+  type: sharedType.mockReturnThis(),
+  click: sharedClick.mockReturnThis(),
+  select: sharedSelect.mockReturnThis(),
+  should: sharedShould.mockReturnThis(),
+  each: sharedEach.mockReturnThis(),
+  tab: sharedTab.mockReturnThis(),
+};
+
+// 型：テストで使う全メソッドを列挙
+interface MockBrowser {
+  visit: SimpleFn;
+  get: jest.Mock<Chainable, any>;
+  type: typeof sharedType;      // 既存の expect を壊さないためエイリアス
+  click: typeof sharedClick;    // 同上
+  should: typeof sharedShould;  // 同上
+  wait: SimpleFn;
+  url: jest.Mock<{ should: ShouldFn }, any>;
+  contains: SimpleFn;
+  viewport: SimpleFn;
+  scrollTo: SimpleFn;
+  reload: SimpleFn;
+  intercept: SimpleFn;
+  focused: jest.Mock<{ should: ShouldFn }, any>;
+}
+
+// 実体
+const mockBrowser: MockBrowser = {
+  visit: jest.fn().mockReturnThis(),
+  get: jest.fn().mockReturnValue(chainable),
+  type: sharedType,      // ← chainable.type と同じ関数を共有
+  click: sharedClick,    // ← 同上
+  should: sharedShould,  // ← 同上
+  wait: jest.fn().mockReturnThis(),
+  url: jest.fn().mockReturnValue({ should: jest.fn().mockReturnThis() }),
+  contains: jest.fn().mockReturnThis(),
+  viewport: jest.fn().mockReturnThis(),
+  scrollTo: jest.fn().mockReturnThis(),
+  reload: jest.fn().mockReturnThis(),
+  intercept: jest.fn().mockReturnThis(),
+  focused: jest.fn().mockReturnValue({ should: jest.fn().mockReturnThis() }),
+};
+
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -301,10 +365,9 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[role="navigation"]').should('exist'),
         () => mockBrowser.get('[aria-label="議論一覧"]').should('exist'),
         () =>
-          mockBrowser.get('img').each($img => {
-            // Check that all images have alt text
-            expect($img).to.have.attr('alt');
-          }),
+          mockBrowser.get('img').each(($img: HTMLElement) => {
+            expect($img).toHaveAttribute('alt'); // ← これ
+          })
       ];
 
       for (const step of testSteps) {

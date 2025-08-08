@@ -30,7 +30,7 @@ export interface SearchDiscussionsResult extends PaginationResult<DiscussionList
  * Get discussions with optional filters and pagination
  */
 export async function getDiscussions(
-  options: GetDiscussionsOptions = {}
+  _options: GetDiscussionsOptions = {}
 ): Promise<GetDiscussionsResult> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
@@ -39,7 +39,7 @@ export async function getDiscussions(
 /**
  * Get a single discussion by ID
  */
-export async function getDiscussion(discussionId: string): Promise<DiscussionDetail> {
+export async function getDiscussion(_discussionId: string): Promise<DiscussionDetail> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
 }
@@ -47,7 +47,7 @@ export async function getDiscussion(discussionId: string): Promise<DiscussionDet
 /**
  * Create a new discussion
  */
-export async function createDiscussion(data: CreateDiscussionData): Promise<DiscussionDetail> {
+export async function createDiscussion(_data: CreateDiscussionData): Promise<DiscussionDetail> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
 }
@@ -56,8 +56,8 @@ export async function createDiscussion(data: CreateDiscussionData): Promise<Disc
  * Search discussions
  */
 export async function searchDiscussions(
-  query: string,
-  options: GetDiscussionsOptions = {}
+  _query: string,
+  _options: GetDiscussionsOptions = {}
 ): Promise<SearchDiscussionsResult> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
@@ -67,8 +67,8 @@ export async function searchDiscussions(
  * Update a discussion
  */
 export async function updateDiscussion(
-  discussionId: string,
-  data: Partial<CreateDiscussionData>
+  _discussionId: string,
+  _data: Partial<CreateDiscussionData>
 ): Promise<DiscussionDetail> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
@@ -77,7 +77,7 @@ export async function updateDiscussion(
 /**
  * Delete a discussion
  */
-export async function deleteDiscussion(discussionId: string): Promise<void> {
+export async function deleteDiscussion(_discussionId: string): Promise<void> {
   // This would be implemented with actual API calls
   throw new Error('Not implemented');
 }

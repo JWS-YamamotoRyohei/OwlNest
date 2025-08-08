@@ -1,4 +1,4 @@
-import { DynamoDBError, DynamoDBErrorType } from './DynamoDBError';
+import { DynamoDBError } from './DynamoDBError';
 
 export interface RetryConfig {
   maxRetries: number;

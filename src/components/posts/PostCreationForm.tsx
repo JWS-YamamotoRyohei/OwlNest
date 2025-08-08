@@ -34,6 +34,9 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
   const [content, setContent] = useState<string>('');
   const [formatting, setFormatting] = useState<TextFormatting>({});
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+
+  // Use currentUserId for future features like draft saving
+  console.debug('Current user ID:', currentUserId);
   const [stance, setStance] = useState<Stance>(userLastStance || Stance.UNKNOWN);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -82,11 +85,14 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
       discussionPointId: selectedPointId,
       content: {
         text: content.trim(),
-        formatting,
-        attachments,
+        preview: content.trim().substring(0, 200),
+        hasAttachments: attachments.length > 0 ? 1 : 0,
+        hasLinks: content.includes('http') ? 1 : 0,
+        attachmentCount: attachments.length,
       },
+      attachments,
       stance,
-      replyToId,
+      ...(replyToId && { replyToId }),
     };
 
     try {

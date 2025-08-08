@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDiscussionStatistics } from '../../hooks/useAnalytics';
-import { DiscussionStatistics } from '../../types/analytics';
 import ExportButton from './ExportButton';
 import './DiscussionStatisticsCard.css';
 

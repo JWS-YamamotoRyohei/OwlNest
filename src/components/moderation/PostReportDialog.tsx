@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { PostListItem } from '../../types/post';
 import { CreateReportData, ReportCategory } from '../../types/moderation';
 import { reportService } from '../../services/reportService';
-import { useAuth } from '../../contexts/AuthContext';
 import './PostReportDialog.css';
 
 interface PostReportDialogProps {
@@ -18,7 +17,6 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
   onClose,
   onReportSubmitted,
 }) => {
-  const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<ReportCategory | ''>('');
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');

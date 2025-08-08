@@ -16,12 +16,11 @@ export const RouteLoadingIndicator: React.FC<RouteLoadingIndicatorProps> = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let delayTimer: NodeJS.Timeout;
     let progressTimer: NodeJS.Timeout;
     let completeTimer: NodeJS.Timeout;
 
     // Start loading after delay
-    delayTimer = setTimeout(() => {
+    const delayTimer: NodeJS.Timeout = setTimeout(() => {
       setIsLoading(true);
       setProgress(0);
 

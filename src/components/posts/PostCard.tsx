@@ -40,7 +40,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   onRestore,
   showActions = true,
   showModerationPanel = true,
-  showReplies = true,
+  showReplies:_showReplies = true,
   isReply = false,
   level = 0,
   maxLevel = 3,
@@ -421,7 +421,7 @@ export const PostCard: React.FC<PostCardProps> = ({
           post={post}
           onHidePost={handleHide}
           onShowPost={handleShow}
-          onDeletePost={async (postId, reason) => {
+          onDeletePost={async (postId, _reason) => {
             if (onDelete) {
               await onDelete(postId);
             }

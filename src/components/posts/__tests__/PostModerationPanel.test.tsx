@@ -1,8 +1,7 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PostModerationPanel } from '../PostModerationPanel';
 import { PostListItem } from '../../../types/post';
-import { Stance, ReactionType } from '../../../types/common';
+import { Stance} from '../../../types/common';
 
 // Mock hooks
 jest.mock('../../../contexts/AuthContext', () => ({
@@ -30,22 +29,22 @@ const mockPost: PostListItem = {
   content: {
     text: 'This is a test post content.',
     preview: 'This is a test post content.',
-    hasAttachments: false,
-    hasLinks: false,
+    hasAttachments: 0,
+    hasLinks: 0,
     attachmentCount: 0,
   },
-  stance: Stance.PROS,
-  replyToId: undefined,
-  threadLevel: 0,
-  reactions: {
-    [ReactionType.LIKE]: 5,
-    [ReactionType.AGREE]: 3,
-    [ReactionType.DISAGREE]: 1,
-    [ReactionType.INSIGHTFUL]: 2,
-    [ReactionType.FUNNY]: 0,
-    totalCount: 11,
-    userReaction: undefined,
+  level:0, 
+  isActive:true,
+   statistics:{
+    replyCount: 2,
+    likeCount: 5,
+    agreeCount: 3,
+    disagreeCount: 1,
+    insightfulCount: 2,
+    funnyCount: 1,
+    viewCount: 25,
   },
+  stance: Stance.PROS,
   replyCount: 2,
   createdAt: '2024-01-01T10:00:00Z',
   updatedAt: '2024-01-01T10:00:00Z',
@@ -134,7 +133,7 @@ describe('PostModerationPanel', () => {
     expect(screen.getByText('投稿情報')).toBeInTheDocument();
     expect(screen.getByText('Post Author')).toBeInTheDocument();
     expect(screen.getByText('pros')).toBeInTheDocument();
-    expect(screen.getByText('11')).toBeInTheDocument(); // Total reactions
+    expect(screen.getByText('12')).toBeInTheDocument(); // Total reactions (5+3+1+2+1)
     expect(screen.getByText('2')).toBeInTheDocument(); // Reply count
   });
 
@@ -274,11 +273,16 @@ describe('PostModerationPanel', () => {
     // Check if dates are formatted (exact format may vary by locale)
     expect(screen.getByText(/2024/)).toBeInTheDocument();
   });
-
   it('handles action errors gracefully', async () => {
     const mockOnHidePost = jest.fn().mockRejectedValue(new Error('Network error'));
 
-    render(<PostModerationPanel post={mockPost} onHidePost={mockOnHidePost} {...mockHandlers} />);
+    render(
+      <PostModerationPanel
+        post={mockPost}
+        {...mockHandlers}
+        onHidePost={mockOnHidePost}
+      />
+    );
 
     // Mock alert
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});

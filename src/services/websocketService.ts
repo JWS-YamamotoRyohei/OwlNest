@@ -87,7 +87,7 @@ export class WebSocketService {
           resolve();
         };
 
-        const onError = (error: Event) => {
+        const onError = (_error: Event) => {
           clearTimeout(timeout);
           this.ws?.removeEventListener('open', onOpen);
           this.ws?.removeEventListener('error', onError);
@@ -212,7 +212,7 @@ export class WebSocketService {
     this.connectionErrors = [];
   }
 
-  private handleOpen(event: Event): void {
+  private handleOpen(_event: Event): void {
     console.log('WebSocket connected');
     this.isConnecting = false;
     this.reconnectAttempts = 0;

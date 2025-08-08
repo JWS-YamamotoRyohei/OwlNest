@@ -3,11 +3,8 @@ import {
   NotificationListItem,
   NotificationStatistics,
   NotificationPreferences,
-  NotificationFilters,
-  NotificationSortOptions,
   NotificationQueryOptions,
   NotificationBatchOperation,
-  PaginationResult,
 } from '../types';
 import { notificationService } from '../services/notificationService';
 import { useAuth } from './AuthContext';
@@ -307,7 +304,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (response.success && typeof response.data === 'number') {
         dispatch({ type: 'SET_UNREAD_COUNT', payload: response.data });
       }
-    } catch (error) {
+    } catch (_error) {
       // Silently fail for unread count refresh
     }
   }, [user]);

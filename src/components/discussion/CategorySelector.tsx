@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DiscussionCategory } from '../../types/common';
 import {
-  CATEGORY_HIERARCHY,
   getCategoryInfo,
   getAllCategories,
   searchCategories,

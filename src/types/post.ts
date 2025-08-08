@@ -151,7 +151,7 @@ export interface CreatePostData {
   attachments: FileAttachment[];
   stance: Stance;
   parentId?: string;
-  replyToId: string;
+  replyToId?: string;
 }
 
 /**

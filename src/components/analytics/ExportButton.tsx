@@ -16,7 +16,7 @@ interface ExportButtonProps {
 
 const ExportButton: React.FC<ExportButtonProps> = ({
   exportType,
-  title,
+  title: _title,
   dataIds = [],
   metric,
   variant = 'outline',

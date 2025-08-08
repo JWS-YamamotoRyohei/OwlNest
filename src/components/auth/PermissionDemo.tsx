@@ -6,12 +6,10 @@ import {
   AuthGate,
   RoleGate,
   PermissionGate,
-  MultiplePermissionsGate,
   ContentOwnershipGate,
 } from './PermissionGate';
 import UserRoleBadge, { UserRoleDisplay, RoleSelector } from './UserRoleBadge';
-import PermissionError, {
-  LoginRequiredError,
+import {
   PostPermissionError,
   CreateDiscussionError,
   ModerateError,
@@ -29,9 +27,6 @@ const PermissionDemo: React.FC = () => {
     canModerateContent,
     canManageUsers,
     isAdmin,
-    isCreator,
-    isContributor,
-    isViewer,
   } = usePermissions();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -42,7 +37,7 @@ const PermissionDemo: React.FC = () => {
       try {
         await updateUserRole(user.userId, newRole);
         alert(`ユーザー権限を${newRole}に変更しました`);
-      } catch (error) {
+      } catch (_error) {
         alert('権限変更に失敗しました');
       }
     }

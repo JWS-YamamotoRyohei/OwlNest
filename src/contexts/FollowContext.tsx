@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import {
-  Follow,
   FollowTargetType,
   CreateFollowData,
   UpdateFollowData,
@@ -9,7 +8,6 @@ import {
   FollowSuggestion,
   TimelineItem,
   TimelineQueryOptions,
-  PaginationResult,
 } from '../types';
 import { followService } from '../services/followService';
 import { useAuth } from './AuthContext';
@@ -383,7 +381,7 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         const response = await followService.isFollowing(targetType, targetId);
         return response.success ? response.data || false : false;
-      } catch (error) {
+      } catch (_error) {
         return false;
       }
     },
@@ -600,7 +598,7 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (response.success && typeof response.data === 'number') {
         dispatch({ type: 'SET_UNREAD_TIMELINE_COUNT', payload: response.data });
       }
-    } catch (error) {
+    } catch (_error) {
       // Silently fail for unread count refresh
     }
   }, [user]);

@@ -90,7 +90,7 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
         return;
       }
 
-      const isLoadingMoreData = loadMore && results.nextToken;
+      const isLoadingMoreData = loadMore && !!results.nextToken;
       setIsLoading(!isLoadingMoreData);
       setIsLoadingMore(isLoadingMoreData);
       setError(null);
@@ -274,7 +274,7 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
     if (autoSearch && (initialQuery || Object.keys(initialFilters).length > 0)) {
       search(initialQuery, initialFilters);
     }
-  }, []);
+  }, [autoSearch, initialQuery, initialFilters, search]);
 
   // Load saved searches on mount
   useEffect(() => {

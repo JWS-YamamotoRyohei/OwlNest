@@ -174,12 +174,6 @@ describe('Real-time Event Handling', () => {
 
     // Simulate receiving a new post event
     // This would normally come through WebSocket
-    const mockPost = {
-      postId: 'test-post',
-      discussionId: 'test-discussion',
-      content: { text: 'Test post content' },
-      authorId: 'test-user',
-    };
 
     // In a real scenario, this would be triggered by WebSocket message
     expect(onNewPost).not.toHaveBeenCalled();

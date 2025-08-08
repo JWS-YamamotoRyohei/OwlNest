@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useMediaQuery } from 'react-responsive';
 import { Header } from '../Header';
-import { Sidebar, sidebarWidth } from '../Sidebar';
+import { Sidebar } from '../Sidebar';
 import { PageTransition } from '../common/PageTransition';
 import { RoutePreloader } from '../../utils/routePreloader';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,7 +13,6 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isDesktop = useMediaQuery({ minWidth: 768 });
   const { hasPermission } = useAuth();
 
   // Preload common routes on mount

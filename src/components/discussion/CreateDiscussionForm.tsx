@@ -1,11 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import {
-  CreateDiscussionData,
-  CreateDiscussionPointData,
-  CreateBackgroundKnowledgeData,
-  AccessControl,
+  CreateDiscussionData
 } from '../../types/discussion';
-import { DiscussionCategory, Stance, AccessControlType } from '../../types/common';
+import {  Stance, AccessControlType } from '../../types/common';
 import CategorySelector from './CategorySelector';
 import DiscussionPointsEditor from './DiscussionPointsEditor';
 import BackgroundKnowledgeEditor from './BackgroundKnowledgeEditor';

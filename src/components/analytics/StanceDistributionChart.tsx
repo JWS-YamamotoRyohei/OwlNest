@@ -91,7 +91,7 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
     const centerX = 50;
     const centerY = 50;
 
-    return stanceData.map((stance, index) => {
+    return stanceData.map((stance, _index) => {
       const startAngle = (cumulativePercentage / 100) * 360;
       const endAngle = ((cumulativePercentage + stance.percentage) / 100) * 360;
 

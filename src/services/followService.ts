@@ -11,7 +11,6 @@ import {
   FollowExportData,
   TimelineItem,
   TimelineQueryOptions,
-  TimelineFilters,
   PaginationResult,
 } from '../types';
 import { apiService, ApiResponse } from './api';

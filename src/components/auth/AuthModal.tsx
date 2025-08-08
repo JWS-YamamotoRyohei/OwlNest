@@ -21,7 +21,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
   onSuccess,
 }) => {
   const [currentView, setCurrentView] = useState<AuthModalView>(initialView);
-  const [registrationEmail, setRegistrationEmail] = useState('');
+  const [registrationEmail, _setRegistrationEmail] = useState('');
 
   // Reset view when modal opens/closes
   React.useEffect(() => {
@@ -35,7 +35,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
     onClose();
   };
 
-  const handleRegistrationSuccess = (userSub: string) => {
+  const handleRegistrationSuccess = (_userSub: string) => {
     // Switch to confirmation view after successful registration
     setCurrentView('confirm-signup');
   };

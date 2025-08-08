@@ -5,15 +5,38 @@
 // }
 
 
+// {
+//   "extends": "./tsconfig.json",
+//   "compilerOptions": {
+//     "noEmit": true,
+//     "declaration": false,
+//     /* ★ ESLint では常に nodenext にして型解決を安定化 */
+//     "moduleResolution": "nodenext"
+//   },
+//   "include": ["src/**/*.{ts,tsx}"],
+//   "exclude": [
+//     "node_modules",
+//     "dist",
+//     "build",
+//     "cdk/**",
+//     "**/__tests__/**",
+//     "**/__mocks__/**",
+//     "**/fixtures/**",
+//     "**/generated/**"
+//   ]
+// }
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
     "declaration": false,
-    /* ★ ESLint では常に nodenext にして型解決を安定化 */
     "moduleResolution": "nodenext"
   },
-  "include": ["src/**/*.{ts,tsx}"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"   // ← vite-env.d.ts 用
+  ],
   "exclude": [
     "node_modules",
     "dist",
@@ -25,3 +48,4 @@
     "**/generated/**"
   ]
 }
+

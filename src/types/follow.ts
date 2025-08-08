@@ -1,5 +1,5 @@
 import { DynamoDBItem } from '../services/dynamodb';
-import { EntityType, BaseEntity, PaginationOptions, PaginationResult } from './common';
+import { EntityType, BaseEntity, PaginationOptions } from './common';
 
 /**
  * Follow relationship stored in DynamoDB

@@ -5,7 +5,6 @@ import { UserRole } from '../../types/auth';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { RoutePreloader } from '../../utils/routePreloader';
-import { useRouteMetadata } from '../../hooks/useRouteMetadata';
 
 interface RouteGuardProps {
   children: React.ReactNode;
@@ -29,13 +28,12 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
   redirectTo = '/login',
   fallback,
   showLoadingMessage = true,
-  routeName,
+  routeName:_routeName,
 }) => {
   const { isAuthenticated, isLoading, user, hasPermission } = useAuth();
   const location = useLocation();
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
-  const { getCurrentRoute } = useRouteMetadata();
-
+  
   // Handle page transitions and preloading
   useEffect(() => {
     if (isAuthenticated && user) {

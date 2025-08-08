@@ -7,6 +7,7 @@ import { SearchHistory } from '../components/search/SearchHistory';
 import { searchService, SearchResult, SearchSuggestion } from '../services/searchService';
 import { DiscussionSearchFilters, DiscussionListItem } from '../types/discussion';
 import { PostSearchFilters, PostListItem } from '../types/post';
+import { DiscussionCategory, Stance } from '../types/common';
 import './SearchPage.css';
 
 export const SearchPage: React.FC = () => {
@@ -31,6 +32,13 @@ export const SearchPage: React.FC = () => {
   const [searchHistory, setSearchHistory] = useState(searchService.getSearchHistory());
   const [savedSearches, setSavedSearches] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  // 初期ロード用（安定参照）
+  const performInitialSearch = useCallback(
+    (searchQuery: string, type: 'discussions' | 'posts', searchFilters: any) => {
+      performSearchCore(searchQuery, type, searchFilters, false);
+    },
+    [] // ← 依存なしで安定
+  );
 
   // Initialize from URL params
   useEffect(() => {
@@ -48,22 +56,33 @@ export const SearchPage: React.FC = () => {
         console.warn('Failed to parse filters from URL:', error);
       }
     }
-
-    // Perform search if query exists
-    if (urlQuery) {
-      performSearch(
-        urlQuery,
-        urlType,
-        urlFilters ? JSON.parse(decodeURIComponent(urlFilters)) : {}
-      );
-    }
-  }, []);
+  }, [searchParams]);
 
   // Load saved searches
   useEffect(() => {
     loadSavedSearches();
   }, []);
 
+  // Perform initial search when URL params change
+  useEffect(() => {
+    const urlQuery = searchParams.get('q') || '';
+    const urlType = (searchParams.get('type') as 'discussions' | 'posts') || 'discussions';
+    const urlFilters = searchParams.get('filters');
+
+    if (urlQuery) {
+      const parsedFilters = urlFilters
+        ? (() => {
+            try {
+              return JSON.parse(decodeURIComponent(urlFilters));
+            } catch {
+              return {};
+            }
+          })()
+        : {};
+      performInitialSearch(urlQuery, urlType, parsedFilters);
+    }
+  }, [searchParams, performInitialSearch]);
+  
   const updateURL = useCallback(
     (newQuery: string, newType: string, newFilters: any) => {
       const params = new URLSearchParams();
@@ -77,17 +96,19 @@ export const SearchPage: React.FC = () => {
     [setSearchParams]
   );
 
-  const performSearch = async (
+  // 共通のコア関数（依存なし）
+  const performSearchCore = async (
     searchQuery: string,
-    type: 'discussions' | 'posts' = searchType,
-    searchFilters: any = filters,
-    loadMore: boolean = false
+    type: 'discussions' | 'posts',
+    searchFilters: any,
+    loadMore: boolean,
+    nextToken?: string
   ) => {
     if (!searchQuery.trim() && Object.keys(searchFilters).length === 0) {
       return;
     }
 
-    const isLoadingMoreData = loadMore && results.nextToken;
+    const isLoadingMoreData = loadMore && !!nextToken;
     setIsLoading(!isLoadingMoreData);
     setIsLoadingMore(isLoadingMoreData);
 
@@ -97,7 +118,7 @@ export const SearchPage: React.FC = () => {
         filters: searchFilters,
         pagination: {
           limit: 20,
-          nextToken: isLoadingMoreData ? results.nextToken : undefined,
+          nextToken: isLoadingMoreData ? nextToken : undefined,
         },
         facets: true,
         highlight: true,
@@ -139,6 +160,19 @@ export const SearchPage: React.FC = () => {
       setIsLoadingMore(false);
     }
   };
+
+  // ユーザー操作用
+  const performSearch = useCallback(
+    (
+      searchQuery: string,
+      type: 'discussions' | 'posts' = searchType,
+      searchFilters: any = filters,
+      loadMore = false
+    ) => {
+      performSearchCore(searchQuery, type, searchFilters, loadMore, results.nextToken);
+    },
+    [searchType, filters, results.nextToken]
+  );
 
   const loadSuggestions = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
@@ -208,10 +242,12 @@ export const SearchPage: React.FC = () => {
   };
 
   const handleSuggestionSelect = (suggestion: SearchSuggestion) => {
-    if (suggestion.type === 'category') {
+    if (suggestion.type === 'category' && searchType === 'discussions') {
+      const discussionFilters = filters as DiscussionSearchFilters;
+      const categoryValue = suggestion.value as DiscussionCategory;
       const newFilters = {
-        ...filters,
-        categories: [...((filters as any).categories || []), suggestion.value],
+        ...discussionFilters,
+        categories: [...(discussionFilters.categories || []), categoryValue],
       };
       setFilters(newFilters);
       updateURL(query, searchType, newFilters);
@@ -311,18 +347,21 @@ export const SearchPage: React.FC = () => {
   const handleFacetClick = (facetType: string, facetValue: string) => {
     let newFilters = { ...filters };
 
-    if (facetType === 'category') {
-      const categories = (newFilters as any).categories || [];
-      if (!categories.includes(facetValue)) {
+    if (facetType === 'category' && searchType === 'discussions') {
+      const discussionFilters = newFilters as DiscussionSearchFilters;
+      const categories = discussionFilters.categories || [];
+      const categoryValue = facetValue as DiscussionCategory;
+      if (!categories.includes(categoryValue)) {
         newFilters = {
-          ...newFilters,
-          categories: [...categories, facetValue],
+          ...discussionFilters,
+          categories: [...categories, categoryValue],
         };
       }
     } else if (facetType === 'stance') {
+      const stanceValue = facetValue as Stance;
       newFilters = {
         ...newFilters,
-        [searchType === 'discussions' ? 'ownerStance' : 'stance']: facetValue,
+        [searchType === 'discussions' ? 'ownerStance' : 'stance']: stanceValue,
       };
     } else if (facetType === 'author') {
       newFilters = {

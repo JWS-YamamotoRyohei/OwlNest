@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AdvancedSearchFilters } from '../AdvancedSearchFilters';
 import { DiscussionSearchFilters } from '../../../types/discussion';
@@ -267,7 +266,6 @@ describe('AdvancedSearchFilters', () => {
       });
 
       // Find the confirm button in the dialog
-      const dialogConfirmButton = screen.getByRole('button', { name: '保存' });
       const confirmButtons = screen.getAllByText('保存');
       const saveConfirmButton = confirmButtons.find(button =>
         button.className.includes('advanced-search-filters__save-confirm')

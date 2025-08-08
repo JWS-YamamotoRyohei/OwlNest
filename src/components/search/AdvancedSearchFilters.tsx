@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DiscussionCategory, Stance, UserRole } from '../../types/common';
+import { DiscussionCategory, Stance } from '../../types/common';
 import { DiscussionSearchFilters } from '../../types/discussion';
 import { PostSearchFilters } from '../../types/post';
 import './AdvancedSearchFilters.css';
@@ -44,7 +44,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
 
   const getActiveFiltersCount = (): number => {
     let count = 0;
-    Object.entries(filters).forEach(([key, value]) => {
+    Object.entries(filters).forEach(([_key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
         if (Array.isArray(value) && value.length > 0) count++;
         else if (!Array.isArray(value)) count++;

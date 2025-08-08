@@ -3,8 +3,6 @@ import {
   ModerationQueueItem,
   ModerationQueueFilters,
   ReportPriority,
-  ReportStatus,
-  ReportCategory,
 } from '../../types/moderation';
 import { reportService } from '../../services/reportService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -30,38 +28,76 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({ className = ''
 
   const canModerate = hasPermission('canModerate');
 
+  // useEffect(() => {
+  //   if (canModerate) {
+  //     loadQueueItems();
+  //   }
+  // }, [canModerate, filters]);
+  // const loadQueueItems = async (loadMore = false) => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     const currentFilters = loadMore && nextToken ? { ...filters, nextToken } : filters;
+
+  //     const response = await reportService.getModerationQueue(currentFilters);
+
+  //     if (loadMore) {
+  //       setQueueItems(prev => [...prev, ...response.items]);
+  //     } else {
+  //       setQueueItems(response.items);
+  //     }
+
+  //     setTotalCount(response.totalCount);
+  //     setHasMore(response.hasMore);
+  //     setNextToken(response.nextToken);
+  //   } catch (error) {
+  //     console.error('Failed to load moderation queue:', error);
+  //     setError(error instanceof Error ? error.message : 'キューの読み込みに失敗しました');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const loadQueueItems = React.useCallback(
+    async (opts?: { loadMore?: boolean; token?: string }) => {
+      const loadMore = opts?.loadMore ?? false;
+      const token = opts?.token;
+  
+      try {
+        setLoading(true);
+        setError(null);
+  
+        const currentFilters = loadMore && token
+          ? { ...filters, nextToken: token }
+          : filters;
+  
+        const response = await reportService.getModerationQueue(currentFilters);
+  
+        if (loadMore) {
+          setQueueItems(prev => [...prev, ...response.items]);
+        } else {
+          setQueueItems(response.items);
+        }
+  
+        setTotalCount(response.totalCount);
+        setHasMore(response.hasMore);
+        setNextToken(response.nextToken);
+      } catch (error) {
+        console.error('Failed to load moderation queue:', error);
+        setError(error instanceof Error ? error.message : 'キューの読み込みに失敗しました');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [filters] // ← nextToken を入れないのがポイント
+  );
   useEffect(() => {
     if (canModerate) {
       loadQueueItems();
     }
-  }, [canModerate, filters]);
-
-  const loadQueueItems = async (loadMore = false) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const currentFilters = loadMore && nextToken ? { ...filters, nextToken } : filters;
-
-      const response = await reportService.getModerationQueue(currentFilters);
-
-      if (loadMore) {
-        setQueueItems(prev => [...prev, ...response.items]);
-      } else {
-        setQueueItems(response.items);
-      }
-
-      setTotalCount(response.totalCount);
-      setHasMore(response.hasMore);
-      setNextToken(response.nextToken);
-    } catch (error) {
-      console.error('Failed to load moderation queue:', error);
-      setError(error instanceof Error ? error.message : 'キューの読み込みに失敗しました');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  }, [canModerate, filters, loadQueueItems]);
+ 
   const handleAssignToSelf = async (queueItemId: string) => {
     try {
       await reportService.assignQueueItem(queueItemId, user?.userId);
@@ -120,12 +156,12 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({ className = ''
     }
   };
 
-  const getPriorityColor = (priority: ReportPriority): string => {
+  const _getPriorityColor = (priority: ReportPriority): string => {
     const priorities = reportService.getPriorityLevels();
     return priorities.find(p => p.value === priority)?.color || '#6b7280';
   };
 
-  const getPriorityLabel = (priority: ReportPriority): string => {
+  const _getPriorityLabel = (priority: ReportPriority): string => {
     const priorities = reportService.getPriorityLevels();
     return priorities.find(p => p.value === priority)?.label || priority;
   };
@@ -249,14 +285,12 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({ className = ''
           {/* Load More */}
           {hasMore && (
             <div className="moderation-queue__load-more">
-              <button
-                type="button"
-                className="moderation-queue__load-more-button"
-                onClick={() => loadQueueItems(true)}
-                disabled={loading}
-              >
-                {loading ? '読み込み中...' : 'さらに読み込む'}
-              </button>
+             <button
+  onClick={() => loadQueueItems({ loadMore: true, token: nextToken })}
+  disabled={loading}
+>
+  {loading ? '読み込み中...' : 'さらに読み込む'}
+</button>
             </div>
           )}
         </>

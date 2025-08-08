@@ -2,50 +2,70 @@ import React, { ReactElement } from 'react';
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { vi, expect } from 'vitest';
 import { DiscussionCategory, EntityType, Stance } from '@/types/common';
 import { DiscussionListItem, Post } from '@/types';
-import { User, UserRole } from '@/types/auth';
+import {
+  ConfirmSignUpData,
+  ForgotPasswordData,
+  ConfirmForgotPasswordData,
+  ChangePasswordData,
+  UpdateUserData,
+  UserRole,
+  Permission,
+  User,
+  LoginCredentials,
+  RegisterData,
+} from '@/types/auth';
 
-// Mock providers for testing
+import type { AuthContextType } from '@/contexts/AuthContext';
+
 const MockAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
 const MockNotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   children;
 const MockWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
 const MockFollowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
 
-// Test providers wrapper
-const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        gcTime: 0,
-      },
-    },
-  });
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <MockAuthProvider>
-          <MockWebSocketProvider>
-            <MockNotificationProvider>
-              <MockFollowProvider>{children}</MockFollowProvider>
-            </MockNotificationProvider>
-          </MockWebSocketProvider>
-        </MockAuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
-};
+
+// Custom render options with initialUser
+interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
+  initialUser?: User;
+}
 
 // Custom render function with providers
 export const renderWithProviders = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: CustomRenderOptions
 ): RenderResult => {
-  return render(ui, { wrapper: AllTheProviders, ...options });
+  const { initialUser, ...renderOptions } = options || {};
+  
+  // Create a wrapper that includes the initial user if provided
+  const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+          gcTime: 0,
+        },
+      },
+    });
+
+    return (
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <MockAuthProvider>
+            <MockWebSocketProvider>
+              <MockNotificationProvider>
+                <MockFollowProvider>{children}</MockFollowProvider>
+              </MockNotificationProvider>
+            </MockWebSocketProvider>
+          </MockAuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    );
+  };
+
+  return render(ui, { wrapper: TestWrapper, ...renderOptions });
 };
 
 // Mock data factories
@@ -100,9 +120,43 @@ export const createMockDiscussion = (overrides = {}): DiscussionListItem => ({
     neutralCount: 0,
     followersCount: 0,
   },
+  ...overrides,
+});
 
-  // postCount: 0,
-  // participantCount: 1,
+export const makeAuthCtx = (overrides: Partial<AuthContextType> = {}): AuthContextType => ({
+  // State
+  user: null as User | null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  challenge: null,
+
+  login: jest.fn<Promise<void>, [LoginCredentials]>().mockResolvedValue(),
+  register: jest
+    .fn<Promise<{ userSub: string; codeDeliveryDetails: any }>, [RegisterData]>()
+    .mockResolvedValue({ userSub: 'mock-sub', codeDeliveryDetails: {} }),
+  confirmSignUp: jest.fn<Promise<void>, [ConfirmSignUpData]>().mockResolvedValue(),
+  resendConfirmationCode: jest.fn<Promise<any>, [string]>().mockResolvedValue({}),
+  forgotPassword: jest.fn<Promise<any>, [ForgotPasswordData]>().mockResolvedValue({}),
+  confirmForgotPassword: jest.fn<Promise<void>, [ConfirmForgotPasswordData]>().mockResolvedValue(),
+  changePassword: jest.fn<Promise<void>, [ChangePasswordData]>().mockResolvedValue(),
+  updateUser: jest.fn<Promise<void>, [UpdateUserData]>().mockResolvedValue(),
+  updateUserRole: jest.fn<Promise<void>, [string, UserRole]>().mockResolvedValue(),
+  logout: jest.fn<Promise<void>, []>().mockResolvedValue(),
+  clearError: jest.fn<void, []>(),
+  clearChallenge: jest.fn<void, []>(),
+
+  hasPermission: jest.fn<boolean, [keyof Permission]>().mockReturnValue(false),
+
+  canView: jest.fn().mockReturnValue(true),
+  canPost: jest.fn().mockReturnValue(false),
+  canCreateDiscussion: jest.fn().mockReturnValue(false),
+  canModerate: jest.fn().mockReturnValue(false),
+  canManageUsers: jest.fn().mockReturnValue(false),
+  isAdmin: jest.fn().mockReturnValue(false),
+  isCreator: jest.fn().mockReturnValue(false),
+  isContributor: jest.fn().mockReturnValue(false),
+  isViewer: jest.fn().mockReturnValue(true),
   ...overrides,
 });
 
@@ -231,14 +285,14 @@ export const mockLocalStorage = () => {
   const store: { [key: string]: string } = {};
 
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
-    clear: vi.fn(() => {
+    clear: jest.fn(() => {
       Object.keys(store).forEach(key => delete store[key]);
     }),
   };
@@ -249,14 +303,14 @@ export const mockSessionStorage = () => {
   const store: { [key: string]: string } = {};
 
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
       store[key] = value;
     }),
-    removeItem: vi.fn((key: string) => {
+    removeItem: jest.fn((key: string) => {
       delete store[key];
     }),
-    clear: vi.fn(() => {
+    clear: jest.fn(() => {
       Object.keys(store).forEach(key => delete store[key]);
     }),
   };
@@ -266,11 +320,11 @@ export const mockSessionStorage = () => {
 export const mockFetch = (response: any, options: { status?: number; ok?: boolean } = {}) => {
   const { status = 200, ok = true } = options;
 
-  return vi.fn().mockResolvedValue({
+  return jest.fn().mockResolvedValue({
     ok,
     status,
-    json: vi.fn().mockResolvedValue(response),
-    text: vi.fn().mockResolvedValue(JSON.stringify(response)),
+    json: jest.fn().mockResolvedValue(response),
+    text: jest.fn().mockResolvedValue(JSON.stringify(response)),
   });
 };
 
@@ -342,19 +396,6 @@ export const checkAccessibility = async (container: HTMLElement): Promise<void> 
   });
 };
 
-// Custom matchers for Vitest
-declare module 'vitest' {
-  interface Assertion<T = any> {
-    toBeAccessible(): T;
-    toHavePerformantRender(maxTime: number): T;
-  }
-  interface AsymmetricMatchersContaining {
-    toBeAccessible(): any;
-    toHavePerformantRender(maxTime: number): any;
-  }
-}
-
-// Setup custom matchers
 export const setupCustomMatchers = () => {
   expect.extend({
     toBeAccessible(received: HTMLElement) {
@@ -392,37 +433,37 @@ export const setupTestEnvironment = () => {
   // Mock window.matchMedia
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: vi.fn().mockImplementation(query => ({
+    value: jest.fn().mockImplementation(query => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: vi.fn(), // deprecated
-      removeListener: vi.fn(), // deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
+      addListener: jest.fn(), // deprecated
+      removeListener: jest.fn(), // deprecated
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
     })),
   });
 
   // Mock IntersectionObserver
-  (global as any).IntersectionObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
+  (global as any).IntersectionObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
   }));
 
   // Mock ResizeObserver
-  (global as any).ResizeObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
+  (global as any).ResizeObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
   }));
 
   // Mock requestIdleCallback
-  (global as any).requestIdleCallback = vi
+  (global as any).requestIdleCallback = jest
     .fn()
-    .mockImplementation((cb: Function) => setTimeout(cb, 0));
-  (global as any).cancelIdleCallback = vi.fn();
+    .mockImplementation((cb: () => void) => setTimeout(cb, 0));
+  (global as any).cancelIdleCallback = jest.fn();
 
   // Setup custom matchers
   setupCustomMatchers();
@@ -430,8 +471,8 @@ export const setupTestEnvironment = () => {
 
 // Cleanup utilities
 export const cleanup = () => {
-  vi.clearAllMocks();
-  vi.clearAllTimers();
+  jest.clearAllMocks();
+  jest.clearAllTimers();
 };
 
 // Export everything

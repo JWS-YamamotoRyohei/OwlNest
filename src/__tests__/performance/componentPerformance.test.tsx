@@ -241,7 +241,7 @@ describe('Component Performance Tests', () => {
         TestUtils: 12000, // ~12KB estimated
       };
 
-      Object.entries(componentSizeEstimate).forEach(([component, size]) => {
+      Object.entries(componentSizeEstimate).forEach(([, size]) => {
         // Components should be reasonably sized
         expect(size).toBeLessThan(50000); // 50KB max per component
       });
@@ -327,7 +327,7 @@ describe('Component Performance Tests', () => {
             </ErrorBoundary>,
             { initialUser: mockUser }
           );
-        } catch (error) {
+        } catch (_error) {
           // Expected error
         }
       });

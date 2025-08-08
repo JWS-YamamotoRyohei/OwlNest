@@ -147,7 +147,7 @@ export const isValidCategory = (categoryId: string): categoryId is DiscussionCat
 /**
  * Get category statistics (placeholder for future implementation)
  */
-export const getCategoryStatistics = (categoryId: DiscussionCategory) => {
+export const getCategoryStatistics = (_categoryId: DiscussionCategory) => {
   // This would be implemented with actual data from the backend
   return {
     discussionCount: 0,

@@ -12,7 +12,6 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   className = '',
 }) => {
   const {
-    isConnected,
     connectionState,
     isOffline,
     lastError,

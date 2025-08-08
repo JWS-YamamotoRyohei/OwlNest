@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   UserSanction,
   SanctionType,
@@ -26,11 +26,8 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
     isActive: true,
   });
 
-  useEffect(() => {
-    loadSanctions();
-  }, [userId, filters]);
 
-  const loadSanctions = async () => {
+  const loadSanctions = useCallback(async () => {
     try {
       setLoading(true);
       const sanctionsData = userId
@@ -42,8 +39,12 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, filters]);
 
+  useEffect(() => {
+    loadSanctions();
+  }, [loadSanctions]); 
+  
   const handleCreateSanction = async (sanctionData: CreateSanctionData) => {
     try {
       const newSanction = await userSanctionService.createSanction(sanctionData);
@@ -241,7 +242,7 @@ interface SanctionCardProps {
 const SanctionCard: React.FC<SanctionCardProps> = ({
   sanction,
   onRevoke,
-  onAppeal,
+  onAppeal:_onAppeal,
   onReviewAppeal,
   onViewDetails,
   onNotifyUser,

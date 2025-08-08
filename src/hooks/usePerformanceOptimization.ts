@@ -54,7 +54,24 @@ export function useRoutePreloading() {
 
   const preloadByPattern = React.useCallback(() => {
     const currentPath = window.location.pathname;
-    RoutePreloader.preloadByPattern?.(currentPath, navigationHistory);
+
+    // Preload related routes based on current path patterns
+    if (currentPath.includes('/discussions')) {
+      RoutePreloader.queuePreload('discussion', undefined, { priority: 3 });
+      RoutePreloader.queuePreload('create-discussion', undefined, { priority: 2 });
+    } else if (currentPath.includes('/discussion/')) {
+      RoutePreloader.queuePreload('discussions', undefined, { priority: 3 });
+      RoutePreloader.queuePreload('timeline', undefined, { priority: 2 });
+    } else if (currentPath === '/') {
+      RoutePreloader.queuePreload('discussions', undefined, { priority: 4 });
+      RoutePreloader.queuePreload('timeline', undefined, { priority: 3 });
+    }
+
+    // Preload based on navigation history patterns
+    const recentRoutes = navigationHistory.slice(-3);
+    if (recentRoutes.includes('/discussions') && recentRoutes.includes('/timeline')) {
+      RoutePreloader.queuePreload('following', undefined, { priority: 2 });
+    }
   }, [navigationHistory]);
 
   return {

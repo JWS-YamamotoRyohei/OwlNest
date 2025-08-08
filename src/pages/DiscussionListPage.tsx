@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DiscussionListItem, DiscussionSearchFilters } from '../types/discussion';
 import { DiscussionList } from '../components/discussions/DiscussionList';
 import { DiscussionFilters } from '../components/discussions/DiscussionFilters';
@@ -148,11 +148,13 @@ const DiscussionListPage: React.FC = () => {
       console.error('Failed to unfollow discussion:', error);
     }
   }, []);
-
+  const didInitRef = useRef(false);
   // Initial load
   useEffect(() => {
+    if (didInitRef.current) return; // 2回目以降は無視
+    didInitRef.current = true;
     loadDiscussions(true);
-  }, []);
+  }, [loadDiscussions]); 
 
   return (
     <>

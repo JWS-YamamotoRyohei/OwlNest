@@ -42,7 +42,7 @@ class PerformanceMonitor {
         });
         navObserver.observe({ entryTypes: ['navigation'] });
         this.observers.set('navigation', navObserver);
-      } catch (e) {
+      } catch (_e) {
         console.warn('Navigation timing observer not supported');
       }
 
@@ -57,7 +57,7 @@ class PerformanceMonitor {
         });
         paintObserver.observe({ entryTypes: ['paint'] });
         this.observers.set('paint', paintObserver);
-      } catch (e) {
+      } catch (_e) {
         console.warn('Paint timing observer not supported');
       }
 
@@ -70,7 +70,7 @@ class PerformanceMonitor {
         });
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
         this.observers.set('lcp', lcpObserver);
-      } catch (e) {
+      } catch (_e) {
         console.warn('LCP observer not supported');
       }
 
@@ -87,7 +87,7 @@ class PerformanceMonitor {
         });
         clsObserver.observe({ entryTypes: ['layout-shift'] });
         this.observers.set('cls', clsObserver);
-      } catch (e) {
+      } catch (_e) {
         console.warn('CLS observer not supported');
       }
     }

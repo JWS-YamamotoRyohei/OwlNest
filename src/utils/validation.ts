@@ -503,8 +503,8 @@ export class PostValidator {
     }
 
     // Validate attachments (optional)
-    if (data.content.attachments) {
-      if (data.content.attachments.length > 10) {
+    if (data.content.hasAttachments) {
+      if (data.attachments.length > 10) {
         errors.push({
           field: 'content.attachments',
           message: '添付ファイルは10個まで追加できます',
@@ -512,7 +512,7 @@ export class PostValidator {
         });
       }
 
-      data.content.attachments.forEach((attachment, index) => {
+      data.attachments.forEach((attachment, index) => {
         if (!attachment.url || !ValidationUtils.isValidUrl(attachment.url)) {
           errors.push({
             field: `content.attachments[${index}].url`,
@@ -542,8 +542,8 @@ export class PostValidator {
     const errors: ValidationError[] = [];
 
     // Validate content (optional)
-    if (data.content?.text !== undefined) {
-      if (!data.content.text) {
+    if (data.content !== undefined) {
+      if (!data.content) {
         errors.push({
           field: 'content.text',
           message: '投稿内容は必須です',
@@ -551,7 +551,7 @@ export class PostValidator {
         });
       } else {
         const validation = ValidationUtils.validateAndSanitizeText(
-          data.content.text,
+          data.content,
           1,
           5000,
           true

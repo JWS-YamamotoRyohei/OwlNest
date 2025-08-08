@@ -51,7 +51,9 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
       // Build parent-child relationships
       pointMap.forEach(point => {
         if (point.parentId) {
-          const parent = Array.from(pointMap.values()).find(p => p.id.startsWith(point.parentId!));
+          const parent = Array.from(pointMap.values()).find(p => 
+            point.parentId && p.id.startsWith(point.parentId)
+          );
           if (parent) {
             parent.children.push(point);
             point.level = parent.level + 1;
@@ -68,29 +70,7 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
     [expandedPoints]
   );
 
-  const flattenHierarchy = useCallback(
-    (hierarchicalPoints: HierarchicalPoint[]): CreateDiscussionPointData[] => {
-      const result: CreateDiscussionPointData[] = [];
 
-      const traverse = (points: HierarchicalPoint[]) => {
-        points.forEach(point => {
-          result.push({
-            title: point.title,
-            description: point.description,
-            parentId: point.parentId,
-            order: point.order,
-          });
-          if (point.children.length > 0) {
-            traverse(point.children);
-          }
-        });
-      };
-
-      traverse(hierarchicalPoints);
-      return result;
-    },
-    []
-  );
 
   const addPoint = useCallback(
     (parentId?: string) => {
@@ -149,29 +129,28 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
     },
     [points, onChange]
   );
-
-  const handleDragStart = (e: React.DragEvent, index: number) => {
+  const handleDragStart = useCallback((e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
+  }, []);
+  
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+  }, []);
+  
+  const handleDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     if (draggedIndex !== null && draggedIndex !== dropIndex) {
       movePoint(draggedIndex, dropIndex);
     }
     setDraggedIndex(null);
-  };
-
-  const handleDragEnd = () => {
+  }, [draggedIndex, movePoint]);
+  
+  const handleDragEnd = useCallback(() => {
     setDraggedIndex(null);
-  };
-
+  }, []);
+  
   const toggleExpanded = useCallback((pointId: string) => {
     setExpandedPoints(prev => {
       const newSet = new Set(prev);
@@ -192,7 +171,7 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
   );
 
   const renderHierarchicalPoint = useCallback(
-    (point: HierarchicalPoint, index: number, parentIndex?: number) => {
+    (point: HierarchicalPoint, index: number, _parentIndex?: number) => {
       const hasChildren = point.children.length > 0;
       const canHaveChildren = canAddChild(point);
       const indentLevel = point.level;

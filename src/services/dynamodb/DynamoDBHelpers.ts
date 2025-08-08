@@ -301,7 +301,7 @@ export class DynamoDBHelpers {
     try {
       const item = await this.dynamoService.getItem(PK, SK);
       return item !== null;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

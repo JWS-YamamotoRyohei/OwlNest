@@ -4,7 +4,6 @@ import {
   BaseEntity,
   NotificationType,
   PaginationOptions,
-  PaginationResult,
 } from './common';
 
 /**

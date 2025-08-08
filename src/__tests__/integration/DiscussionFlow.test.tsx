@@ -6,13 +6,12 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   renderWithProviders,
-  createMockUser,
   createMockDiscussion,
   createMockPost,
   setupTestEnvironment,
   cleanup,
 } from '../../utils/testUtils';
-import { UserRole } from '../../types/common';
+
 // Mock services before importing
 jest.mock('../../services/discussionService', () => ({
   getDiscussions: jest.fn(),

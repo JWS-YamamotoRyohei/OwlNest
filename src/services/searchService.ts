@@ -1,6 +1,6 @@
-import { ApiResponse, PaginationResult, PaginationOptions } from '../types/common';
-import { Discussion, DiscussionSearchFilters, DiscussionListItem } from '../types/discussion';
-import { Post, PostSearchFilters, PostListItem } from '../types/post';
+import { ApiResponse, PaginationOptions } from '../types/common';
+import { DiscussionListItem } from '../types/discussion';
+import { PostListItem } from '../types/post';
 import { searchPerformanceMonitor, QueryOptimizer } from '../utils/searchPerformance';
 import { apiService } from './api';
 import { searchCache, suggestionCache, popularSearchCache } from './searchCache';

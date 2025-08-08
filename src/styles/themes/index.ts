@@ -26,4 +26,4 @@ export const theme = {
 } as const;
 
 export type ThemeMode = 'light' | 'dark';
-export type FullTheme = typeof theme.light | typeof theme.dark;
+export type FullTheme = typeof theme.light  ;

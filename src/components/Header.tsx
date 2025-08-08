@@ -1,10 +1,8 @@
 import { FC, CSSProperties } from 'react';
-import { useMediaQuery } from 'react-responsive';
 
 type HeaderProps = { onButtonClick: () => void; onIconClick: () => void };
 
 export const Header: FC<HeaderProps> = ({ onButtonClick, onIconClick }) => {
-  const isDesktop = useMediaQuery({ minWidth: 768 });
 
   const style: CSSProperties = {
     width: '100%',

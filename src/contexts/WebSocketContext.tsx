@@ -7,7 +7,6 @@ import React, {
   ReactNode,
 } from 'react';
 import {
-  WebSocketService,
   WebSocketMessage,
   getWebSocketService,
 } from '../services/websocketService';
@@ -44,7 +43,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   children,
   autoConnect = true,
 }) => {
-  const { user, isAuthenticated } = useAuth();
+  const {isAuthenticated } = useAuth();
   const [websocketService] = useState(() => getWebSocketService());
   const [isConnected, setIsConnected] = useState(false);
   const [connectionState, setConnectionState] = useState('DISCONNECTED');

@@ -163,7 +163,7 @@ export class FileUploadService {
    * Cancel all active uploads
    */
   cancelAllUploads(): void {
-    for (const [fileId, controller] of this.activeUploads) {
+    for (const [_fileId, controller] of this.activeUploads) {
       controller.abort();
     }
     this.activeUploads.clear();

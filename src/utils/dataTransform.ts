@@ -3,28 +3,21 @@ import {
   UserListItem,
   UserPublicProfile,
   CreateUserData,
-  UpdateUserData,
 } from '../types/User';
 import {
   Discussion,
   DiscussionPoint,
-  BackgroundKnowledge,
   DiscussionListItem,
   DiscussionSummary,
-  DiscussionDetail,
   CreateDiscussionData,
-  UpdateDiscussionData,
 } from '../types/discussion';
-import { Post, PostListItem, PostDetail, CreatePostData, UpdatePostData } from '../types/post';
+import { Post, PostListItem, CreatePostData } from '../types/post';
 import {
   UserRole,
   Stance,
   EntityType,
   AccessControlType,
   UserPreferences,
-  NotificationSettings,
-  PrivacySettings,
-  DisplaySettings,
 } from '../types/common';
 import { DynamoDBHelpers } from '../services/dynamodb';
 
@@ -260,7 +253,7 @@ export class DataTransformUtils {
   ): DiscussionPoint[] {
     const now = new Date().toISOString();
 
-    return data.points.map((pointData, index) => ({
+    return data.points.map((pointData) => ({
       PK: `DISCUSSION#${discussionId}`,
       SK: `POINT#${DynamoDBHelpers.generateId('point_')}`,
       GSI1PK: `DISCUSSION#${discussionId}`,
@@ -353,54 +346,70 @@ export class DataTransformUtils {
       PK: `DISCUSSION#${data.discussionId}`,
       SK: `POST#${postId}`,
       GSI1PK: `POINT#${data.discussionPointId}`,
-      GSI1SK: `POST#${now}`,
-      GSI2PK: `AUTHOR#${authorId}`,
-      GSI2SK: `POST#${now}`,
+      GSI1SK: `POST#${postId}`,
+      GSI2PK: `USER#${authorId}`,
+      GSI2SK: `POST#${postId}`,
       EntityType: EntityType.POST,
 
+      // Core post information
       postId,
       discussionId: data.discussionId,
       discussionPointId: data.discussionPointId,
       authorId,
       authorDisplayName,
-
-      content: {
-        text: data.content.text,
-        formatting: data.content.formatting || {},
-        attachments: data.content.attachments || [],
-        links: [], // Will be extracted from text
-        mentions: [], // Will be extracted from mentions array
-        hashtags: [], // Will be extracted from text
-      },
+      content: data.content.text,
       stance: data.stance,
 
-      replyToId: data.replyToId,
-      threadLevel: data.replyToId ? 1 : 0, // Will be calculated based on parent
-      threadPath: data.replyToId ? `${data.replyToId}/${postId}` : postId,
+      // Hierarchy (for replies)
+      parentId: data.parentId,
+      level: data.parentId ? 1 : 0, // Will be calculated based on parent hierarchy
 
-      reactions: {
-        like: 0,
-        agree: 0,
-        disagree: 0,
-        insightful: 0,
-        funny: 0,
-        totalCount: 0,
-      },
-      replyCount: 0,
+      // File attachments
+      attachments: data.attachments.length > 0 ? data.attachments : undefined,
 
+      // Post status
+      isActive: true,
+      isEdited: false,
+      editedAt: undefined,
+
+      // Moderation
       moderation: {
         isHidden: false,
+        hiddenBy: undefined,
+        hiddenAt: undefined,
+        hiddenReason: undefined,
         isDeleted: false,
+        deletedBy: undefined,
+        deletedAt: undefined,
+        deletedReason: undefined,
         isReported: false,
         reportCount: 0,
+        lastReportedAt: undefined,
       },
 
+      // Statistics
+      statistics: {
+        viewCount: 0,
+        participantCount: 0,
+        postCount: 0,
+        reactionCount: 0,
+        shareCount: 0,
+        lastActivityAt: now,
+        replyCount: 0,
+        likeCount: 0,
+        agreeCount: 0,
+        disagreeCount: 0,
+        insightfulCount: 0,
+        funnyCount: 0,
+      },
+
+      // Metadata
       metadata: {
         version: 1,
-        editCount: 0,
-        isEdited: false,
-        editHistory: [],
+        ipAddress: undefined,
+        userAgent: undefined,
         source: 'web',
+        editHistory: [],
       },
 
       createdAt: now,
@@ -417,6 +426,8 @@ export class DataTransformUtils {
     discussionPointTitle?: string,
     authorAvatar?: string
   ): PostListItem {
+    const links = this.extractLinks(post.content);
+
     return {
       postId: post.postId,
       discussionId: post.discussionId,
@@ -427,20 +438,35 @@ export class DataTransformUtils {
       authorDisplayName: post.authorDisplayName,
       authorAvatar,
       content: {
-        text: post.content.text,
-        preview: this.truncateText(post.content.text, 200),
-        hasAttachments: post.content.attachments.length > 0,
-        hasLinks: post.content.links.length > 0,
-        attachmentCount: post.content.attachments.length,
+        text: post.content,
+        preview: this.truncateText(post.content, 200),
+        hasAttachments: post.attachments ? post.attachments.length : 0,
+        hasLinks: links.length,
+        attachmentCount: post.attachments ? post.attachments.length : 0,
       },
       stance: post.stance,
-      replyToId: post.replyToId,
-      threadLevel: post.threadLevel,
-      reactions: post.reactions,
-      replyCount: post.replyCount,
+      parentId: post.parentId,
+      level: post.level,
+      attachments: post.attachments,
+      isActive: post.isActive,
+      isEdited: post.isEdited,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      isEdited: post.metadata.isEdited,
+      replyCount: post.statistics.replyCount,
+      statistics: {
+        replyCount: post.statistics.replyCount,
+        likeCount: post.statistics.likeCount,
+        agreeCount: post.statistics.agreeCount,
+        disagreeCount: post.statistics.disagreeCount,
+        insightfulCount: post.statistics.insightfulCount,
+        funnyCount: post.statistics.funnyCount,
+        viewCount: post.statistics.viewCount,
+      },
+      editedAt: post.editedAt,
+      canEdit: false, // Will be set based on user permissions
+      canDelete: false, // Will be set based on user permissions
+      canReply: true, // Will be set based on user permissions
+      canReact: true, // Will be set based on user permissions
     };
   }
 
@@ -448,8 +474,7 @@ export class DataTransformUtils {
    * Extract mentions from text and mention array
    */
   static extractMentions(
-    text: string,
-    mentionUserIds: string[] = []
+    text: string
   ): Array<{
     userId: string;
     displayName: string;

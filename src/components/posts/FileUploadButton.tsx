@@ -96,7 +96,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
 
     // Validate each file
     const validationErrors: string[] = [];
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       const error = validateFile(file);
       if (error) {
         validationErrors.push(`${file.name}: ${error}`);
@@ -157,7 +157,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
     });
   };
 
-  const formatFileSize = (bytes: number): string => {
+  const _formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];

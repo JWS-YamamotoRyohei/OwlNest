@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import {
   User,
-  AuthTokens,
   LoginCredentials,
   RegisterData,
   ConfirmSignUpData,
@@ -113,7 +112,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 };
 
 // Auth context interface
-interface AuthContextType {
+export interface AuthContextType {
   // State
   user: User | null;
   isAuthenticated: boolean;

@@ -1,7 +1,6 @@
 // Confirm sign up form component
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { ConfirmSignUpData } from '../../types/auth';
 import './AuthForms.css';
 
 interface ConfirmSignUpFormProps {

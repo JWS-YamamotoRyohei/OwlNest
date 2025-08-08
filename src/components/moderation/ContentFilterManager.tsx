@@ -16,12 +16,24 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({ onFi
   const [editingFilter, setEditingFilter] = useState<ContentFilterRule | null>(null);
   const [testContent, setTestContent] = useState('');
   const [testResults, setTestResults] = useState<any>(null);
+  const contentFilterService = React.useMemo(() => new ContentFilterService(), []);
 
   useEffect(() => {
-    loadFilters();
-    loadConfig();
-  }, []);
-  const contentFilterService = new ContentFilterService();
+    const fetchData = async () => {
+      try {
+        const filtersData = await contentFilterService.getActiveFilters();
+        setFilters(filtersData);
+        const configData = await contentFilterService.getFilterConfig();
+        setConfig(configData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '読み込み失敗');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [contentFilterService])
+  
 
   const loadFilters = async () => {
     try {
@@ -32,7 +44,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({ onFi
     }
   };
 
-  const loadConfig = async () => {
+  const _loadConfig = async () => {
     try {
       const configData = await contentFilterService.getFilterConfig();
       setConfig(configData);
@@ -279,7 +291,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
 }) => {
   const [showStats, setShowStats] = useState(false);
   const [stats, setStats] = useState<any>(null);
-  const contentFilterService = new ContentFilterService();
+  const contentFilterService = React.useMemo(() => new ContentFilterService(), []);
   const loadStats = async () => {
     try {
       const statsData = await contentFilterService.getFilterStats(filter.filterId);
@@ -468,7 +480,12 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({ filter, onSave, onCan
               <label>タイプ</label>
               <select
                 value={formData.type}
-                onChange={e => setFormData({ ...formData, type: e.target.value as any })}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as 'keyword' | 'regex' | 'ml_model' | 'external_api',
+                  })
+                }
               >
                 <option value="keyword">キーワード</option>
                 <option value="regex">正規表現</option>
@@ -481,7 +498,12 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({ filter, onSave, onCan
               <label>アクション</label>
               <select
                 value={formData.action}
-                onChange={e => setFormData({ ...formData, action: e.target.value as any })}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    action: e.target.value as 'flag' | 'hide' | 'delete' | 'queue_for_review',
+                  })
+                }
               >
                 <option value="flag">フラグ</option>
                 <option value="hide">非表示</option>
@@ -520,7 +542,12 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({ filter, onSave, onCan
               <label>重要度</label>
               <select
                 value={formData.severity}
-                onChange={e => setFormData({ ...formData, severity: e.target.value as any })}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    severity: e.target.value as 'low' | 'medium' | 'high',
+                  })
+                }
               >
                 <option value="low">低</option>
                 <option value="medium">中</option>

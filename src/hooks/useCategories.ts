@@ -3,10 +3,8 @@ import { DiscussionCategory } from '../types/common';
 import {
   CATEGORY_HIERARCHY,
   getCategoryInfo,
-  getCategoriesByParent,
   searchCategories,
   validateCategorySelection,
-  MAIN_CATEGORIES,
 } from '../constants/categories';
 
 export interface UseCategoriesOptions {
@@ -32,6 +30,17 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
   const [selectedCategories, setSelectedCategories] =
     useState<DiscussionCategory[]>(initialCategories);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Helper functions
+  const _getCategoriesByParent = useCallback((_parentId: string) => {
+    // Since current category structure is flat, return empty array
+    // This function is kept for future hierarchical category support
+    return [];
+  }, []);
+
+  const getCategoryById = useCallback((categoryId: DiscussionCategory) => {
+    return CATEGORY_HIERARCHY.find(category => category.id === categoryId);
+  }, []);
 
   // Search functionality
   const searchResults = useMemo((): CategorySearchResult => {
@@ -102,53 +111,48 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
   // Bulk operations
   const selectAllInMainCategory = useCallback(
     (mainCategory: string) => {
-      const subcategories = getCategoriesByParent(mainCategory);
-      const subcategoryIds = subcategories.map(sub => sub.id);
-
+      // Since current structure is flat, toggle the specific category
+      const categoryId = mainCategory as DiscussionCategory;
+      
       setSelectedCategories(prev => {
-        const allSelected = subcategoryIds.every(id => prev.includes(id));
-
-        if (allSelected) {
-          // Remove all subcategories
-          return prev.filter(id => !subcategoryIds.includes(id));
-        } else {
-          // Add all subcategories that fit within limit
-          const unselected = subcategoryIds.filter(id => !prev.includes(id));
-          const canAdd = Math.min(unselected.length, maxSelections - prev.length);
-          return [...prev, ...unselected.slice(0, canAdd)];
+        const isSelected = prev.includes(categoryId);
+        
+        if (isSelected) {
+          // Remove the category
+          return prev.filter(id => id !== categoryId);
+        } else if (prev.length < maxSelections) {
+          // Add the category
+          return [...prev, categoryId];
         }
+        return prev;
       });
     },
     [maxSelections]
   );
-
-  // Category information helpers
-  const getCategoryInfoById = useCallback((categoryId: DiscussionCategory) => {
-    return getCategoryInfo(categoryId);
-  }, []);
 
   const getSelectedCategoryNames = useMemo(() => {
     return selectedCategories.map(id => {
       const category = getCategoryById(id);
       return category?.name || id;
     });
-  }, [selectedCategories]);
+  }, [selectedCategories, getCategoryById]);
 
   const getSelectedCategoriesByMainCategory = useMemo(() => {
     const grouped: Record<string, DiscussionCategory[]> = {};
 
     selectedCategories.forEach(categoryId => {
       const category = getCategoryById(categoryId);
-      if (category?.parentId) {
-        if (!grouped[category.parentId]) {
-          grouped[category.parentId] = [];
+      if (category) {
+        // Since current structure is flat, group by category id itself
+        if (!grouped[category.id]) {
+          grouped[category.id] = [];
         }
-        grouped[category.parentId].push(categoryId);
+        grouped[category.id].push(categoryId);
       }
     });
 
     return grouped;
-  }, [selectedCategories]);
+  }, [selectedCategories, getCategoryById]);
 
   // Statistics
   const selectionStats = useMemo(() => {
@@ -170,11 +174,10 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
   }, []);
 
   const getMainCategoryFilter = useCallback((mainCategory: string) => {
-    const subcategories = getCategoriesByParent(mainCategory);
-    const subcategoryIds = subcategories.map(sub => sub.id);
+    const categoryId = mainCategory as DiscussionCategory;
 
     return (discussionCategories: DiscussionCategory[]) => {
-      return subcategoryIds.some(id => discussionCategories.includes(id));
+      return discussionCategories.includes(categoryId);
     };
   }, []);
 
@@ -202,6 +205,7 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
 
     // Information helpers
     getCategoryInfo,
+    getCategoryById,
     getSelectedCategoryNames,
     getSelectedCategoriesByMainCategory,
 

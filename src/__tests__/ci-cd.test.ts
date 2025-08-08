@@ -3,7 +3,12 @@
  * These tests verify that the CI/CD pipeline setup is working correctly
  */
 
-export {}; // Make this a module
+import * as React from 'react';
+import * as fs from 'fs';
+import * as path from 'path';
+import packageJson from '../../package.json';
+
+export { }; // Make this a module
 
 describe('CI/CD Pipeline', () => {
   describe('Environment Configuration', () => {
@@ -24,7 +29,6 @@ describe('CI/CD Pipeline', () => {
 
   describe('Build Process', () => {
     it('should be able to import React', () => {
-      const React = require('react');
       expect(React).toBeDefined();
       expect(typeof React.createElement).toBe('function');
     });
@@ -37,8 +41,6 @@ describe('CI/CD Pipeline', () => {
     });
 
     it('should have proper package.json configuration', () => {
-      const packageJson = require('../../package.json');
-
       // Verify essential scripts exist
       expect(packageJson.scripts).toBeDefined();
       expect(packageJson.scripts.build).toBeDefined();
@@ -50,29 +52,21 @@ describe('CI/CD Pipeline', () => {
 
   describe('Dependencies', () => {
     it('should have React as a dependency', () => {
-      const packageJson = require('../../package.json');
       expect(packageJson.dependencies.react).toBeDefined();
     });
 
     it('should have TypeScript as a dev dependency', () => {
-      const packageJson = require('../../package.json');
-      expect(
-        packageJson.dependencies.typescript || packageJson.devDependencies?.typescript
-      ).toBeDefined();
+      expect(packageJson.devDependencies?.typescript).toBeDefined();
     });
 
     it('should have testing libraries', () => {
-      const packageJson = require('../../package.json');
       expect(packageJson.dependencies['@testing-library/react']).toBeDefined();
-      expect(packageJson.dependencies['@testing-library/jest-dom']).toBeDefined();
+      expect(packageJson.devDependencies?.['@testing-library/jest-dom']).toBeDefined();
     });
   });
 
   describe('CI/CD Configuration Files', () => {
     it('should have GitHub Actions workflows', () => {
-      const fs = require('fs');
-      const path = require('path');
-
       const workflowsPath = path.join(process.cwd(), '.github', 'workflows');
       const workflowsExist = fs.existsSync(workflowsPath);
 
@@ -80,25 +74,19 @@ describe('CI/CD Pipeline', () => {
       expect(
         workflowsExist
           ? (() => {
-              const files = fs.readdirSync(workflowsPath);
-              return files.length > 0 && files.some((file: string) => file.includes('ci'));
-            })()
+            const files = fs.readdirSync(workflowsPath);
+            return files.length > 0 && files.some((file: string) => file.includes('ci'));
+          })()
           : true
       ).toBe(true);
     });
 
     it('should have buildspec.yml for AWS CodeBuild', () => {
-      const fs = require('fs');
-      const path = require('path');
-
       const buildspecPath = path.join(process.cwd(), 'buildspec.yml');
       expect(fs.existsSync(buildspecPath)).toBe(true);
     });
 
     it('should have CDK configuration', () => {
-      const fs = require('fs');
-      const path = require('path');
-
       const cdkPath = path.join(process.cwd(), 'cdk');
       expect(fs.existsSync(cdkPath)).toBe(true);
 

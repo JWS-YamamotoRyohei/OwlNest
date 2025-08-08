@@ -92,7 +92,7 @@
   align-items: center;
 }
 
-.stance-selector__option-radio input[type="radio"] {
+.stance-selector__option-radio input[type='radio'] {
   width: 16px;
   height: 16px;
   accent-color: var(--stance-color);

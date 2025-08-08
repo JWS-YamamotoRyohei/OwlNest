@@ -74,12 +74,12 @@
   .loading-spinner-container--fullscreen {
     background-color: rgba(15, 23, 42, 0.9);
   }
-  
+
   .loading-spinner__circle {
     border-color: #334155;
     border-top-color: #60a5fa;
   }
-  
+
   .loading-spinner__message {
     color: #94a3b8;
   }

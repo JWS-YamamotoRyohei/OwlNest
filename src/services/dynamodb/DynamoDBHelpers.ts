@@ -19,7 +19,7 @@ export class DynamoDBHelpers {
    * Generate TTL timestamp (seconds since epoch)
    */
   static generateTTL(daysFromNow: number): number {
-    return Math.floor(Date.now() / 1000) + (daysFromNow * 24 * 60 * 60);
+    return Math.floor(Date.now() / 1000) + daysFromNow * 24 * 60 * 60;
   }
 
   /**
@@ -63,7 +63,7 @@ export class DynamoDBHelpers {
     expressionAttributeValues: Record<string, any>;
   } {
     const { skipUndefined = true, skipNull = false, prefix = '' } = options;
-    
+
     const setExpressions: string[] = [];
     const removeExpressions: string[] = [];
     const expressionAttributeNames: Record<string, string> = {};
@@ -90,7 +90,7 @@ export class DynamoDBHelpers {
       // Set the attribute
       const nameKey = `#${prefix}${key}`;
       const valueKey = `:${prefix}${key}`;
-      
+
       expressionAttributeNames[nameKey] = key;
       expressionAttributeValues[valueKey] = value;
       setExpressions.push(`${nameKey} = ${valueKey}`);
@@ -98,11 +98,11 @@ export class DynamoDBHelpers {
 
     // Build the complete update expression
     const expressions: string[] = [];
-    
+
     if (setExpressions.length > 0) {
       expressions.push(`SET ${setExpressions.join(', ')}`);
     }
-    
+
     if (removeExpressions.length > 0) {
       expressions.push(`REMOVE ${removeExpressions.join(', ')}`);
     }
@@ -129,7 +129,7 @@ export class DynamoDBHelpers {
     expressionAttributeValues: Record<string, any>;
   } {
     const { operator = 'AND', prefix = 'filter' } = options;
-    
+
     const expressions: string[] = [];
     const expressionAttributeNames: Record<string, string> = {};
     const expressionAttributeValues: Record<string, any> = {};
@@ -141,9 +141,9 @@ export class DynamoDBHelpers {
 
       const nameKey = `#${prefix}${index}`;
       const valueKey = `:${prefix}${index}`;
-      
+
       expressionAttributeNames[nameKey] = key;
-      
+
       if (Array.isArray(value)) {
         // IN operator for arrays
         const valueKeys = value.map((_, i) => `:${prefix}${index}_${i}`);
@@ -177,7 +177,11 @@ export class DynamoDBHelpers {
         } else if (value.beginsWith !== undefined) {
           expressionAttributeValues[valueKey] = value.beginsWith;
           expressions.push(`begins_with(${nameKey}, ${valueKey})`);
-        } else if (value.between !== undefined && Array.isArray(value.between) && value.between.length === 2) {
+        } else if (
+          value.between !== undefined &&
+          Array.isArray(value.between) &&
+          value.between.length === 2
+        ) {
           expressionAttributeValues[`${valueKey}_start`] = value.between[0];
           expressionAttributeValues[`${valueKey}_end`] = value.between[1];
           expressions.push(`${nameKey} BETWEEN ${valueKey}_start AND ${valueKey}_end`);
@@ -236,7 +240,7 @@ export class DynamoDBHelpers {
     hasMore: boolean;
   }> {
     const { pageSize = 20, paginationToken, ...queryOptions } = options;
-    
+
     const result = await this.dynamoService.queryItems(PK, SKCondition, {
       ...queryOptions,
       limit: pageSize,
@@ -258,7 +262,7 @@ export class DynamoDBHelpers {
     chunkSize = 100
   ): Promise<DynamoDBItem[]> {
     const allItems: DynamoDBItem[] = [];
-    
+
     for (let i = 0; i < keys.length; i += chunkSize) {
       const chunk = keys.slice(i, i + chunkSize);
       const items = await this.dynamoService.batchGetItems(chunk);
@@ -277,13 +281,13 @@ export class DynamoDBHelpers {
     chunkSize = 25
   ): Promise<void> {
     const totalOperations = putItems.length + deleteKeys.length;
-    
+
     for (let i = 0; i < totalOperations; i += chunkSize) {
       const putChunk = putItems.slice(i, Math.min(i + chunkSize, putItems.length));
       const deleteStart = Math.max(0, i - putItems.length);
       const deleteEnd = Math.min(deleteStart + chunkSize - putChunk.length, deleteKeys.length);
       const deleteChunk = deleteKeys.slice(deleteStart, deleteEnd);
-      
+
       if (putChunk.length > 0 || deleteChunk.length > 0) {
         await this.dynamoService.batchWriteItems(putChunk, deleteChunk);
       }
@@ -340,12 +344,7 @@ export class DynamoDBHelpers {
   /**
    * Append to list attribute
    */
-  async appendToList(
-    PK: string,
-    SK: string,
-    attributeName: string,
-    values: any[]
-  ): Promise<void> {
+  async appendToList(PK: string, SK: string, attributeName: string, values: any[]): Promise<void> {
     await this.dynamoService.updateItem(PK, SK, {
       updateExpression: `SET #attr = list_append(if_not_exists(#attr, :empty_list), :values)`,
       expressionAttributeNames: {

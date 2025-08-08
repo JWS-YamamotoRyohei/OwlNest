@@ -64,15 +64,15 @@
   .moderation-page__header {
     padding: 1.5rem 1rem;
   }
-  
+
   .moderation-page__title {
     font-size: 1.875rem;
   }
-  
+
   .moderation-page__description {
     font-size: 1rem;
   }
-  
+
   .moderation-page__content {
     padding: 0 0.5rem;
   }
@@ -82,12 +82,12 @@
   .moderation-page__title {
     font-size: 1.5rem;
   }
-  
+
   .moderation-page__no-auth h1,
   .moderation-page__no-permission h1 {
     font-size: 1.5rem;
   }
-  
+
   .moderation-page__no-auth p,
   .moderation-page__no-permission p {
     font-size: 1rem;

@@ -39,11 +39,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       {/* Sidebar */}
       {sidebarOpen && (
         <>
-          <div 
-            className="app-layout__overlay"
-            onClick={handleSidebarClose}
-            aria-hidden="true"
-          />
+          <div className="app-layout__overlay" onClick={handleSidebarClose} aria-hidden="true" />
           <div className="app-layout__sidebar">
             <Sidebar onClose={handleSidebarClose} />
           </div>
@@ -51,20 +47,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       )}
 
       {/* Main content area */}
-      <div 
-        className={`app-layout__main ${sidebarOpen ? 'app-layout__main--shifted' : ''}`}
-      >
+      <div className={`app-layout__main ${sidebarOpen ? 'app-layout__main--shifted' : ''}`}>
         {/* Header */}
-        <Header 
-          onButtonClick={() => alert("仮アクション")} 
-          onIconClick={handleSidebarToggle}
-        />
+        <Header onButtonClick={() => alert('仮アクション')} onIconClick={handleSidebarToggle} />
 
         {/* Page content with transitions */}
         <main className="app-layout__content">
-          <PageTransition>
-            {children || <Outlet />}
-          </PageTransition>
+          <PageTransition>{children || <Outlet />}</PageTransition>
         </main>
       </div>
     </div>

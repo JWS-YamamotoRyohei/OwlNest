@@ -395,27 +395,27 @@
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .advanced-search-filters__actions {
     align-self: flex-end;
   }
-  
+
   .advanced-search-filters__checkbox-group {
     grid-template-columns: 1fr;
   }
-  
+
   .advanced-search-filters__date-range,
   .advanced-search-filters__number-range {
     grid-template-columns: 1fr;
   }
-  
+
   .advanced-search-filters__stance-group,
   .advanced-search-filters__status-group,
   .advanced-search-filters__content-group {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .advanced-search-filters__stance-button,
   .advanced-search-filters__status-button,
   .advanced-search-filters__content-button {

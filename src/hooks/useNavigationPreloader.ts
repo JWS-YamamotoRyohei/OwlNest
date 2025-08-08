@@ -17,17 +17,17 @@ export const useNavigationPreloader = () => {
     RoutePreloader.preloadCommonRoutes();
   }, []);
 
-  const preloadRoutesForUser = useCallback((permissions: {
-    canCreateDiscussion: boolean;
-    canModerate: boolean;
-  }) => {
-    RoutePreloader.preloadRoutesForUser(permissions);
-  }, []);
+  const preloadRoutesForUser = useCallback(
+    (permissions: { canCreateDiscussion: boolean; canModerate: boolean }) => {
+      RoutePreloader.preloadRoutesForUser(permissions);
+    },
+    []
+  );
 
   return {
     preloadRoute,
     handleLinkHover,
     preloadCommonRoutes,
-    preloadRoutesForUser
+    preloadRoutesForUser,
   };
 };

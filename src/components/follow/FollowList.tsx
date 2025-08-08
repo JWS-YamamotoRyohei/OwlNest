@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { FollowListItem, FollowTargetType, UserFollowInfo, DiscussionFollowInfo } from '../../types';
+import {
+  FollowListItem,
+  FollowTargetType,
+  UserFollowInfo,
+  DiscussionFollowInfo,
+} from '../../types';
 import { FollowButton } from './FollowButton';
 import './FollowList.css';
 
@@ -67,28 +72,26 @@ export const FollowList: React.FC<FollowListProps> = ({
               </div>
             )}
           </div>
-          
+
           <div className="follow-list__item-info">
             <div className="follow-list__item-name">
-              <span className="follow-list__item-display-name">
-                {userInfo.displayName}
-              </span>
+              <span className="follow-list__item-display-name">{userInfo.displayName}</span>
               {userInfo.isVerified && (
                 <span className="follow-list__item-verified" title="認証済み">
                   ✓
                 </span>
               )}
-              <span className="follow-list__item-role">
-                {userInfo.role}
-              </span>
+              <span className="follow-list__item-role">{userInfo.role}</span>
             </div>
-            
+
             {userInfo.bio && (
               <div className="follow-list__item-bio">
-                {isExpanded ? userInfo.bio : `${userInfo.bio.slice(0, 100)}${userInfo.bio.length > 100 ? '...' : ''}`}
+                {isExpanded
+                  ? userInfo.bio
+                  : `${userInfo.bio.slice(0, 100)}${userInfo.bio.length > 100 ? '...' : ''}`}
               </div>
             )}
-            
+
             <div className="follow-list__item-stats">
               <span>議論: {userInfo.discussionsCount}</span>
               <span>投稿: {userInfo.postsCount}</span>
@@ -98,7 +101,7 @@ export const FollowList: React.FC<FollowListProps> = ({
               )}
             </div>
           </div>
-          
+
           <div className="follow-list__item-actions">
             <FollowButton
               targetType={FollowTargetType.USER}
@@ -107,7 +110,7 @@ export const FollowList: React.FC<FollowListProps> = ({
               size="small"
               variant="outline"
             />
-            
+
             {userInfo.bio && userInfo.bio.length > 100 && (
               <button
                 className="follow-list__item-expand"
@@ -119,12 +122,12 @@ export const FollowList: React.FC<FollowListProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="follow-list__item-meta">
           <span className="follow-list__item-follow-date">
             {formatDate(item.createdAt)}にフォロー
           </span>
-          
+
           {item.notificationsEnabled && (
             <span className="follow-list__item-notifications" title="通知有効">
               🔔
@@ -144,27 +147,22 @@ export const FollowList: React.FC<FollowListProps> = ({
         <div className="follow-list__item-header">
           <div className="follow-list__item-info">
             <div className="follow-list__item-name">
-              <span className="follow-list__item-title">
-                {discussionInfo.title}
-              </span>
+              <span className="follow-list__item-title">{discussionInfo.title}</span>
               {!discussionInfo.isActive && (
                 <span className="follow-list__item-inactive" title="非アクティブ">
                   ⏸
                 </span>
               )}
             </div>
-            
-            <div className="follow-list__item-owner">
-              作成者: {discussionInfo.ownerDisplayName}
-            </div>
-            
+
+            <div className="follow-list__item-owner">作成者: {discussionInfo.ownerDisplayName}</div>
+
             <div className="follow-list__item-description">
-              {isExpanded 
-                ? discussionInfo.description 
-                : `${discussionInfo.description.slice(0, 150)}${discussionInfo.description.length > 150 ? '...' : ''}`
-              }
+              {isExpanded
+                ? discussionInfo.description
+                : `${discussionInfo.description.slice(0, 150)}${discussionInfo.description.length > 150 ? '...' : ''}`}
             </div>
-            
+
             <div className="follow-list__item-categories">
               {discussionInfo.categories.map((category, index) => (
                 <span key={index} className="follow-list__item-category">
@@ -172,14 +170,14 @@ export const FollowList: React.FC<FollowListProps> = ({
                 </span>
               ))}
             </div>
-            
+
             <div className="follow-list__item-stats">
               <span>参加者: {discussionInfo.participantCount}</span>
               <span>投稿: {discussionInfo.postCount}</span>
               <span>最終活動: {formatDate(discussionInfo.lastActivityAt)}</span>
             </div>
           </div>
-          
+
           <div className="follow-list__item-actions">
             <FollowButton
               targetType={FollowTargetType.DISCUSSION}
@@ -188,7 +186,7 @@ export const FollowList: React.FC<FollowListProps> = ({
               size="small"
               variant="outline"
             />
-            
+
             {discussionInfo.description.length > 150 && (
               <button
                 className="follow-list__item-expand"
@@ -200,12 +198,12 @@ export const FollowList: React.FC<FollowListProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="follow-list__item-meta">
           <span className="follow-list__item-follow-date">
             {formatDate(item.createdAt)}にフォロー
           </span>
-          
+
           {item.notificationsEnabled && (
             <span className="follow-list__item-notifications" title="通知有効">
               🔔
@@ -224,12 +222,10 @@ export const FollowList: React.FC<FollowListProps> = ({
             {targetType === FollowTargetType.USER ? '👥' : '💬'}
           </div>
           <div className="follow-list__empty-message">
-            {emptyMessage || 
-              (targetType === FollowTargetType.USER 
-                ? 'フォロー中のユーザーはいません' 
-                : 'フォロー中の議論はありません'
-              )
-            }
+            {emptyMessage ||
+              (targetType === FollowTargetType.USER
+                ? 'フォロー中のユーザーはいません'
+                : 'フォロー中の議論はありません')}
           </div>
         </div>
       </div>
@@ -239,13 +235,11 @@ export const FollowList: React.FC<FollowListProps> = ({
   return (
     <div className={`follow-list ${className}`}>
       <div className="follow-list__items">
-        {items.map(item => 
-          targetType === FollowTargetType.USER 
-            ? renderUserItem(item)
-            : renderDiscussionItem(item)
+        {items.map(item =>
+          targetType === FollowTargetType.USER ? renderUserItem(item) : renderDiscussionItem(item)
         )}
       </div>
-      
+
       {isLoading && (
         <div className="follow-list__loading">
           <div className="follow-list__loading-spinner">
@@ -254,13 +248,10 @@ export const FollowList: React.FC<FollowListProps> = ({
           <span>読み込み中...</span>
         </div>
       )}
-      
+
       {hasMore && !isLoading && onLoadMore && (
         <div className="follow-list__load-more">
-          <button
-            className="follow-list__load-more-button"
-            onClick={onLoadMore}
-          >
+          <button className="follow-list__load-more-button" onClick={onLoadMore}>
             さらに読み込む
           </button>
         </div>

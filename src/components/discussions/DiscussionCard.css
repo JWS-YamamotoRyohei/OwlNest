@@ -259,39 +259,39 @@
   .discussion-card {
     padding: 1rem;
   }
-  
+
   .discussion-card__header {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
-  
+
   .discussion-card__follow-button {
     align-self: flex-end;
     padding: 0.375rem 0.75rem;
     font-size: 0.8125rem;
   }
-  
+
   .discussion-card__title {
     font-size: 1.125rem;
   }
-  
+
   .discussion-card__description {
     font-size: 0.875rem;
     -webkit-line-clamp: 2;
   }
-  
+
   .discussion-card__footer {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
-  
+
   .discussion-card__stats {
     justify-content: center;
     gap: 1.5rem;
   }
-  
+
   .discussion-card__activity {
     justify-content: center;
   }
@@ -301,20 +301,20 @@
   .discussion-card {
     padding: 0.75rem;
   }
-  
+
   .discussion-card__categories {
     gap: 0.375rem;
   }
-  
+
   .discussion-card__category {
     font-size: 0.6875rem;
     padding: 0.1875rem 0.375rem;
   }
-  
+
   .discussion-card__stats {
     gap: 1rem;
   }
-  
+
   .discussion-card__stat {
     font-size: 0.8125rem;
   }
@@ -325,7 +325,7 @@
   .discussion-card:hover {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
   }
-  
+
   .discussion-card__follow-button:hover {
     background: rgba(59, 130, 246, 0.1);
   }
@@ -336,12 +336,12 @@
   .discussion-card {
     border-width: 2px;
   }
-  
+
   .discussion-card__badge {
     border-width: 2px;
     font-weight: 700;
   }
-  
+
   .discussion-card__follow-button {
     border-width: 2px;
     font-weight: 600;
@@ -353,11 +353,11 @@
   .discussion-card {
     transition: none;
   }
-  
+
   .discussion-card:hover {
     transform: none;
   }
-  
+
   .discussion-card__follow-button {
     transition: none;
   }

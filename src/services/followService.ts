@@ -57,45 +57,61 @@ class FollowService {
   /**
    * Get list of users the current user is following
    */
-  async getFollowingUsers(limit?: number, nextToken?: string): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
+  async getFollowingUsers(
+    limit?: number,
+    nextToken?: string
+  ): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
     if (nextToken) params.append('nextToken', nextToken);
-    
+
     return apiService.get(`${this.baseUrl}/users?${params.toString()}`);
   }
 
   /**
    * Get list of discussions the current user is following
    */
-  async getFollowingDiscussions(limit?: number, nextToken?: string): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
+  async getFollowingDiscussions(
+    limit?: number,
+    nextToken?: string
+  ): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
     if (nextToken) params.append('nextToken', nextToken);
-    
+
     return apiService.get(`${this.baseUrl}/discussions?${params.toString()}`);
   }
 
   /**
    * Get list of followers for a user
    */
-  async getFollowers(userId: string, limit?: number, nextToken?: string): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
+  async getFollowers(
+    userId: string,
+    limit?: number,
+    nextToken?: string
+  ): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
     if (nextToken) params.append('nextToken', nextToken);
-    
+
     return apiService.get(`${this.baseUrl}/users/${userId}/followers?${params.toString()}`);
   }
 
   /**
    * Get list of followers for a discussion
    */
-  async getDiscussionFollowers(discussionId: string, limit?: number, nextToken?: string): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
+  async getDiscussionFollowers(
+    discussionId: string,
+    limit?: number,
+    nextToken?: string
+  ): Promise<ApiResponse<PaginationResult<FollowListItem>>> {
     const params = new URLSearchParams();
     if (limit) params.append('limit', limit.toString());
     if (nextToken) params.append('nextToken', nextToken);
-    
-    return apiService.get(`${this.baseUrl}/discussions/${discussionId}/followers?${params.toString()}`);
+
+    return apiService.get(
+      `${this.baseUrl}/discussions/${discussionId}/followers?${params.toString()}`
+    );
   }
 
   /**
@@ -116,21 +132,26 @@ class FollowService {
     const params = new URLSearchParams();
     if (targetType) params.append('targetType', targetType);
     if (limit) params.append('limit', limit.toString());
-    
+
     return apiService.get(`${this.baseUrl}/suggestions?${params.toString()}`);
   }
 
   /**
    * Bulk follow operation
    */
-  async bulkFollow(operation: BulkFollowOperation): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
+  async bulkFollow(
+    operation: BulkFollowOperation
+  ): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
     return apiService.post(`${this.baseUrl}/bulk`, operation);
   }
 
   /**
    * Bulk unfollow operation
    */
-  async bulkUnfollow(targetType: FollowTargetType, targetIds: string[]): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
+  async bulkUnfollow(
+    targetType: FollowTargetType,
+    targetIds: string[]
+  ): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
     return apiService.post(`${this.baseUrl}/bulk/unfollow`, {
       targetType,
       targetIds,
@@ -156,9 +177,11 @@ class FollowService {
   /**
    * Get timeline items
    */
-  async getTimeline(options?: TimelineQueryOptions): Promise<ApiResponse<PaginationResult<TimelineItem>>> {
+  async getTimeline(
+    options?: TimelineQueryOptions
+  ): Promise<ApiResponse<PaginationResult<TimelineItem>>> {
     const params = new URLSearchParams();
-    
+
     if (options?.filters) {
       const filters = options.filters;
       if (filters.itemTypes) {
@@ -175,17 +198,17 @@ class FollowService {
       if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
       if (filters.dateTo) params.append('dateTo', filters.dateTo);
     }
-    
+
     if (options?.sort) {
       params.append('sortField', options.sort.field);
       params.append('sortDirection', options.sort.direction);
     }
-    
+
     if (options?.pagination) {
       if (options.pagination.limit) params.append('limit', options.pagination.limit.toString());
       if (options.pagination.nextToken) params.append('nextToken', options.pagination.nextToken);
     }
-    
+
     return apiService.get(`/timeline?${params.toString()}`);
   }
 

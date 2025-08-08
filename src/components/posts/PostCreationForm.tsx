@@ -72,7 +72,7 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -152,9 +152,7 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
             onChange={handlePointChange}
             error={errors.point}
           />
-          {errors.point && (
-            <div className="post-creation-form__error">{errors.point}</div>
-          )}
+          {errors.point && <div className="post-creation-form__error">{errors.point}</div>}
         </div>
 
         {/* Content Editor */}
@@ -177,12 +175,8 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
               linkInsert: true,
             }}
           />
-          {errors.content && (
-            <div className="post-creation-form__error">{errors.content}</div>
-          )}
-          <div className="post-creation-form__char-count">
-            {content.length} / 5000文字
-          </div>
+          {errors.content && <div className="post-creation-form__error">{errors.content}</div>}
+          <div className="post-creation-form__char-count">{content.length} / 5000文字</div>
         </div>
 
         {/* Stance Selection */}
@@ -196,9 +190,7 @@ export const PostCreationForm: React.FC<PostCreationFormProps> = ({
             error={errors.stance}
             showDefault={true}
           />
-          {errors.stance && (
-            <div className="post-creation-form__error">{errors.stance}</div>
-          )}
+          {errors.stance && <div className="post-creation-form__error">{errors.stance}</div>}
         </div>
 
         {/* Submit Error */}

@@ -40,10 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="error-boundary__message">
               予期しないエラーが発生しました。ページを再読み込みしてお試しください。
             </p>
-            <button 
-              className="error-boundary__button"
-              onClick={() => window.location.reload()}
-            >
+            <button className="error-boundary__button" onClick={() => window.location.reload()}>
               ページを再読み込み
             </button>
             {process.env.NODE_ENV === 'development' && this.state.error && (

@@ -9,13 +9,13 @@ const FollowingPage: React.FC = () => {
         <title>フォロー中 - OwlNest</title>
         <meta name="description" content="フォローしているユーザーと議論の管理" />
       </Helmet>
-      
+
       <div className="following-page">
         <div className="following-page__header">
           <h1>フォロー中</h1>
           <p>フォローしているユーザーと議論の管理</p>
         </div>
-        
+
         <div className="following-page__content">
           {/* This will be implemented in task 8.1 */}
           <div className="following-page__placeholder">

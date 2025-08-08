@@ -89,7 +89,7 @@
   font-size: 14px;
 }
 
-.filter-group input[type="checkbox"] {
+.filter-group input[type='checkbox'] {
   margin: 0;
 }
 
@@ -216,7 +216,8 @@
   font-weight: 600;
 }
 
-.user-info, .moderator-info {
+.user-info,
+.moderator-info {
   color: #4b5563;
 }
 

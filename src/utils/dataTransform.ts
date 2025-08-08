@@ -15,13 +15,7 @@ import {
   CreateDiscussionData,
   UpdateDiscussionData,
 } from '../types/discussion';
-import {
-  Post,
-  PostListItem,
-  PostDetail,
-  CreatePostData,
-  UpdatePostData,
-} from '../types/post';
+import { Post, PostListItem, PostDetail, CreatePostData, UpdatePostData } from '../types/post';
 import {
   UserRole,
   Stance,
@@ -75,26 +69,26 @@ export class DataTransformUtils {
     role: UserRole = UserRole.VIEWER
   ): UserProfile {
     const now = new Date().toISOString();
-    
+
     return {
       PK: `USER#${userId}`,
       SK: 'PROFILE',
       GSI1PK: `ROLE#${role}`,
       GSI1SK: `USER#${userId}`,
       EntityType: EntityType.USER_PROFILE,
-      
+
       userId,
       email: data.email,
       role,
       displayName: data.displayName,
       avatar: data.avatar,
       bio: data.bio,
-      
+
       preferences: {
         ...this.createDefaultUserPreferences(),
         ...data.preferences,
       },
-      
+
       statistics: {
         viewCount: 0,
         participantCount: 0,
@@ -110,14 +104,14 @@ export class DataTransformUtils {
         followingCount: 0,
         reputationScore: 0,
       },
-      
+
       isActive: true,
       isVerified: false,
       isSuspended: false,
-      
+
       loginCount: 0,
       auditTrail: [],
-      
+
       createdAt: now,
       updatedAt: now,
     };
@@ -181,7 +175,7 @@ export class DataTransformUtils {
   ): Discussion {
     const now = new Date().toISOString();
     const primaryCategory = data.categories[0];
-    
+
     return {
       PK: `DISCUSSION#${discussionId}`,
       SK: 'METADATA',
@@ -190,36 +184,36 @@ export class DataTransformUtils {
       GSI2PK: `OWNER#${ownerId}`,
       GSI2SK: `DISCUSSION#${discussionId}`,
       EntityType: EntityType.DISCUSSION,
-      
+
       discussionId,
       title: data.title,
       description: data.description,
       ownerId,
       ownerDisplayName,
       ownerStance: data.ownerStance,
-      
+
       categories: data.categories,
       tags: data.tags || [],
-      
+
       accessControl: {
         type: data.accessControl?.type || AccessControlType.OPEN,
         userIds: data.accessControl?.userIds || [],
         allowedRoles: data.accessControl?.allowedRoles,
         requireApproval: data.accessControl?.requireApproval || false,
       },
-      
+
       isActive: true,
       isLocked: false,
       isPinned: false,
       isFeatured: false,
-      
+
       moderation: {
         isHidden: false,
         isDeleted: false,
         isReported: false,
         reportCount: 0,
       },
-      
+
       statistics: {
         viewCount: 0,
         participantCount: 0,
@@ -237,19 +231,21 @@ export class DataTransformUtils {
         averagePostLength: 0,
         engagementRate: 0,
       },
-      
+
       metadata: {
         version: 1,
         language: 'ja',
         lastModifiedBy: ownerId,
-        changeLog: [{
-          timestamp: now,
-          userId: ownerId,
-          action: 'created',
-          changes: {},
-        }],
+        changeLog: [
+          {
+            timestamp: now,
+            userId: ownerId,
+            action: 'created',
+            changes: {},
+          },
+        ],
       },
-      
+
       createdAt: now,
       updatedAt: now,
     };
@@ -263,14 +259,14 @@ export class DataTransformUtils {
     discussionId: string
   ): DiscussionPoint[] {
     const now = new Date().toISOString();
-    
+
     return data.points.map((pointData, index) => ({
       PK: `DISCUSSION#${discussionId}`,
       SK: `POINT#${DynamoDBHelpers.generateId('point_')}`,
       GSI1PK: `DISCUSSION#${discussionId}`,
       GSI1SK: `POINT#${pointData.order.toString().padStart(3, '0')}`,
       EntityType: EntityType.DISCUSSION_POINT,
-      
+
       pointId: DynamoDBHelpers.generateId('point_'),
       discussionId,
       title: pointData.title,
@@ -278,14 +274,14 @@ export class DataTransformUtils {
       parentId: pointData.parentId,
       level: pointData.parentId ? 1 : 0, // Simple 2-level hierarchy for now
       order: pointData.order,
-      
+
       postCount: 0,
       prosCount: 0,
       consCount: 0,
       neutralCount: 0,
-      
+
       isActive: true,
-      
+
       createdAt: now,
       updatedAt: now,
     }));
@@ -352,7 +348,7 @@ export class DataTransformUtils {
     authorDisplayName: string
   ): Post {
     const now = new Date().toISOString();
-    
+
     return {
       PK: `DISCUSSION#${data.discussionId}`,
       SK: `POST#${postId}`,
@@ -361,13 +357,13 @@ export class DataTransformUtils {
       GSI2PK: `AUTHOR#${authorId}`,
       GSI2SK: `POST#${now}`,
       EntityType: EntityType.POST,
-      
+
       postId,
       discussionId: data.discussionId,
       discussionPointId: data.discussionPointId,
       authorId,
       authorDisplayName,
-      
+
       content: {
         text: data.content.text,
         formatting: data.content.formatting || {},
@@ -377,11 +373,11 @@ export class DataTransformUtils {
         hashtags: [], // Will be extracted from text
       },
       stance: data.stance,
-      
+
       replyToId: data.replyToId,
       threadLevel: data.replyToId ? 1 : 0, // Will be calculated based on parent
       threadPath: data.replyToId ? `${data.replyToId}/${postId}` : postId,
-      
+
       reactions: {
         like: 0,
         agree: 0,
@@ -391,14 +387,14 @@ export class DataTransformUtils {
         totalCount: 0,
       },
       replyCount: 0,
-      
+
       moderation: {
         isHidden: false,
         isDeleted: false,
         isReported: false,
         reportCount: 0,
       },
-      
+
       metadata: {
         version: 1,
         editCount: 0,
@@ -406,7 +402,7 @@ export class DataTransformUtils {
         editHistory: [],
         source: 'web',
       },
-      
+
       createdAt: now,
       updatedAt: now,
     };
@@ -451,7 +447,10 @@ export class DataTransformUtils {
   /**
    * Extract mentions from text and mention array
    */
-  static extractMentions(text: string, mentionUserIds: string[] = []): Array<{
+  static extractMentions(
+    text: string,
+    mentionUserIds: string[] = []
+  ): Array<{
     userId: string;
     displayName: string;
     startIndex: number;
@@ -467,7 +466,7 @@ export class DataTransformUtils {
     // Extract @mentions from text
     const mentionRegex = /@(\w+)/g;
     let match;
-    
+
     while ((match = mentionRegex.exec(text)) !== null) {
       const displayName = match[1];
       // In a real implementation, you would look up the userId by displayName
@@ -489,7 +488,7 @@ export class DataTransformUtils {
     const hashtagRegex = /#(\w+)/g;
     const hashtags: string[] = [];
     let match;
-    
+
     while ((match = hashtagRegex.exec(text)) !== null) {
       hashtags.push(match[1]);
     }
@@ -512,7 +511,7 @@ export class DataTransformUtils {
       endIndex: number;
     }> = [];
     let match;
-    
+
     while ((match = urlRegex.exec(text)) !== null) {
       links.push({
         url: match[1],
@@ -531,7 +530,7 @@ export class DataTransformUtils {
     if (text.length <= maxLength) {
       return text;
     }
-    
+
     return text.substring(0, maxLength - 3) + '...';
   }
 

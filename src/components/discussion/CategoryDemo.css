@@ -193,15 +193,15 @@
   .category-demo {
     padding: 16px;
   }
-  
+
   .category-demo__section {
     padding: 16px;
   }
-  
+
   .category-demo__header h1 {
     font-size: 24px;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }

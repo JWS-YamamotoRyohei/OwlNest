@@ -105,7 +105,7 @@
   user-select: none;
 }
 
-.metric-checkbox input[type="checkbox"] {
+.metric-checkbox input[type='checkbox'] {
   display: none;
 }
 
@@ -131,7 +131,7 @@
   transition: opacity 0.2s ease;
 }
 
-.metric-checkbox input[type="checkbox"]:checked + .checkbox-indicator::after {
+.metric-checkbox input[type='checkbox']:checked + .checkbox-indicator::after {
   opacity: 1;
 }
 
@@ -158,8 +158,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
@@ -244,7 +248,9 @@
   padding: 20px;
   border-radius: 12px;
   border: 1px solid;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .insight-card:hover {

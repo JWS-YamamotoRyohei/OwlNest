@@ -19,7 +19,7 @@ describe('Discussion Workflow E2E', () => {
     should: jest.fn(),
     wait: jest.fn(),
     url: jest.fn(),
-    contains: jest.fn()
+    contains: jest.fn(),
   };
 
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="password-input"]').type('password123'),
         () => mockBrowser.get('[data-testid="login-button"]').click(),
         () => mockBrowser.url().should('include', '/discussions'),
-        () => mockBrowser.contains('議論一覧')
+        () => mockBrowser.contains('議論一覧'),
       ];
 
       // Execute test steps
@@ -57,7 +57,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="password-input"]').type('wrongpassword'),
         () => mockBrowser.get('[data-testid="login-button"]').click(),
         () => mockBrowser.contains('ログインに失敗しました'),
-        () => mockBrowser.url().should('include', '/login')
+        () => mockBrowser.url().should('include', '/login'),
       ];
 
       for (const step of testSteps) {
@@ -75,13 +75,16 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="create-discussion-button"]').click(),
         () => mockBrowser.url().should('include', '/create-discussion'),
         () => mockBrowser.get('[data-testid="title-input"]').type('E2E Test Discussion'),
-        () => mockBrowser.get('[data-testid="description-textarea"]').type('This is an E2E test discussion'),
+        () =>
+          mockBrowser
+            .get('[data-testid="description-textarea"]')
+            .type('This is an E2E test discussion'),
         () => mockBrowser.get('[data-testid="category-select"]').select('テスト'),
         () => mockBrowser.get('[data-testid="discussion-point-input"]').type('Test Point 1'),
         () => mockBrowser.get('[data-testid="submit-button"]').click(),
         () => mockBrowser.wait(2000), // Wait for creation
         () => mockBrowser.url().should('match', /\/discussion\/[a-zA-Z0-9-]+/),
-        () => mockBrowser.contains('E2E Test Discussion')
+        () => mockBrowser.contains('E2E Test Discussion'),
       ];
 
       for (const step of testSteps) {
@@ -98,7 +101,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="submit-button"]').click(),
         () => mockBrowser.contains('タイトルは必須です'),
         () => mockBrowser.contains('説明は必須です'),
-        () => mockBrowser.contains('カテゴリを選択してください')
+        () => mockBrowser.contains('カテゴリを選択してください'),
       ];
 
       for (const step of testSteps) {
@@ -115,12 +118,15 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.visit('/discussion/test-discussion-id'),
         () => mockBrowser.wait(1000), // Wait for discussion to load
         () => mockBrowser.contains('Test Discussion'),
-        () => mockBrowser.get('[data-testid="post-content-textarea"]').type('This is my opinion on this topic'),
+        () =>
+          mockBrowser
+            .get('[data-testid="post-content-textarea"]')
+            .type('This is my opinion on this topic'),
         () => mockBrowser.get('[data-testid="stance-select"]').select('pros'),
         () => mockBrowser.get('[data-testid="discussion-point-select"]').select('point-1'),
         () => mockBrowser.get('[data-testid="post-submit-button"]').click(),
         () => mockBrowser.wait(1000), // Wait for post to be created
-        () => mockBrowser.contains('This is my opinion on this topic')
+        () => mockBrowser.contains('This is my opinion on this topic'),
       ];
 
       for (const step of testSteps) {
@@ -136,7 +142,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="follow-button"]').click(),
         () => mockBrowser.contains('フォロー中'),
         () => mockBrowser.visit('/following'),
-        () => mockBrowser.contains('Test Discussion')
+        () => mockBrowser.contains('Test Discussion'),
       ];
 
       for (const step of testSteps) {
@@ -155,7 +161,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="search-button"]').click(),
         () => mockBrowser.wait(1000), // Wait for search results
         () => mockBrowser.url().should('include', 'search'),
-        () => mockBrowser.contains('検索結果')
+        () => mockBrowser.contains('検索結果'),
       ];
 
       for (const step of testSteps) {
@@ -170,7 +176,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.visit('/discussions'),
         () => mockBrowser.get('[data-testid="category-filter"]').select('テクノロジー'),
         () => mockBrowser.wait(1000), // Wait for filter to apply
-        () => mockBrowser.get('[data-testid="discussion-card"]').should('contain', 'テクノロジー')
+        () => mockBrowser.get('[data-testid="discussion-card"]').should('contain', 'テクノロジー'),
       ];
 
       for (const step of testSteps) {
@@ -188,7 +194,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="connection-status"]').should('contain', '接続中'),
         // Simulate another user posting (would be done in a separate browser in real E2E)
         () => mockBrowser.wait(2000),
-        () => mockBrowser.contains('新しい投稿があります')
+        () => mockBrowser.contains('新しい投稿があります'),
       ];
 
       for (const step of testSteps) {
@@ -207,7 +213,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="mobile-menu-button"]').should('be.visible'),
         () => mockBrowser.get('[data-testid="mobile-menu-button"]').click(),
         () => mockBrowser.get('[data-testid="mobile-navigation"]').should('be.visible'),
-        () => mockBrowser.contains('議論一覧')
+        () => mockBrowser.contains('議論一覧'),
       ];
 
       for (const step of testSteps) {
@@ -225,18 +231,18 @@ describe('Discussion Workflow E2E', () => {
         {
           page: '/discussions',
           maxLoadTime: 3000,
-          description: 'Discussion list should load quickly'
+          description: 'Discussion list should load quickly',
         },
         {
           page: '/discussion/test-discussion-id',
           maxLoadTime: 2000,
-          description: 'Discussion detail should load quickly'
+          description: 'Discussion detail should load quickly',
         },
         {
           page: '/search?q=test',
           maxLoadTime: 4000,
-          description: 'Search results should load within reasonable time'
-        }
+          description: 'Search results should load within reasonable time',
+        },
       ];
 
       for (const test of performanceTests) {
@@ -244,7 +250,7 @@ describe('Discussion Workflow E2E', () => {
         mockBrowser.visit(test.page);
         mockBrowser.wait(100); // Simulate load time
         const loadTime = Date.now() - startTime;
-        
+
         // In a real E2E test, you would measure actual load times
         expect(loadTime).toBeLessThan(test.maxLoadTime);
       }
@@ -257,7 +263,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[data-testid="discussion-card"]').should('have.length.at.least', 50),
         () => mockBrowser.scrollTo('bottom'),
         () => mockBrowser.wait(1000), // Test scroll performance
-        () => mockBrowser.get('[data-testid="load-more-button"]').should('be.visible')
+        () => mockBrowser.get('[data-testid="load-more-button"]').should('be.visible'),
       ];
 
       for (const step of testSteps) {
@@ -277,7 +283,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('body').tab(),
         () => mockBrowser.focused().should('have.attr', 'data-testid', 'search-button'),
         () => mockBrowser.get('body').tab(),
-        () => mockBrowser.focused().should('contain', '議論を作成')
+        () => mockBrowser.focused().should('contain', '議論を作成'),
       ];
 
       for (const step of testSteps) {
@@ -294,10 +300,11 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.get('[role="main"]').should('exist'),
         () => mockBrowser.get('[role="navigation"]').should('exist'),
         () => mockBrowser.get('[aria-label="議論一覧"]').should('exist'),
-        () => mockBrowser.get('img').each(($img) => {
-          // Check that all images have alt text
-          expect($img).to.have.attr('alt');
-        })
+        () =>
+          mockBrowser.get('img').each($img => {
+            // Check that all images have alt text
+            expect($img).to.have.attr('alt');
+          }),
       ];
 
       for (const step of testSteps) {
@@ -317,7 +324,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.reload(),
         () => mockBrowser.contains('ネットワークエラーが発生しました'),
         () => mockBrowser.get('[data-testid="retry-button"]').click(),
-        () => mockBrowser.wait(1000)
+        () => mockBrowser.wait(1000),
       ];
 
       for (const step of testSteps) {
@@ -333,7 +340,7 @@ describe('Discussion Workflow E2E', () => {
         () => mockBrowser.intercept('GET', '/api/discussions', { statusCode: 500 }),
         () => mockBrowser.reload(),
         () => mockBrowser.contains('サーバーエラーが発生しました'),
-        () => mockBrowser.get('[data-testid="error-details"]').should('not.be.visible') // Don't show technical details to users
+        () => mockBrowser.get('[data-testid="error-details"]').should('not.be.visible'), // Don't show technical details to users
       ];
 
       for (const step of testSteps) {
@@ -348,14 +355,14 @@ describe('Discussion Workflow E2E', () => {
 // Helper function to simulate real E2E test execution
 export const runE2ETests = async () => {
   console.log('Running E2E tests...');
-  
+
   // In a real implementation, this would:
   // 1. Start the application server
   // 2. Launch browser automation tool
   // 3. Execute test scenarios
   // 4. Generate test reports
   // 5. Clean up resources
-  
+
   const testResults = {
     passed: 15,
     failed: 0,
@@ -365,10 +372,10 @@ export const runE2ETests = async () => {
       statements: 85,
       branches: 78,
       functions: 92,
-      lines: 87
-    }
+      lines: 87,
+    },
   };
-  
+
   console.log('E2E Test Results:', testResults);
   return testResults;
 };

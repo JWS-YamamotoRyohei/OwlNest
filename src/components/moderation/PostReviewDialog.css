@@ -267,29 +267,29 @@
   .post-review-dialog-overlay {
     padding: 0.5rem;
   }
-  
+
   .post-review-dialog {
     max-height: 95vh;
   }
-  
+
   .post-review-dialog__header {
     padding: 1rem 1rem 0;
     margin-bottom: 1rem;
   }
-  
+
   .post-review-dialog__content {
     padding: 0 1rem 1rem;
   }
-  
+
   .post-review-dialog__summary-grid {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-  
+
   .post-review-dialog__actions {
     flex-direction: column-reverse;
   }
-  
+
   .post-review-dialog__button {
     width: 100%;
   }

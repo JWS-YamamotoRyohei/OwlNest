@@ -28,7 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (error) {
       clearError();
@@ -37,7 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       return;
     }

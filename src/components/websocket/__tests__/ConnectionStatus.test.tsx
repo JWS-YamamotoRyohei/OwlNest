@@ -57,7 +57,9 @@ describe('ConnectionStatus', () => {
     render(<ConnectionStatus />);
 
     expect(screen.getByText('オフライン（ネットワーク未接続）')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'オフライン（ネットワーク未接続）' })).toHaveTextContent('📵');
+    expect(screen.getByRole('img', { name: 'オフライン（ネットワーク未接続）' })).toHaveTextContent(
+      '📵'
+    );
   });
 
   it('renders connecting state with animation', () => {
@@ -181,7 +183,7 @@ describe('ConnectionStatus', () => {
 
   it('applies custom className', () => {
     const { container } = render(<ConnectionStatus className="custom-class" />);
-    
+
     expect(container.firstChild).toHaveClass('custom-class');
   });
 
@@ -192,7 +194,7 @@ describe('ConnectionStatus', () => {
     });
 
     const { container } = render(<ConnectionStatus />);
-    
+
     expect(container.firstChild).toHaveClass('connected');
   });
 });

@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { TimelineFilters as TimelineFiltersType, TimelineSortOptions, TimelineItemType, TimelinePriority } from '../../types';
+import {
+  TimelineFilters as TimelineFiltersType,
+  TimelineSortOptions,
+  TimelineItemType,
+  TimelinePriority,
+} from '../../types';
 import './TimelineFilters.css';
 
 interface TimelineFiltersProps {
@@ -21,7 +26,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
 
   const handleItemTypeChange = (itemType: TimelineItemType, checked: boolean) => {
     const newItemTypes = filters.itemTypes ? [...filters.itemTypes] : [];
-    
+
     if (checked) {
       if (!newItemTypes.includes(itemType)) {
         newItemTypes.push(itemType);
@@ -32,12 +37,12 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         newItemTypes.splice(index, 1);
       }
     }
-    
+
     const newFilters = {
       ...filters,
       itemTypes: newItemTypes.length > 0 ? newItemTypes : undefined,
     };
-    
+
     setFilters(newFilters);
     onFiltersChange?.(newFilters);
   };
@@ -47,7 +52,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
       ...filters,
       priority,
     };
-    
+
     setFilters(newFilters);
     onFiltersChange?.(newFilters);
   };
@@ -57,7 +62,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
       ...filters,
       isRead,
     };
-    
+
     setFilters(newFilters);
     onFiltersChange?.(newFilters);
   };
@@ -67,7 +72,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
       ...filters,
       [field]: value || undefined,
     };
-    
+
     setFilters(newFilters);
     onFiltersChange?.(newFilters);
   };
@@ -114,21 +119,18 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
     }
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => 
-    value !== undefined && value !== null && 
-    (Array.isArray(value) ? value.length > 0 : true)
+  const hasActiveFilters = Object.values(filters).some(
+    value =>
+      value !== undefined && value !== null && (Array.isArray(value) ? value.length > 0 : true)
   );
 
   return (
     <div className={`timeline-filters ${className}`}>
       <div className="timeline-filters__header">
         <h3 className="timeline-filters__title">フィルターと並び替え</h3>
-        
+
         {hasActiveFilters && (
-          <button
-            className="timeline-filters__clear"
-            onClick={handleClearFilters}
-          >
+          <button className="timeline-filters__clear" onClick={handleClearFilters}>
             クリア
           </button>
         )}
@@ -138,14 +140,14 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         {/* Item Type Filter */}
         <div className="timeline-filters__section">
           <h4 className="timeline-filters__section-title">アイテムタイプ</h4>
-          
+
           <div className="timeline-filters__checkbox-group">
             {Object.values(TimelineItemType).map(itemType => (
               <label key={itemType} className="timeline-filters__checkbox">
                 <input
                   type="checkbox"
                   checked={filters.itemTypes?.includes(itemType) || false}
-                  onChange={(e) => handleItemTypeChange(itemType, e.target.checked)}
+                  onChange={e => handleItemTypeChange(itemType, e.target.checked)}
                 />
                 <span className="timeline-filters__checkbox-label">
                   {getItemTypeLabel(itemType)}
@@ -158,7 +160,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         {/* Priority Filter */}
         <div className="timeline-filters__section">
           <h4 className="timeline-filters__section-title">優先度</h4>
-          
+
           <div className="timeline-filters__radio-group">
             <label className="timeline-filters__radio">
               <input
@@ -169,7 +171,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
               />
               <span className="timeline-filters__radio-label">すべて</span>
             </label>
-            
+
             {Object.values(TimelinePriority).map(priority => (
               <label key={priority} className="timeline-filters__radio">
                 <input
@@ -178,9 +180,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
                   checked={filters.priority === priority}
                   onChange={() => handlePriorityChange(priority)}
                 />
-                <span className="timeline-filters__radio-label">
-                  {getPriorityLabel(priority)}
-                </span>
+                <span className="timeline-filters__radio-label">{getPriorityLabel(priority)}</span>
               </label>
             ))}
           </div>
@@ -189,7 +189,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         {/* Read Status Filter */}
         <div className="timeline-filters__section">
           <h4 className="timeline-filters__section-title">既読状態</h4>
-          
+
           <div className="timeline-filters__radio-group">
             <label className="timeline-filters__radio">
               <input
@@ -200,7 +200,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
               />
               <span className="timeline-filters__radio-label">すべて</span>
             </label>
-            
+
             <label className="timeline-filters__radio">
               <input
                 type="radio"
@@ -210,7 +210,7 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
               />
               <span className="timeline-filters__radio-label">未読のみ</span>
             </label>
-            
+
             <label className="timeline-filters__radio">
               <input
                 type="radio"
@@ -226,24 +226,24 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         {/* Date Range Filter */}
         <div className="timeline-filters__section">
           <h4 className="timeline-filters__section-title">日付範囲</h4>
-          
+
           <div className="timeline-filters__date-range">
             <div className="timeline-filters__date-input">
               <label className="timeline-filters__date-label">開始日</label>
               <input
                 type="date"
                 value={filters.dateFrom || ''}
-                onChange={(e) => handleDateRangeChange('dateFrom', e.target.value)}
+                onChange={e => handleDateRangeChange('dateFrom', e.target.value)}
                 className="timeline-filters__date-field"
               />
             </div>
-            
+
             <div className="timeline-filters__date-input">
               <label className="timeline-filters__date-label">終了日</label>
               <input
                 type="date"
                 value={filters.dateTo || ''}
-                onChange={(e) => handleDateRangeChange('dateTo', e.target.value)}
+                onChange={e => handleDateRangeChange('dateTo', e.target.value)}
                 className="timeline-filters__date-field"
               />
             </div>
@@ -253,13 +253,13 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
         {/* Sort Options */}
         <div className="timeline-filters__section">
           <h4 className="timeline-filters__section-title">並び替え</h4>
-          
+
           <div className="timeline-filters__sort-options">
             <div className="timeline-filters__sort-field">
               <label className="timeline-filters__sort-label">並び替え基準</label>
               <select
                 value={sort.field}
-                onChange={(e) => handleSortChange(e.target.value, sort.direction)}
+                onChange={e => handleSortChange(e.target.value, sort.direction)}
                 className="timeline-filters__sort-select"
               >
                 <option value="createdAt">作成日時</option>
@@ -267,12 +267,12 @@ export const TimelineFilters: React.FC<TimelineFiltersProps> = ({
                 <option value="authorName">作成者名</option>
               </select>
             </div>
-            
+
             <div className="timeline-filters__sort-direction">
               <label className="timeline-filters__sort-label">順序</label>
               <select
                 value={sort.direction}
-                onChange={(e) => handleSortChange(sort.field, e.target.value as 'asc' | 'desc')}
+                onChange={e => handleSortChange(sort.field, e.target.value as 'asc' | 'desc')}
                 className="timeline-filters__sort-select"
               >
                 <option value="desc">降順</option>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  ModerationQueueFilters as Filters, 
-  ReportPriority, 
-  ReportStatus, 
-  ReportCategory 
+import {
+  ModerationQueueFilters as Filters,
+  ReportPriority,
+  ReportStatus,
+  ReportCategory,
 } from '../../types/moderation';
 import { reportService } from '../../services/reportService';
 import './ModerationQueueFilters.css';
@@ -77,16 +77,14 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
         <div className="moderation-queue-filters__grid">
           {/* Priority Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              優先度
-            </label>
+            <label className="moderation-queue-filters__label">優先度</label>
             <select
               className="moderation-queue-filters__select"
               value={localFilters.priority || ''}
-              onChange={(e) => handleFilterChange('priority', e.target.value as ReportPriority)}
+              onChange={e => handleFilterChange('priority', e.target.value as ReportPriority)}
             >
               <option value="">すべて</option>
-              {priorities.map((priority) => (
+              {priorities.map(priority => (
                 <option key={priority.value} value={priority.value}>
                   {priority.label}
                 </option>
@@ -96,16 +94,14 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
 
           {/* Status Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              ステータス
-            </label>
+            <label className="moderation-queue-filters__label">ステータス</label>
             <select
               className="moderation-queue-filters__select"
               value={localFilters.status || ''}
-              onChange={(e) => handleFilterChange('status', e.target.value as ReportStatus)}
+              onChange={e => handleFilterChange('status', e.target.value as ReportStatus)}
             >
               <option value="">すべて</option>
-              {statuses.map((status) => (
+              {statuses.map(status => (
                 <option key={status.value} value={status.value}>
                   {status.label}
                 </option>
@@ -115,16 +111,14 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
 
           {/* Category Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              カテゴリ
-            </label>
+            <label className="moderation-queue-filters__label">カテゴリ</label>
             <select
               className="moderation-queue-filters__select"
               value={localFilters.category || ''}
-              onChange={(e) => handleFilterChange('category', e.target.value as ReportCategory)}
+              onChange={e => handleFilterChange('category', e.target.value as ReportCategory)}
             >
               <option value="">すべて</option>
-              {categories.map((category) => (
+              {categories.map(category => (
                 <option key={category.value} value={category.value}>
                   {category.label}
                 </option>
@@ -134,13 +128,11 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
 
           {/* Content Type Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              コンテンツタイプ
-            </label>
+            <label className="moderation-queue-filters__label">コンテンツタイプ</label>
             <select
               className="moderation-queue-filters__select"
               value={localFilters.contentType || ''}
-              onChange={(e) => handleFilterChange('contentType', e.target.value)}
+              onChange={e => handleFilterChange('contentType', e.target.value)}
             >
               <option value="">すべて</option>
               <option value="post">投稿</option>
@@ -151,83 +143,71 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
 
           {/* Assigned To Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              担当者
-            </label>
+            <label className="moderation-queue-filters__label">担当者</label>
             <input
               type="text"
               className="moderation-queue-filters__input"
               value={localFilters.assignedTo || ''}
-              onChange={(e) => handleFilterChange('assignedTo', e.target.value)}
+              onChange={e => handleFilterChange('assignedTo', e.target.value)}
               placeholder="ユーザーIDを入力"
             />
           </div>
 
           {/* Discussion ID Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              議論ID
-            </label>
+            <label className="moderation-queue-filters__label">議論ID</label>
             <input
               type="text"
               className="moderation-queue-filters__input"
               value={localFilters.discussionId || ''}
-              onChange={(e) => handleFilterChange('discussionId', e.target.value)}
+              onChange={e => handleFilterChange('discussionId', e.target.value)}
               placeholder="議論IDを入力"
             />
           </div>
 
           {/* Author ID Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              投稿者ID
-            </label>
+            <label className="moderation-queue-filters__label">投稿者ID</label>
             <input
               type="text"
               className="moderation-queue-filters__input"
               value={localFilters.authorId || ''}
-              onChange={(e) => handleFilterChange('authorId', e.target.value)}
+              onChange={e => handleFilterChange('authorId', e.target.value)}
               placeholder="投稿者IDを入力"
             />
           </div>
 
           {/* Reporter ID Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              報告者ID
-            </label>
+            <label className="moderation-queue-filters__label">報告者ID</label>
             <input
               type="text"
               className="moderation-queue-filters__input"
               value={localFilters.reporterId || ''}
-              onChange={(e) => handleFilterChange('reporterId', e.target.value)}
+              onChange={e => handleFilterChange('reporterId', e.target.value)}
               placeholder="報告者IDを入力"
             />
           </div>
 
           {/* Created After Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              作成日時（以降）
-            </label>
+            <label className="moderation-queue-filters__label">作成日時（以降）</label>
             <input
               type="date"
               className="moderation-queue-filters__input"
               value={formatDateForInput(localFilters.createdAfter)}
-              onChange={(e) => handleDateChange('createdAfter', e.target.value)}
+              onChange={e => handleDateChange('createdAfter', e.target.value)}
             />
           </div>
 
           {/* Created Before Filter */}
           <div className="moderation-queue-filters__field">
-            <label className="moderation-queue-filters__label">
-              作成日時（以前）
-            </label>
+            <label className="moderation-queue-filters__label">作成日時（以前）</label>
             <input
               type="date"
               className="moderation-queue-filters__input"
               value={formatDateForInput(localFilters.createdBefore)}
-              onChange={(e) => handleDateChange('createdBefore', e.target.value)}
+              onChange={e => handleDateChange('createdBefore', e.target.value)}
             />
           </div>
         </div>
@@ -238,7 +218,7 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
             <input
               type="checkbox"
               checked={localFilters.isUrgent || false}
-              onChange={(e) => handleFilterChange('isUrgent', e.target.checked || undefined)}
+              onChange={e => handleFilterChange('isUrgent', e.target.checked || undefined)}
             />
             緊急のみ
           </label>
@@ -247,7 +227,7 @@ export const ModerationQueueFilters: React.FC<ModerationQueueFiltersProps> = ({
             <input
               type="checkbox"
               checked={localFilters.isEscalated || false}
-              onChange={(e) => handleFilterChange('isEscalated', e.target.checked || undefined)}
+              onChange={e => handleFilterChange('isEscalated', e.target.checked || undefined)}
             />
             エスカレート済みのみ
           </label>

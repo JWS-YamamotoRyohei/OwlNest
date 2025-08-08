@@ -263,29 +263,29 @@
   .post-report-dialog-overlay {
     padding: 0.5rem;
   }
-  
+
   .post-report-dialog {
     max-height: 95vh;
   }
-  
+
   .post-report-dialog__header {
     padding: 1rem 1rem 0;
     margin-bottom: 1rem;
   }
-  
+
   .post-report-dialog__content {
     padding: 0 1rem 1rem;
   }
-  
+
   .post-report-dialog__post-info {
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .post-report-dialog__actions {
     flex-direction: column-reverse;
   }
-  
+
   .post-report-dialog__button {
     width: 100%;
   }

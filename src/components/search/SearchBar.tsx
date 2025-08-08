@@ -27,7 +27,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   searchHistory = [],
   onSuggestionSelect,
   onHistorySelect,
-  className = ''
+  className = '',
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -95,21 +95,31 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const getSuggestionIcon = (type: SearchSuggestion['type']) => {
     switch (type) {
-      case 'query': return '🔍';
-      case 'category': return '📁';
-      case 'user': return '👤';
-      case 'tag': return '🏷️';
-      default: return '🔍';
+      case 'query':
+        return '🔍';
+      case 'category':
+        return '📁';
+      case 'user':
+        return '👤';
+      case 'tag':
+        return '🏷️';
+      default:
+        return '🔍';
     }
   };
 
   const getSuggestionTypeLabel = (type: SearchSuggestion['type']) => {
     switch (type) {
-      case 'query': return 'クエリ';
-      case 'category': return 'カテゴリ';
-      case 'user': return 'ユーザー';
-      case 'tag': return 'タグ';
-      default: return '';
+      case 'query':
+        return 'クエリ';
+      case 'category':
+        return 'カテゴリ';
+      case 'user':
+        return 'ユーザー';
+      case 'tag':
+        return 'タグ';
+      default:
+        return '';
     }
   };
 
@@ -145,7 +155,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           className={`search-bar__input ${isFocused ? 'search-bar__input--focused' : ''}`}
           disabled={isLoading}
         />
-        
+
         <button
           className="search-bar__search-button"
           onClick={handleSearchClick}
@@ -176,18 +186,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     {getSuggestionIcon(suggestion.type)}
                   </span>
                   <span className="search-bar__suggestion-content">
-                    <span className="search-bar__suggestion-label">
-                      {suggestion.label}
-                    </span>
+                    <span className="search-bar__suggestion-label">{suggestion.label}</span>
                     {suggestion.type !== 'query' && (
                       <span className="search-bar__suggestion-type">
                         {getSuggestionTypeLabel(suggestion.type)}
                       </span>
                     )}
                     {suggestion.count && (
-                      <span className="search-bar__suggestion-count">
-                        ({suggestion.count})
-                      </span>
+                      <span className="search-bar__suggestion-count">({suggestion.count})</span>
                     )}
                   </span>
                 </button>
@@ -217,9 +223,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
           {/* No results */}
           {suggestions.length === 0 && searchHistory.length === 0 && value.trim() && (
-            <div className="search-bar__no-results">
-              検索候補が見つかりません
-            </div>
+            <div className="search-bar__no-results">検索候補が見つかりません</div>
           )}
         </div>
       )}

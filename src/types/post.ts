@@ -26,7 +26,7 @@ export interface Post extends DynamoDBItem, BaseEntity {
   GSI2PK: `USER#${string}`;
   GSI2SK: `POST#${string}`;
   EntityType: EntityType.POST;
-  
+
   // Core post information
   postId: string;
   discussionId: string;
@@ -35,25 +35,25 @@ export interface Post extends DynamoDBItem, BaseEntity {
   authorDisplayName: string;
   content: string;
   stance: Stance;
-  
+
   // Hierarchy (for replies)
   parentId?: string;
   level: number;
-  
+
   // File attachments
   attachments?: FileAttachment[];
-  
+
   // Post status
   isActive: boolean;
   isEdited: boolean;
   editedAt?: string;
-  
+
   // Moderation
   moderation: ModerationStatus;
-  
+
   // Statistics
   statistics: PostStatistics;
-  
+
   // Metadata
   metadata: PostMetadata;
 }
@@ -103,12 +103,12 @@ export interface PostListItem {
   authorDisplayName: string;
   authorAvatar?: string;
   content: {
-        text: string,
-        preview: string,
-        hasAttachments: number,
-        hasLinks: number,
-        attachmentCount: number,
-      };
+    text: string;
+    preview: string;
+    hasAttachments: number;
+    hasLinks: number;
+    attachmentCount: number;
+  };
   stance: Stance;
   parentId?: string;
   level: number;
@@ -117,7 +117,7 @@ export interface PostListItem {
   isEdited: boolean;
   createdAt: string;
   updatedAt: string;
-  replyCount:number;
+  replyCount: number;
   statistics: {
     replyCount: number;
     likeCount: number;
@@ -132,7 +132,7 @@ export interface PostListItem {
   canEdit?: boolean;
   canDelete?: boolean;
   canReply?: boolean;
-  canReact?:boolean
+  canReact?: boolean;
 }
 
 /**
@@ -142,16 +142,16 @@ export interface CreatePostData {
   discussionId: string;
   discussionPointId: string;
   content: {
-    text: string,
-    preview: string,
-    hasAttachments: number,
-    hasLinks: number,
-    attachmentCount: number,
+    text: string;
+    preview: string;
+    hasAttachments: number;
+    hasLinks: number;
+    attachmentCount: number;
   };
   attachments: FileAttachment[];
   stance: Stance;
   parentId?: string;
-  replyToId:string
+  replyToId: string;
 }
 
 /**
@@ -188,7 +188,7 @@ export interface PostReaction extends DynamoDBItem, BaseEntity {
   PK: `POST#${string}`;
   SK: `REACTION#${string}#${string}`;
   EntityType: EntityType.POST_REACTION;
-  
+
   postId: string;
   userId: string;
   reactionType: ReactionType;
@@ -201,7 +201,7 @@ export interface PostReport extends DynamoDBItem, BaseEntity {
   PK: `POST#${string}`;
   SK: `REPORT#${string}#${string}`;
   EntityType: EntityType.POST_REPORT;
-  
+
   postId: string;
   reporterId: string;
   reason: string;

@@ -11,21 +11,24 @@ export function usePerformanceOptimization(componentName: string) {
   // Measure component mount time
   React.useEffect(() => {
     startMeasure(`${componentName}-mount`);
-    
+
     return () => {
       endMeasure(`${componentName}-mount`);
     };
   }, [componentName, startMeasure, endMeasure]);
 
   // Measure render time
-  const measureRender = React.useCallback((renderFn: () => void) => {
-    return measureFunction(`${componentName}-render`, renderFn);
-  }, [componentName, measureFunction]);
+  const measureRender = React.useCallback(
+    (renderFn: () => void) => {
+      return measureFunction(`${componentName}-render`, renderFn);
+    },
+    [componentName, measureFunction]
+  );
 
   return {
     measureRender,
     startMeasure: (name: string) => startMeasure(`${componentName}-${name}`),
-    endMeasure: (name: string) => endMeasure(`${componentName}-${name}`)
+    endMeasure: (name: string) => endMeasure(`${componentName}-${name}`),
   };
 }
 
@@ -58,7 +61,7 @@ export function useRoutePreloading() {
     preloadRoute,
     preloadOnHover,
     preloadByPattern,
-    navigationHistory
+    navigationHistory,
   };
 }
 
@@ -77,39 +80,48 @@ export function useImageOptimization() {
     setFailedImages(prev => new Set(prev).add(src));
   }, []);
 
-  const isImageLoaded = React.useCallback((src: string) => {
-    return loadedImages.has(src);
-  }, [loadedImages]);
+  const isImageLoaded = React.useCallback(
+    (src: string) => {
+      return loadedImages.has(src);
+    },
+    [loadedImages]
+  );
 
-  const isImageFailed = React.useCallback((src: string) => {
-    return failedImages.has(src);
-  }, [failedImages]);
+  const isImageFailed = React.useCallback(
+    (src: string) => {
+      return failedImages.has(src);
+    },
+    [failedImages]
+  );
 
-  const preloadImages = React.useCallback(async (urls: string[]) => {
-    const promises = urls.map(url => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          markImageLoaded(url);
-          resolve();
-        };
-        img.onerror = () => {
-          markImageFailed(url);
-          resolve();
-        };
-        img.src = url;
+  const preloadImages = React.useCallback(
+    async (urls: string[]) => {
+      const promises = urls.map(url => {
+        return new Promise<void>(resolve => {
+          const img = new Image();
+          img.onload = () => {
+            markImageLoaded(url);
+            resolve();
+          };
+          img.onerror = () => {
+            markImageFailed(url);
+            resolve();
+          };
+          img.src = url;
+        });
       });
-    });
 
-    await Promise.allSettled(promises);
-  }, [markImageLoaded, markImageFailed]);
+      await Promise.allSettled(promises);
+    },
+    [markImageLoaded, markImageFailed]
+  );
 
   return {
     markImageLoaded,
     markImageFailed,
     isImageLoaded,
     isImageFailed,
-    preloadImages
+    preloadImages,
   };
 }
 
@@ -128,10 +140,10 @@ export function useVirtualScrolling<T>(
     const start = Math.floor(scrollTop / itemHeight);
     const visibleCount = Math.ceil(containerHeight / itemHeight);
     const end = Math.min(start + visibleCount + overscan, items.length);
-    
+
     return {
       start: Math.max(0, start - overscan),
-      end
+      end,
     };
   }, [scrollTop, itemHeight, containerHeight, overscan, items.length]);
 
@@ -151,7 +163,7 @@ export function useVirtualScrolling<T>(
     totalHeight,
     offsetY,
     handleScroll,
-    visibleRange
+    visibleRange,
   };
 }
 
@@ -181,9 +193,7 @@ export function useDebouncedState<T>(
 /**
  * Hook for intersection observer (lazy loading)
  */
-export function useIntersectionObserver(
-  options: IntersectionObserverInit = {}
-) {
+export function useIntersectionObserver(options: IntersectionObserverInit = {}) {
   const [isIntersecting, setIsIntersecting] = React.useState(false);
   const [hasIntersected, setHasIntersected] = React.useState(false);
   const elementRef = React.useRef<HTMLElement>(null);
@@ -209,7 +219,7 @@ export function useIntersectionObserver(
   return {
     elementRef,
     isIntersecting,
-    hasIntersected
+    hasIntersected,
   };
 }
 
@@ -230,7 +240,7 @@ export function useMemoryMonitoring() {
         setMemoryInfo({
           usedJSHeapSize: memory.usedJSHeapSize,
           totalJSHeapSize: memory.totalJSHeapSize,
-          jsHeapSizeLimit: memory.jsHeapSizeLimit
+          jsHeapSizeLimit: memory.jsHeapSizeLimit,
         });
       }
     };
@@ -255,6 +265,6 @@ export function useMemoryMonitoring() {
   return {
     memoryInfo,
     getMemoryUsagePercentage,
-    isMemoryUsageHigh
+    isMemoryUsageHigh,
   };
 }

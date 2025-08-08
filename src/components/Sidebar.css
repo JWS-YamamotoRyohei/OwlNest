@@ -158,15 +158,15 @@
     width: 100vw;
     max-width: 320px;
   }
-  
+
   .sidebar__nav-link {
     padding: 1rem;
   }
-  
+
   .sidebar__nav-icon {
     font-size: 1.5rem;
   }
-  
+
   .sidebar__nav-label {
     font-size: 1rem;
   }
@@ -178,33 +178,33 @@
     background: var(--color-surface-dark, #1e293b);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
-  
+
   .sidebar__header {
     background: var(--color-background-dark, #0f172a);
     border-bottom-color: var(--color-border-dark, #334155);
   }
-  
+
   .sidebar__close-button {
     color: var(--color-text-secondary-dark, #94a3b8);
   }
-  
+
   .sidebar__close-button:hover {
     background: var(--color-surface-dark, #334155);
     color: var(--color-text-primary-dark, #f1f5f9);
   }
-  
+
   .sidebar__user-name {
     color: var(--color-text-primary-dark, #f1f5f9);
   }
-  
+
   .sidebar__user-role {
     color: var(--color-text-secondary-dark, #94a3b8);
   }
-  
+
   .sidebar__nav-link {
     color: var(--color-text-secondary-dark, #94a3b8);
   }
-  
+
   .sidebar__nav-link:hover {
     background: var(--color-surface-dark, #334155);
     color: var(--color-text-primary-dark, #f1f5f9);

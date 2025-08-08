@@ -10,10 +10,10 @@ interface LoadingSpinnerProps {
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'medium',
   message,
-  fullScreen = false
+  fullScreen = false,
 }) => {
   const spinnerClass = `loading-spinner loading-spinner--${size}`;
-  const containerClass = fullScreen 
+  const containerClass = fullScreen
     ? 'loading-spinner-container loading-spinner-container--fullscreen'
     : 'loading-spinner-container';
 
@@ -22,9 +22,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       <div className={spinnerClass}>
         <div className="loading-spinner__circle"></div>
       </div>
-      {message && (
-        <p className="loading-spinner__message">{message}</p>
-      )}
+      {message && <p className="loading-spinner__message">{message}</p>}
     </div>
   );
 };

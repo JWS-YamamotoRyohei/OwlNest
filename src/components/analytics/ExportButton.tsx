@@ -23,7 +23,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({
   size = 'medium',
   icon = true,
   className,
-  disabled = false
+  disabled = false,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 

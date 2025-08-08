@@ -48,7 +48,7 @@ export const CategoryDemo: React.FC = () => {
               required={true}
             />
           </div>
-          
+
           <div className="category-demo__info">
             <h3>選択状況</h3>
             <div className="info-grid">
@@ -69,7 +69,7 @@ export const CategoryDemo: React.FC = () => {
                 <span className="info-value">{selectionStats.remainingSelections}</span>
               </div>
             </div>
-            
+
             {selectedCategories.length > 0 && (
               <div className="selected-categories">
                 <h4>選択されたカテゴリ:</h4>
@@ -80,13 +80,15 @@ export const CategoryDemo: React.FC = () => {
                 </ul>
               </div>
             )}
-            
+
             {!validation.isValid && (
               <div className="validation-errors">
                 <h4>エラー:</h4>
                 <ul>
                   {validation.errors.map((error, index) => (
-                    <li key={index} className="error">{error}</li>
+                    <li key={index} className="error">
+                      {error}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -106,7 +108,7 @@ export const CategoryDemo: React.FC = () => {
                 categoryCounts={mockCategoryCounts}
               />
             </div>
-            
+
             <div className="filter-section">
               <h3>コンパクト版</h3>
               <CategoryFilter
@@ -118,7 +120,7 @@ export const CategoryDemo: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <div className="category-demo__filter-info">
             <h3>フィルター状況</h3>
             <div className="info-item">

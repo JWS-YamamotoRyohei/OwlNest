@@ -111,7 +111,7 @@
   background: #f8fafc;
 }
 
-.radio-option input[type="radio"] {
+.radio-option input[type='radio'] {
   display: none;
 }
 
@@ -125,12 +125,12 @@
   transition: all 0.2s ease;
 }
 
-.radio-option input[type="radio"]:checked + .radio-indicator {
+.radio-option input[type='radio']:checked + .radio-indicator {
   border-color: #3b82f6;
   background: #3b82f6;
 }
 
-.radio-option input[type="radio"]:checked + .radio-indicator::after {
+.radio-option input[type='radio']:checked + .radio-indicator::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -142,7 +142,7 @@
   border-radius: 50%;
 }
 
-.radio-option input[type="radio"]:checked ~ small {
+.radio-option input[type='radio']:checked ~ small {
   color: #3b82f6;
 }
 
@@ -153,7 +153,7 @@
   gap: 12px;
 }
 
-.date-range input[type="date"] {
+.date-range input[type='date'] {
   flex: 1;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -163,7 +163,7 @@
   transition: border-color 0.2s ease;
 }
 
-.date-range input[type="date"]:focus {
+.date-range input[type='date']:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -175,8 +175,8 @@
 }
 
 /* Text Inputs */
-.form-group input[type="text"],
-.form-group input[type="number"] {
+.form-group input[type='text'],
+.form-group input[type='number'] {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -186,8 +186,8 @@
   transition: border-color 0.2s ease;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus {
+.form-group input[type='text']:focus,
+.form-group input[type='number']:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -212,7 +212,7 @@
   background: #f8fafc;
 }
 
-.checkbox-option input[type="checkbox"] {
+.checkbox-option input[type='checkbox'] {
   display: none;
 }
 
@@ -226,12 +226,12 @@
   transition: all 0.2s ease;
 }
 
-.checkbox-option input[type="checkbox"]:checked + .checkbox-indicator {
+.checkbox-option input[type='checkbox']:checked + .checkbox-indicator {
   border-color: #3b82f6;
   background: #3b82f6;
 }
 
-.checkbox-option input[type="checkbox"]:checked + .checkbox-indicator::after {
+.checkbox-option input[type='checkbox']:checked + .checkbox-indicator::after {
   content: '✓';
   position: absolute;
   top: 50%;
@@ -414,9 +414,9 @@
     padding: 10px;
   }
 
-  .form-group input[type="text"],
-  .form-group input[type="number"],
-  .date-range input[type="date"] {
+  .form-group input[type='text'],
+  .form-group input[type='number'],
+  .date-range input[type='date'] {
     padding: 8px 10px;
     font-size: 13px;
   }

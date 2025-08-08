@@ -102,25 +102,25 @@
     gap: 0.75rem;
     padding: 0.75rem;
   }
-  
+
   .discussion-sort__label {
     text-align: center;
   }
-  
+
   .discussion-sort__controls {
     justify-content: center;
     gap: 0.75rem;
   }
-  
+
   .discussion-sort__field-select {
     flex: 1;
     min-width: 0;
   }
-  
+
   .discussion-sort__direction-button {
     flex-shrink: 0;
   }
-  
+
   .discussion-sort__current {
     margin-left: 0;
     text-align: center;
@@ -133,22 +133,22 @@
     padding: 0.5rem;
     gap: 0.5rem;
   }
-  
+
   .discussion-sort__controls {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .discussion-sort__field-select,
   .discussion-sort__direction-button {
     width: 100%;
     justify-content: center;
   }
-  
+
   .discussion-sort__direction-text {
     display: none;
   }
-  
+
   .discussion-sort__direction-button {
     padding: 0.5rem;
   }
@@ -167,7 +167,7 @@
   .discussion-sort__direction-button {
     border-width: 2px;
   }
-  
+
   .discussion-sort__field-select:focus,
   .discussion-sort__direction-button:focus {
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);

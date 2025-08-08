@@ -53,8 +53,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Suggestions Dropdown */
@@ -165,15 +169,15 @@
     padding: 14px 16px;
     padding-right: 44px;
   }
-  
+
   .search-autocomplete__suggestions {
     max-height: 280px;
   }
-  
+
   .search-autocomplete__suggestion {
     padding: 14px 16px;
   }
-  
+
   .search-autocomplete__suggestion-text {
     font-size: 15px;
   }
@@ -186,7 +190,7 @@
     border-color: var(--color-border-dark, #333);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-  
+
   .search-autocomplete__highlight {
     background: var(--color-warning-alpha-40);
     color: var(--color-warning-light);
@@ -198,13 +202,13 @@
   .search-autocomplete__input {
     border-width: 3px;
   }
-  
+
   .search-autocomplete__suggestion:hover,
   .search-autocomplete__suggestion--selected {
     background: var(--color-primary-alpha-20);
     border: 1px solid var(--color-primary);
   }
-  
+
   .search-autocomplete__highlight {
     background: yellow;
     color: black;
@@ -217,11 +221,11 @@
   .search-autocomplete__suggestions {
     animation: none;
   }
-  
+
   .search-autocomplete__loading-spinner {
     animation: none;
   }
-  
+
   .search-autocomplete__input,
   .search-autocomplete__suggestion {
     transition: none;
@@ -253,19 +257,18 @@
 
 /* Loading State */
 .search-autocomplete--loading .search-autocomplete__input {
-  background-image: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-primary-alpha-10),
-    transparent
-  );
+  background-image: linear-gradient(90deg, transparent, var(--color-primary-alpha-10), transparent);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Error State */

@@ -8,7 +8,7 @@ import './AuthPages.css';
 export const LoginPage: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
-    password: ''
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,17 +35,17 @@ export const LoginPage: React.FC = () => {
     const { name, value } = e.target;
     setCredentials(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   // Development mode quick login
   const handleQuickLogin = async (userType: 'user' | 'admin') => {
     clearError();
-    
+
     const quickCredentials: LoginCredentials = {
       email: userType === 'admin' ? 'admin@example.com' : 'user@example.com',
-      password: 'password123'
+      password: 'password123',
     };
 
     try {
@@ -139,11 +139,7 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="auth-button auth-button--primary"
-          >
+          <button type="submit" disabled={isLoading} className="auth-button auth-button--primary">
             {isLoading ? 'ログイン中...' : 'ログイン'}
           </button>
         </form>

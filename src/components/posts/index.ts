@@ -10,6 +10,3 @@ export { PostList } from './PostList';
 export { PostThread } from './PostThread';
 export { PostManagementDemo } from './PostManagementDemo';
 export { PostModerationPanel } from './PostModerationPanel';
-
-// Export types
-export type { PostFilters, PostSortOptions } from './PostList';

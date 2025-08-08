@@ -1,10 +1,5 @@
 import { DynamoDBItem } from '../services/dynamodb';
-import {
-  EntityType,
-  BaseEntity,
-  PaginationOptions,
-  PaginationResult,
-} from './common';
+import { EntityType, BaseEntity, PaginationOptions, PaginationResult } from './common';
 
 /**
  * Follow relationship stored in DynamoDB
@@ -19,16 +14,16 @@ export interface Follow extends DynamoDBItem, BaseEntity {
   GSI1PK: `${FollowTargetType}#${string}`;
   GSI1SK: `FOLLOWER#${string}`;
   EntityType: EntityType.FOLLOW;
-  
+
   // Core follow information
   followerId: string;
   targetType: FollowTargetType;
   targetId: string;
-  
+
   // Follow metadata
   isActive: boolean;
   notificationsEnabled: boolean;
-  
+
   // Additional context
   followReason?: string;
   tags?: string[];
@@ -47,29 +42,29 @@ export interface TimelineItem extends DynamoDBItem, BaseEntity {
   GSI1PK: `USER#${string}`;
   GSI1SK: `TIMELINE#${string}`;
   EntityType: EntityType.TIMELINE_ITEM;
-  
+
   // Core timeline information
   userId: string;
   itemType: TimelineItemType;
   itemId: string;
-  
+
   // Content information
   title: string;
   preview: string;
   authorId: string;
   authorDisplayName: string;
   authorAvatar?: string;
-  
+
   // Context information
   discussionId?: string;
   discussionTitle?: string;
   pointId?: string;
   pointTitle?: string;
-  
+
   // Metadata
   isRead: boolean;
   priority: TimelinePriority;
-  
+
   // TTL for automatic cleanup (30 days)
   ttl: number;
 }
@@ -135,7 +130,7 @@ export interface FollowListItem {
   isActive: boolean;
   notificationsEnabled: boolean;
   createdAt: string;
-  
+
   // Target-specific information
   targetInfo: UserFollowInfo | DiscussionFollowInfo;
 }
@@ -225,7 +220,7 @@ export interface FollowSuggestion {
   reason: FollowSuggestionReason;
   score: number;
   mutualConnections?: string[];
-  
+
   // Target-specific information
   targetInfo: UserFollowInfo | DiscussionFollowInfo;
 }

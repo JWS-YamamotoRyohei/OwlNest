@@ -1,5 +1,16 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { WebSocketService, WebSocketMessage, getWebSocketService } from '../services/websocketService';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react';
+import {
+  WebSocketService,
+  WebSocketMessage,
+  getWebSocketService,
+} from '../services/websocketService';
 import { useAuth } from './AuthContext';
 
 export interface WebSocketContextType {
@@ -29,9 +40,9 @@ export interface WebSocketProviderProps {
   autoConnect?: boolean;
 }
 
-export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ 
-  children, 
-  autoConnect = true 
+export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
+  children,
+  autoConnect = true,
 }) => {
   const { user, isAuthenticated } = useAuth();
   const [websocketService] = useState(() => getWebSocketService());
@@ -80,34 +91,52 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   }, [websocketService, updateConnectionState]);
 
   // Send message
-  const send = useCallback((message: WebSocketMessage) => {
-    websocketService.send(message);
-  }, [websocketService]);
+  const send = useCallback(
+    (message: WebSocketMessage) => {
+      websocketService.send(message);
+    },
+    [websocketService]
+  );
 
   // Subscribe to events
-  const subscribe = useCallback((event: string, callback: (message: WebSocketMessage) => void) => {
-    websocketService.on(event, callback);
-  }, [websocketService]);
+  const subscribe = useCallback(
+    (event: string, callback: (message: WebSocketMessage) => void) => {
+      websocketService.on(event, callback);
+    },
+    [websocketService]
+  );
 
   // Unsubscribe from events
-  const unsubscribe = useCallback((event: string, callback: (message: WebSocketMessage) => void) => {
-    websocketService.off(event, callback);
-  }, [websocketService]);
+  const unsubscribe = useCallback(
+    (event: string, callback: (message: WebSocketMessage) => void) => {
+      websocketService.off(event, callback);
+    },
+    [websocketService]
+  );
 
   // Join discussion
-  const joinDiscussion = useCallback((discussionId: string) => {
-    websocketService.joinDiscussion(discussionId);
-  }, [websocketService]);
+  const joinDiscussion = useCallback(
+    (discussionId: string) => {
+      websocketService.joinDiscussion(discussionId);
+    },
+    [websocketService]
+  );
 
   // Leave discussion
-  const leaveDiscussion = useCallback((discussionId: string) => {
-    websocketService.leaveDiscussion(discussionId);
-  }, [websocketService]);
+  const leaveDiscussion = useCallback(
+    (discussionId: string) => {
+      websocketService.leaveDiscussion(discussionId);
+    },
+    [websocketService]
+  );
 
   // Broadcast post
-  const broadcastPost = useCallback((discussionId: string, postData: any) => {
-    websocketService.broadcastPost(discussionId, postData);
-  }, [websocketService]);
+  const broadcastPost = useCallback(
+    (discussionId: string, postData: any) => {
+      websocketService.broadcastPost(discussionId, postData);
+    },
+    [websocketService]
+  );
 
   // Set up event listeners
   useEffect(() => {
@@ -228,11 +257,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     clearErrors,
   };
 
-  return (
-    <WebSocketContext.Provider value={contextValue}>
-      {children}
-    </WebSocketContext.Provider>
-  );
+  return <WebSocketContext.Provider value={contextValue}>{children}</WebSocketContext.Provider>;
 };
 
 export const useWebSocket = (): WebSocketContextType => {

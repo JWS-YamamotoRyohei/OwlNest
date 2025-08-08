@@ -7,9 +7,7 @@ interface ContentFilterManagerProps {
   onFilterUpdate?: () => void;
 }
 
-export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
-  onFilterUpdate,
-}) => {
+export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({ onFilterUpdate }) => {
   const [filters, setFilters] = useState<ContentFilterRule[]>([]);
   const [config, setConfig] = useState<ContentFilterConfig | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +43,12 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
     }
   };
 
-  const handleCreateFilter = async (filterData: Omit<ContentFilterRule, 'filterId' | 'createdAt' | 'updatedAt' | 'PK' | 'SK' | 'EntityType' | 'stats'>) => {
+  const handleCreateFilter = async (
+    filterData: Omit<
+      ContentFilterRule,
+      'filterId' | 'createdAt' | 'updatedAt' | 'PK' | 'SK' | 'EntityType' | 'stats'
+    >
+  ) => {
     try {
       await contentFilterService.createFilter(filterData);
       await loadFilters();
@@ -78,7 +81,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
       setError(err instanceof Error ? err.message : 'フィルターの削除に失敗しました');
     }
   };
-  
+
   const handleTestFilter = async (filterId: string) => {
     if (!testContent.trim()) return;
 
@@ -117,10 +120,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
     <div className="content-filter-manager">
       <div className="filter-manager-header">
         <h2>コンテンツフィルター管理</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => setShowCreateForm(true)}
-        >
+        <button className="btn btn-primary" onClick={() => setShowCreateForm(true)}>
           新しいフィルターを作成
         </button>
       </div>
@@ -142,7 +142,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
                 <input
                   type="checkbox"
                   checked={config.strictMode}
-                  onChange={(e) => handleUpdateConfig({ strictMode: e.target.checked })}
+                  onChange={e => handleUpdateConfig({ strictMode: e.target.checked })}
                 />
                 厳格モード
               </label>
@@ -156,7 +156,9 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
                   max="1"
                   step="0.1"
                   value={config.autoActionThreshold}
-                  onChange={(e) => handleUpdateConfig({ autoActionThreshold: parseFloat(e.target.value) })}
+                  onChange={e =>
+                    handleUpdateConfig({ autoActionThreshold: parseFloat(e.target.value) })
+                  }
                 />
                 <span>{config.autoActionThreshold}</span>
               </label>
@@ -170,7 +172,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
                   max="1"
                   step="0.1"
                   value={config.queueThreshold}
-                  onChange={(e) => handleUpdateConfig({ queueThreshold: parseFloat(e.target.value) })}
+                  onChange={e => handleUpdateConfig({ queueThreshold: parseFloat(e.target.value) })}
                 />
                 <span>{config.queueThreshold}</span>
               </label>
@@ -185,7 +187,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
         <div className="test-form">
           <textarea
             value={testContent}
-            onChange={(e) => setTestContent(e.target.value)}
+            onChange={e => setTestContent(e.target.value)}
             placeholder="テストしたいコンテンツを入力してください..."
             rows={4}
           />
@@ -211,9 +213,7 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
                     <p>信頼度: {(result.confidence * 100).toFixed(1)}%</p>
                     <p>推奨アクション: {result.suggestedAction}</p>
                     <p>説明: {result.explanation}</p>
-                    {result.matchedText && (
-                      <p>マッチしたテキスト: "{result.matchedText}"</p>
-                    )}
+                    {result.matchedText && <p>マッチしたテキスト: "{result.matchedText}"</p>}
                   </div>
                 </div>
               ))}
@@ -247,9 +247,10 @@ export const ContentFilterManager: React.FC<ContentFilterManagerProps> = ({
       {(showCreateForm || editingFilter) && (
         <FilterFormModal
           filter={editingFilter}
-          onSave={editingFilter ? 
-            (updates) => handleUpdateFilter(editingFilter.filterId, updates) :
-            handleCreateFilter
+          onSave={
+            editingFilter
+              ? updates => handleUpdateFilter(editingFilter.filterId, updates)
+              : handleCreateFilter
           }
           onCancel={() => {
             setShowCreateForm(false);
@@ -301,11 +302,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
           >
             {filter.isActive ? '有効' : '無効'}
           </button>
-          <button
-            className="btn btn-small"
-            onClick={() => onEdit(filter)}
-            title="編集"
-          >
+          <button className="btn btn-small" onClick={() => onEdit(filter)} title="編集">
             編集
           </button>
           <button
@@ -326,13 +323,13 @@ const FilterCard: React.FC<FilterCardProps> = ({
           <span className="action">{filter.action}</span>
           {filter.isTestMode && <span className="test-mode">テストモード</span>}
         </div>
-        
+
         {filter.keywords && (
           <div className="keywords">
             <strong>キーワード:</strong> {filter.keywords.join(', ')}
           </div>
         )}
-        
+
         {filter.pattern && (
           <div className="pattern">
             <strong>パターン:</strong> <code>{filter.pattern}</code>
@@ -342,18 +339,15 @@ const FilterCard: React.FC<FilterCardProps> = ({
         <div className="filter-stats-summary">
           <span>マッチ数: {filter.stats.totalMatches}</span>
           <span>精度: {(filter.stats.accuracy * 100).toFixed(1)}%</span>
-          <button
-            className="btn btn-link"
-            onClick={loadStats}
-          >
+          <button className="btn btn-link" onClick={loadStats}>
             詳細統計
           </button>
         </div>
 
         {testResult && (
           <div className={`test-result-summary ${testResult.matched ? 'matched' : 'no-match'}`}>
-            テスト結果: {testResult.matched ? 'マッチ' : 'マッチなし'} 
-            ({(testResult.confidence * 100).toFixed(1)}%)
+            テスト結果: {testResult.matched ? 'マッチ' : 'マッチなし'}(
+            {(testResult.confidence * 100).toFixed(1)}%)
           </div>
         )}
       </div>
@@ -382,10 +376,7 @@ const FilterCard: React.FC<FilterCardProps> = ({
                 </div>
               ))}
             </div>
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowStats(false)}
-            >
+            <button className="btn btn-secondary" onClick={() => setShowStats(false)}>
               閉じる
             </button>
           </div>
@@ -401,19 +392,15 @@ interface FilterFormModalProps {
   onCancel: () => void;
 }
 
-const FilterFormModal: React.FC<FilterFormModalProps> = ({
-  filter,
-  onSave,
-  onCancel,
-}) => {
+const FilterFormModal: React.FC<FilterFormModalProps> = ({ filter, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: filter?.name || '',
     description: filter?.description || '',
-    type: filter?.type || 'keyword' as const,
+    type: filter?.type || ('keyword' as const),
     pattern: filter?.pattern || '',
     keywords: filter?.keywords?.join(', ') || '',
-    action: filter?.action || 'flag' as const,
-    severity: filter?.severity || 'medium' as const,
+    action: filter?.action || ('flag' as const),
+    severity: filter?.severity || ('medium' as const),
     confidence: filter?.confidence || 0.8,
     applyToContent: filter?.applyToContent ?? true,
     applyToTitles: filter?.applyToTitles ?? true,
@@ -424,10 +411,15 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const filterData = {
       ...formData,
-      keywords: formData.keywords ? formData.keywords.split(',').map(k => k.trim()).filter(k => k) : undefined,
+      keywords: formData.keywords
+        ? formData.keywords
+            .split(',')
+            .map(k => k.trim())
+            .filter(k => k)
+        : undefined,
       createdBy: 'current-user', // TODO: Get from auth context
       lastModifiedBy: 'current-user', // TODO: Get from auth context
       stats: filter?.stats || {
@@ -446,7 +438,9 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
       <div className="modal-content">
         <div className="modal-header">
           <h3>{filter ? 'フィルターを編集' : '新しいフィルターを作成'}</h3>
-          <button className="close-btn" onClick={onCancel}>×</button>
+          <button className="close-btn" onClick={onCancel}>
+            ×
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="filter-form">
@@ -455,7 +449,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
               required
             />
           </div>
@@ -464,7 +458,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
             <label>説明</label>
             <textarea
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               rows={3}
             />
           </div>
@@ -474,7 +468,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
               <label>タイプ</label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                onChange={e => setFormData({ ...formData, type: e.target.value as any })}
               >
                 <option value="keyword">キーワード</option>
                 <option value="regex">正規表現</option>
@@ -487,7 +481,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
               <label>アクション</label>
               <select
                 value={formData.action}
-                onChange={(e) => setFormData({ ...formData, action: e.target.value as any })}
+                onChange={e => setFormData({ ...formData, action: e.target.value as any })}
               >
                 <option value="flag">フラグ</option>
                 <option value="hide">非表示</option>
@@ -502,7 +496,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
               <label>キーワード (カンマ区切り)</label>
               <textarea
                 value={formData.keywords}
-                onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
+                onChange={e => setFormData({ ...formData, keywords: e.target.value })}
                 placeholder="スパム, 荒らし, 不適切"
                 rows={3}
               />
@@ -515,7 +509,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
               <input
                 type="text"
                 value={formData.pattern}
-                onChange={(e) => setFormData({ ...formData, pattern: e.target.value })}
+                onChange={e => setFormData({ ...formData, pattern: e.target.value })}
                 placeholder="例: \b(spam|scam)\b"
               />
             </div>
@@ -526,7 +520,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
               <label>重要度</label>
               <select
                 value={formData.severity}
-                onChange={(e) => setFormData({ ...formData, severity: e.target.value as any })}
+                onChange={e => setFormData({ ...formData, severity: e.target.value as any })}
               >
                 <option value="low">低</option>
                 <option value="medium">中</option>
@@ -542,7 +536,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 max="1"
                 step="0.1"
                 value={formData.confidence}
-                onChange={(e) => setFormData({ ...formData, confidence: parseFloat(e.target.value) })}
+                onChange={e => setFormData({ ...formData, confidence: parseFloat(e.target.value) })}
               />
               <span>{formData.confidence}</span>
             </div>
@@ -555,7 +549,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 <input
                   type="checkbox"
                   checked={formData.applyToContent}
-                  onChange={(e) => setFormData({ ...formData, applyToContent: e.target.checked })}
+                  onChange={e => setFormData({ ...formData, applyToContent: e.target.checked })}
                 />
                 投稿内容
               </label>
@@ -563,7 +557,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 <input
                   type="checkbox"
                   checked={formData.applyToTitles}
-                  onChange={(e) => setFormData({ ...formData, applyToTitles: e.target.checked })}
+                  onChange={e => setFormData({ ...formData, applyToTitles: e.target.checked })}
                 />
                 タイトル
               </label>
@@ -571,7 +565,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 <input
                   type="checkbox"
                   checked={formData.applyToComments}
-                  onChange={(e) => setFormData({ ...formData, applyToComments: e.target.checked })}
+                  onChange={e => setFormData({ ...formData, applyToComments: e.target.checked })}
                 />
                 コメント
               </label>
@@ -584,7 +578,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 <input
                   type="checkbox"
                   checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  onChange={e => setFormData({ ...formData, isActive: e.target.checked })}
                 />
                 有効
               </label>
@@ -592,7 +586,7 @@ const FilterFormModal: React.FC<FilterFormModalProps> = ({
                 <input
                   type="checkbox"
                   checked={formData.isTestMode}
-                  onChange={(e) => setFormData({ ...formData, isTestMode: e.target.checked })}
+                  onChange={e => setFormData({ ...formData, isTestMode: e.target.checked })}
                 />
                 テストモード（アクションを実行せずログのみ）
               </label>

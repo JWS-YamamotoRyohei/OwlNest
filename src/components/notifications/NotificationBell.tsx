@@ -52,7 +52,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
     if (!notification.isRead) {
       await markAsRead(notification.notificationId);
     }
-    
+
     // Navigate to related content if available
     if (notification.data) {
       switch (notification.type) {
@@ -74,7 +74,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
           break;
       }
     }
-    
+
     setIsOpen(false);
   };
 
@@ -129,14 +129,10 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <svg
-          className="notification-bell__icon"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        <svg className="notification-bell__icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
         </svg>
-        
+
         {showBadge && state.unreadCount > 0 && (
           <span className="notification-bell__badge">
             {state.unreadCount > 99 ? '99+' : state.unreadCount}
@@ -149,9 +145,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
           <div className="notification-bell__header">
             <h3 className="notification-bell__title">通知</h3>
             {state.unreadCount > 0 && (
-              <span className="notification-bell__unread-count">
-                {state.unreadCount}件の未読
-              </span>
+              <span className="notification-bell__unread-count">{state.unreadCount}件の未読</span>
             )}
           </div>
 
@@ -175,11 +169,9 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                       <div className="notification-bell__item-icon">
                         {getNotificationIcon(notification.type)}
                       </div>
-                      
+
                       <div className="notification-bell__item-content">
-                        <div className="notification-bell__item-title">
-                          {notification.title}
-                        </div>
+                        <div className="notification-bell__item-title">{notification.title}</div>
                         <div className="notification-bell__item-message">
                           {notification.message}
                         </div>
@@ -187,14 +179,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                           {formatDate(notification.createdAt)}
                         </div>
                       </div>
-                      
+
                       {!notification.isRead && (
                         <div className="notification-bell__item-unread-dot"></div>
                       )}
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="notification-bell__footer">
                   <a
                     href="/notifications"
@@ -208,18 +200,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
             ) : (
               <div className="notification-bell__empty">
                 <div className="notification-bell__empty-icon">🔔</div>
-                <div className="notification-bell__empty-message">
-                  新しい通知はありません
-                </div>
+                <div className="notification-bell__empty-message">新しい通知はありません</div>
               </div>
             )}
           </div>
 
           {state.error && (
             <div className="notification-bell__error">
-              <div className="notification-bell__error-message">
-                {state.error}
-              </div>
+              <div className="notification-bell__error-message">{state.error}</div>
               <button
                 className="notification-bell__error-retry"
                 onClick={() => loadNotifications({ pagination: { limit: maxPreviewItems } }, true)}

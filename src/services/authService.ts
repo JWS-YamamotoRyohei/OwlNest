@@ -49,14 +49,16 @@ class AuthService {
   constructor() {
     // Load tokens from localStorage on initialization
     this.loadTokensFromStorage();
-    
+
     // Check if we're in development mode without AWS configuration
-    this.isDevelopmentMode = import.meta.env.VITE_NODE_ENV === 'development' && 
-                             (!USER_POOL_ID || !CLIENT_ID);
+    this.isDevelopmentMode =
+      import.meta.env.VITE_NODE_ENV === 'development' && (!USER_POOL_ID || !CLIENT_ID);
   }
 
   // Login with email and password
-  async login(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens } | AuthChallenge> {
+  async login(
+    credentials: LoginCredentials
+  ): Promise<{ user: User; tokens: AuthTokens } | AuthChallenge> {
     // Development mode mock login
     if (this.isDevelopmentMode) {
       return this.mockLogin(credentials);
@@ -109,9 +111,7 @@ class AuthService {
   // Register new user
   async register(userData: RegisterData): Promise<{ userSub: string; codeDeliveryDetails: any }> {
     try {
-      const userAttributes = [
-        { Name: 'email', Value: userData.email },
-      ];
+      const userAttributes = [{ Name: 'email', Value: userData.email }];
 
       if (userData.givenName) {
         userAttributes.push({ Name: 'given_name', Value: userData.givenName });
@@ -238,7 +238,7 @@ class AuthService {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -269,7 +269,7 @@ class AuthService {
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateData),
@@ -301,7 +301,7 @@ class AuthService {
       const response = await fetch(`${API_BASE_URL}/auth/role`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userId, role }),
@@ -353,11 +353,11 @@ class AuthService {
       }
 
       const data = await response.json();
-      
+
       // Update tokens
       this.accessToken = data.accessToken;
       this.idToken = data.idToken;
-      this.tokenExpiry = Date.now() + (data.expiresIn * 1000);
+      this.tokenExpiry = Date.now() + data.expiresIn * 1000;
 
       // Save to localStorage
       this.saveTokensToStorage();
@@ -374,7 +374,7 @@ class AuthService {
     if (this.isDevelopmentMode) {
       return !!localStorage.getItem('owlnest_mock_user') && !!this.accessToken;
     }
-    
+
     return !!this.accessToken && !this.isTokenExpired();
   }
 
@@ -405,7 +405,7 @@ class AuthService {
     this.accessToken = tokens.accessToken;
     this.idToken = tokens.idToken;
     this.refreshToken = tokens.refreshToken;
-    this.tokenExpiry = Date.now() + (tokens.expiresIn * 1000);
+    this.tokenExpiry = Date.now() + tokens.expiresIn * 1000;
 
     this.saveTokensToStorage();
   }
@@ -445,7 +445,7 @@ class AuthService {
     this.accessToken = localStorage.getItem('owlnest_access_token');
     this.idToken = localStorage.getItem('owlnest_id_token');
     this.refreshToken = localStorage.getItem('owlnest_refresh_token');
-    
+
     const expiry = localStorage.getItem('owlnest_token_expiry');
     this.tokenExpiry = expiry ? parseInt(expiry, 10) : null;
   }
@@ -462,15 +462,17 @@ class AuthService {
   }
 
   // Mock login for development environment
-  private async mockLogin(credentials: LoginCredentials): Promise<{ user: User; tokens: AuthTokens }> {
+  private async mockLogin(
+    credentials: LoginCredentials
+  ): Promise<{ user: User; tokens: AuthTokens }> {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Mock user data based on email
     const mockUser: User = {
       userId: 'mock-user-1',
-      givenName: "mock",
-      familyName: "user",
+      givenName: 'mock',
+      familyName: 'user',
       email: credentials.email,
       displayName: credentials.email.split('@')[0],
       role: credentials.email.includes('admin') ? UserRole.ADMIN : UserRole.CONTRIBUTOR,
@@ -522,8 +524,8 @@ class AuthService {
     // Default mock user if no stored data
     return {
       userId: 'mock-user-1',
-      givenName: "mock",
-      familyName: "user",
+      givenName: 'mock',
+      familyName: 'user',
       email: 'dev@example.com',
       displayName: 'Development User',
       role: UserRole.CONTRIBUTOR,

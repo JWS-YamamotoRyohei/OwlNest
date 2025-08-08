@@ -11,22 +11,22 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   showDetails = false,
   className = '',
 }) => {
-  const { 
-    isConnected, 
-    connectionState, 
+  const {
+    isConnected,
+    connectionState,
     isOffline,
-    lastError, 
+    lastError,
     reconnectAttempts,
     connectionErrors,
     missedMessagesCount,
     lastSyncTimestamp,
     connect,
-    clearErrors
+    clearErrors,
   } = useWebSocket();
 
   const getStatusIcon = () => {
     if (isOffline) return '📵';
-    
+
     switch (connectionState) {
       case 'CONNECTED':
         return '🟢';
@@ -45,7 +45,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
 
   const getStatusText = () => {
     if (isOffline) return 'オフライン（ネットワーク未接続）';
-    
+
     switch (connectionState) {
       case 'CONNECTED':
         return 'リアルタイム接続中';
@@ -76,9 +76,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
         <span className="connection-status__icon" role="img" aria-label={getStatusText()}>
           {getStatusIcon()}
         </span>
-        <span className="connection-status__text">
-          {getStatusText()}
-        </span>
+        <span className="connection-status__text">{getStatusText()}</span>
       </div>
 
       {showDetails && (
@@ -94,7 +92,7 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
             <div className="connection-status__errors">
               <div className="connection-status__errors-header">
                 <span>接続エラー履歴:</span>
-                <button 
+                <button
                   className="connection-status__clear-errors"
                   onClick={clearErrors}
                   type="button"
@@ -132,18 +130,18 @@ export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
             </div>
           )}
 
-          {(connectionState === 'DISCONNECTED' || connectionState === 'OFFLINE') && 
-           !isOffline && 
-           !lastError?.includes('refresh') && (
-            <button 
-              className="connection-status__retry-button"
-              onClick={handleRetryConnection}
-              type="button"
-              disabled={isOffline}
-            >
-              再接続
-            </button>
-          )}
+          {(connectionState === 'DISCONNECTED' || connectionState === 'OFFLINE') &&
+            !isOffline &&
+            !lastError?.includes('refresh') && (
+              <button
+                className="connection-status__retry-button"
+                onClick={handleRetryConnection}
+                type="button"
+                disabled={isOffline}
+              >
+                再接続
+              </button>
+            )}
 
           {isOffline && (
             <div className="connection-status__offline-notice">

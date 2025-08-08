@@ -23,51 +23,54 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   disabled = false,
   debounceMs = 300,
   maxSuggestions = 8,
-  className = ''
+  className = '',
 }) => {
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Debounced suggestion loading
-  const loadSuggestions = useCallback(async (query: string) => {
-    if (!query.trim() || query.length < 2) {
-      setSuggestions([]);
-      setIsLoading(false);
-      return;
-    }
-
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-    setIsLoading(true);
-
-    try {
-      const response = await searchService.getSearchSuggestions(query, type);
-      
-      if (response.success && response.data) {
-        setSuggestions(response.data.slice(0, maxSuggestions));
-      } else {
+  const loadSuggestions = useCallback(
+    async (query: string) => {
+      if (!query.trim() || query.length < 2) {
         setSuggestions([]);
+        setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      if (error instanceof Error && error.name !== 'AbortError') {
-        console.error('Failed to load suggestions:', error);
-        setSuggestions([]);
+
+      // Cancel previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [type, maxSuggestions]);
+
+      abortControllerRef.current = new AbortController();
+      setIsLoading(true);
+
+      try {
+        const response = await searchService.getSearchSuggestions(query, type);
+
+        if (response.success && response.data) {
+          setSuggestions(response.data.slice(0, maxSuggestions));
+        } else {
+          setSuggestions([]);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          console.error('Failed to load suggestions:', error);
+          setSuggestions([]);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [type, maxSuggestions]
+  );
 
   // Handle input change with debouncing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,23 +115,21 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        );
+        setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
         break;
-      
+
       case 'ArrowUp':
         e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
+        setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
         break;
-      
+
       case 'Enter':
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
           handleSuggestionSelect(suggestions[selectedIndex]);
         }
         break;
-      
+
       case 'Escape':
         setShowSuggestions(false);
         setSelectedIndex(-1);
@@ -148,22 +149,32 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   // Get suggestion icon
   const getSuggestionIcon = (type: SearchSuggestion['type']) => {
     switch (type) {
-      case 'query': return '🔍';
-      case 'category': return '📁';
-      case 'user': return '👤';
-      case 'tag': return '🏷️';
-      default: return '🔍';
+      case 'query':
+        return '🔍';
+      case 'category':
+        return '📁';
+      case 'user':
+        return '👤';
+      case 'tag':
+        return '🏷️';
+      default:
+        return '🔍';
     }
   };
 
   // Get suggestion type label
   const getSuggestionTypeLabel = (type: SearchSuggestion['type']) => {
     switch (type) {
-      case 'query': return 'クエリ';
-      case 'category': return 'カテゴリ';
-      case 'user': return 'ユーザー';
-      case 'tag': return 'タグ';
-      default: return '';
+      case 'query':
+        return 'クエリ';
+      case 'category':
+        return 'カテゴリ';
+      case 'user':
+        return 'ユーザー';
+      case 'tag':
+        return 'タグ';
+      default:
+        return '';
     }
   };
 
@@ -174,7 +185,7 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     const parts = text.split(regex);
 
-    return parts.map((part, index) => 
+    return parts.map((part, index) =>
       regex.test(part) ? (
         <mark key={index} className="search-autocomplete__highlight">
           {part}
@@ -214,7 +225,7 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
           autoComplete="off"
           spellCheck="false"
         />
-        
+
         {isLoading && (
           <div className="search-autocomplete__loading">
             <span className="search-autocomplete__loading-spinner">⏳</span>
@@ -223,7 +234,7 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div 
+        <div
           ref={suggestionsRef}
           className="search-autocomplete__suggestions"
           role="listbox"
@@ -242,19 +253,19 @@ export const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
               <span className="search-autocomplete__suggestion-icon">
                 {getSuggestionIcon(suggestion.type)}
               </span>
-              
+
               <div className="search-autocomplete__suggestion-content">
                 <div className="search-autocomplete__suggestion-text">
                   {highlightMatch(suggestion.label, value)}
                 </div>
-                
+
                 {suggestion.type !== 'query' && (
                   <div className="search-autocomplete__suggestion-type">
                     {getSuggestionTypeLabel(suggestion.type)}
                   </div>
                 )}
               </div>
-              
+
               {suggestion.count && (
                 <div className="search-autocomplete__suggestion-count">
                   {suggestion.count.toLocaleString()}

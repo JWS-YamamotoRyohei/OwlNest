@@ -65,15 +65,15 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
   // Get button text
   const getButtonText = () => {
     if (!showText) return '';
-    
+
     if (isLoading) {
       return isFollowing ? 'フォロー解除中...' : 'フォロー中...';
     }
-    
+
     if (isFollowing) {
       return targetType === FollowTargetType.USER ? 'フォロー中' : 'フォロー中';
     }
-    
+
     return targetType === FollowTargetType.USER ? 'フォロー' : 'フォロー';
   };
 
@@ -96,18 +96,18 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
         </svg>
       );
     }
-    
+
     if (isFollowing) {
       return (
         <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
         </svg>
       );
     }
-    
+
     return (
       <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
       </svg>
     );
   };
@@ -120,32 +120,22 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
     isLoading ? 'follow-button--loading' : '',
     disabled ? 'follow-button--disabled' : '',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button
       className={buttonClasses}
       onClick={handleClick}
       disabled={disabled || isLoading}
-      title={
-        isFollowing
-          ? `${targetName || ''}のフォローを解除`
-          : `${targetName || ''}をフォロー`
-      }
+      title={isFollowing ? `${targetName || ''}のフォローを解除` : `${targetName || ''}をフォロー`}
       aria-label={
-        isFollowing
-          ? `${targetName || ''}のフォローを解除`
-          : `${targetName || ''}をフォロー`
+        isFollowing ? `${targetName || ''}のフォローを解除` : `${targetName || ''}をフォロー`
       }
     >
-      <span className="follow-button__icon">
-        {getButtonIcon()}
-      </span>
-      {showText && (
-        <span className="follow-button__text">
-          {getButtonText()}
-        </span>
-      )}
+      <span className="follow-button__icon">{getButtonIcon()}</span>
+      {showText && <span className="follow-button__text">{getButtonText()}</span>}
     </button>
   );
 };

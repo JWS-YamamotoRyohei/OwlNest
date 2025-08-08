@@ -19,14 +19,14 @@ export const PostCreationDemo: React.FC = () => {
 
   const handleSubmit = async (data: CreatePostData) => {
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     setSubmittedPosts(prev => [...prev, data]);
     setIsFormVisible(false);
     setIsSubmitting(false);
-    
+
     console.log('Post submitted:', data);
   };
 
@@ -36,23 +36,35 @@ export const PostCreationDemo: React.FC = () => {
 
   const getStanceLabel = (stance: Stance) => {
     switch (stance) {
-      case Stance.PROS: return '賛成';
-      case Stance.CONS: return '反対';
-      case Stance.NEUTRAL: return '中立';
-      case Stance.UNKNOWN: return 'わからない';
-      case Stance.HIDDEN: return '非表示';
-      default: return stance;
+      case Stance.PROS:
+        return '賛成';
+      case Stance.CONS:
+        return '反対';
+      case Stance.NEUTRAL:
+        return '中立';
+      case Stance.UNKNOWN:
+        return 'わからない';
+      case Stance.HIDDEN:
+        return '非表示';
+      default:
+        return stance;
     }
   };
 
   const getStanceColor = (stance: Stance) => {
     switch (stance) {
-      case Stance.PROS: return '#22c55e';
-      case Stance.CONS: return '#ef4444';
-      case Stance.NEUTRAL: return '#64748b';
-      case Stance.UNKNOWN: return '#a855f7';
-      case Stance.HIDDEN: return '#6b7280';
-      default: return '#6b7280';
+      case Stance.PROS:
+        return '#22c55e';
+      case Stance.CONS:
+        return '#ef4444';
+      case Stance.NEUTRAL:
+        return '#64748b';
+      case Stance.UNKNOWN:
+        return '#a855f7';
+      case Stance.HIDDEN:
+        return '#6b7280';
+      default:
+        return '#6b7280';
     }
   };
 
@@ -74,7 +86,7 @@ export const PostCreationDemo: React.FC = () => {
         >
           新しい投稿を作成
         </button>
-        
+
         <button
           onClick={() => setIsFormVisible(true)}
           className="post-creation-demo__button post-creation-demo__button--secondary"
@@ -110,16 +122,14 @@ export const PostCreationDemo: React.FC = () => {
                     <div className="post-creation-demo__post-point">
                       論点: {point?.title || 'Unknown'}
                     </div>
-                    <div 
+                    <div
                       className="post-creation-demo__post-stance"
                       style={{ color: getStanceColor(post.stance) }}
                     >
                       {getStanceLabel(post.stance)}
                     </div>
                   </div>
-                  <div className="post-creation-demo__post-content">
-                    {post.content.text}
-                  </div>
+                  <div className="post-creation-demo__post-content">{post.content.text}</div>
                   {post.attachments && post.attachments.length > 0 && (
                     <div className="post-creation-demo__post-attachments">
                       <strong>添付ファイル:</strong>
@@ -133,9 +143,7 @@ export const PostCreationDemo: React.FC = () => {
                     </div>
                   )}
                   {post.replyToId && (
-                    <div className="post-creation-demo__post-reply">
-                      返信先: {post.replyToId}
-                    </div>
+                    <div className="post-creation-demo__post-reply">返信先: {post.replyToId}</div>
                   )}
                 </div>
               );
@@ -147,12 +155,24 @@ export const PostCreationDemo: React.FC = () => {
       <div className="post-creation-demo__info">
         <h3>機能説明</h3>
         <ul>
-          <li><strong>論点選択:</strong> 階層構造の論点から投稿対象を選択</li>
-          <li><strong>リッチテキストエディタ:</strong> 太字、文字サイズ、画像・リンク埋め込み対応</li>
-          <li><strong>スタンス選択:</strong> 賛成/反対/中立/わからない/非表示から選択</li>
-          <li><strong>デフォルト値:</strong> 過去の投稿履歴に基づくスタンスのデフォルト設定</li>
-          <li><strong>バリデーション:</strong> 必須項目チェックと文字数制限</li>
-          <li><strong>ファイルアップロード:</strong> 画像やファイルの添付機能</li>
+          <li>
+            <strong>論点選択:</strong> 階層構造の論点から投稿対象を選択
+          </li>
+          <li>
+            <strong>リッチテキストエディタ:</strong> 太字、文字サイズ、画像・リンク埋め込み対応
+          </li>
+          <li>
+            <strong>スタンス選択:</strong> 賛成/反対/中立/わからない/非表示から選択
+          </li>
+          <li>
+            <strong>デフォルト値:</strong> 過去の投稿履歴に基づくスタンスのデフォルト設定
+          </li>
+          <li>
+            <strong>バリデーション:</strong> 必須項目チェックと文字数制限
+          </li>
+          <li>
+            <strong>ファイルアップロード:</strong> 画像やファイルの添付機能
+          </li>
         </ul>
       </div>
     </div>

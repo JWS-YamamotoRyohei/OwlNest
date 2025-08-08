@@ -187,12 +187,12 @@
     padding: 0.375rem 0.75rem;
     font-size: 0.8125rem;
   }
-  
+
   .follow-button--small {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
   }
-  
+
   .follow-button--large {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
@@ -238,7 +238,7 @@
   .follow-button {
     border-width: 2px;
   }
-  
+
   .follow-button:focus {
     box-shadow: 0 0 0 3px var(--color-primary-500);
   }
@@ -249,11 +249,11 @@
   .follow-button {
     transition: none;
   }
-  
+
   .follow-button__spinner {
     animation: none;
   }
-  
+
   .follow-button__spinner circle {
     animation: none;
     stroke-dasharray: 90, 150;

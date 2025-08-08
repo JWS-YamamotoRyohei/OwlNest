@@ -58,11 +58,7 @@ export const FileUploadDemo: React.FC = () => {
         </FileUploadButton>
 
         {attachments.length > 0 && (
-          <button
-            type="button"
-            onClick={clearAll}
-            className="file-upload-demo__clear"
-          >
+          <button type="button" onClick={clearAll} className="file-upload-demo__clear">
             すべてクリア
           </button>
         )}
@@ -73,21 +69,22 @@ export const FileUploadDemo: React.FC = () => {
         <div className="file-upload-demo__progress-section">
           <h4>アップロード進行状況</h4>
           <div className="file-upload-demo__progress-list">
-            {uploadProgresses.map((progress) => (
+            {uploadProgresses.map(progress => (
               <div key={progress.fileId} className="file-upload-demo__progress-item">
                 <div className="file-upload-demo__progress-header">
-                  <span className="file-upload-demo__progress-filename">
-                    {progress.filename}
-                  </span>
+                  <span className="file-upload-demo__progress-filename">{progress.filename}</span>
                   <span className="file-upload-demo__progress-percentage">
                     {Math.round(progress.progress)}%
                   </span>
                 </div>
                 <div className="file-upload-demo__progress-bar">
-                  <div 
+                  <div
                     className={`file-upload-demo__progress-fill ${
-                      progress.status === 'error' ? 'file-upload-demo__progress-fill--error' :
-                      progress.status === 'completed' ? 'file-upload-demo__progress-fill--completed' : ''
+                      progress.status === 'error'
+                        ? 'file-upload-demo__progress-fill--error'
+                        : progress.status === 'completed'
+                          ? 'file-upload-demo__progress-fill--completed'
+                          : ''
                     }`}
                     style={{ width: `${progress.progress}%` }}
                   />

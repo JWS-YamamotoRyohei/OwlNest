@@ -351,12 +351,12 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .discussion-page__points-nav {
     position: static;
     order: 2;
   }
-  
+
   .discussion-page__posts-section {
     order: 1;
   }
@@ -366,58 +366,58 @@
   .discussion-page {
     padding: 1rem;
   }
-  
+
   .discussion-page__header {
     padding: 1.5rem;
   }
-  
+
   .discussion-page__header-content {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .discussion-page__actions {
     align-self: flex-end;
   }
-  
+
   .discussion-page__title {
     font-size: 1.75rem;
   }
-  
+
   .discussion-page__description {
     font-size: 1rem;
   }
-  
+
   .discussion-page__meta {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .discussion-page__stats {
     justify-content: space-around;
     gap: 1rem;
   }
-  
+
   .discussion-page__points-nav {
     padding: 1rem;
   }
-  
+
   .discussion-page__points-list {
     gap: 0.375rem;
   }
-  
+
   .discussion-page__point-button {
     padding: 0.75rem;
   }
-  
+
   .discussion-page__posts-header {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
-  
+
   .discussion-page__create-post-button {
     align-self: flex-end;
   }
@@ -427,64 +427,64 @@
   .discussion-page {
     padding: 0.75rem;
   }
-  
+
   .discussion-page__header {
     padding: 1rem;
   }
-  
+
   .discussion-page__title {
     font-size: 1.5rem;
   }
-  
+
   .discussion-page__description {
     font-size: 0.9375rem;
   }
-  
+
   .discussion-page__owner-avatar {
     width: 40px;
     height: 40px;
     font-size: 1rem;
   }
-  
+
   .discussion-page__stats {
     gap: 0.75rem;
   }
-  
+
   .discussion-page__stat-value {
     font-size: 1.25rem;
   }
-  
+
   .discussion-page__categories {
     gap: 0.5rem;
   }
-  
+
   .discussion-page__category,
   .discussion-page__tag {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
   }
-  
+
   .discussion-page__points-nav {
     padding: 0.75rem;
   }
-  
+
   .discussion-page__point-button {
     padding: 0.625rem;
   }
-  
+
   .discussion-page__point-title {
     font-size: 0.875rem;
   }
-  
+
   .discussion-page__point-stats {
     gap: 0.75rem;
     font-size: 0.75rem;
   }
-  
+
   .discussion-page__posts-title {
     font-size: 1.25rem;
   }
-  
+
   .discussion-page__create-post-button {
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
@@ -496,15 +496,15 @@
   .discussion-page__follow-button:hover {
     background: rgba(59, 130, 246, 0.1);
   }
-  
+
   .discussion-page__point-button:hover {
     background: rgba(59, 130, 246, 0.1);
   }
-  
+
   .discussion-page__point-button--active {
     background: rgba(59, 130, 246, 0.2);
   }
-  
+
   .discussion-page__post-form-cancel:hover {
     background: rgba(59, 130, 246, 0.1);
   }
@@ -517,14 +517,14 @@
   .discussion-page__post-form {
     border-width: 2px;
   }
-  
+
   .discussion-page__follow-button,
   .discussion-page__point-button,
   .discussion-page__create-post-button,
   .discussion-page__post-form-cancel {
     border-width: 2px;
   }
-  
+
   .discussion-page__category,
   .discussion-page__tag {
     border-width: 2px;
@@ -539,7 +539,7 @@
   .discussion-page__post-form-cancel {
     transition: none;
   }
-  
+
   .discussion-page__create-post-button:hover {
     transform: none;
   }
@@ -552,22 +552,22 @@
   .discussion-page__post-form-actions {
     display: none;
   }
-  
+
   .discussion-page {
     padding: 0;
     max-width: none;
   }
-  
+
   .discussion-page__main {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .discussion-page__points-nav {
     position: static;
     page-break-inside: avoid;
   }
-}/* Re
+} /* Re
 al-time Status */
 .discussion-page__realtime-status {
   margin-top: 1rem;

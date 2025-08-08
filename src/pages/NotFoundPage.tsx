@@ -12,34 +12,22 @@ export const NotFoundPage: React.FC = () => {
   return (
     <div className="error-page">
       <div className="error-container">
-        <div className="error-icon">
-          🦉
-        </div>
-        
+        <div className="error-icon">🦉</div>
+
         <h1 className="error-title">ページが見つかりません</h1>
-        
-        <p className="error-message">
-          お探しのページは存在しないか、移動された可能性があります。
-        </p>
+
+        <p className="error-message">お探しのページは存在しないか、移動された可能性があります。</p>
 
         <div className="error-details">
-          <p>
-            URLを確認するか、以下のリンクから他のページにアクセスしてください。
-          </p>
+          <p>URLを確認するか、以下のリンクから他のページにアクセスしてください。</p>
         </div>
 
         <div className="error-actions">
-          <button 
-            onClick={handleGoBack}
-            className="error-button error-button--secondary"
-          >
+          <button onClick={handleGoBack} className="error-button error-button--secondary">
             前のページに戻る
           </button>
-          
-          <Link 
-            to="/discussions" 
-            className="error-button error-button--primary"
-          >
+
+          <Link to="/discussions" className="error-button error-button--primary">
             議論一覧に戻る
           </Link>
         </div>

@@ -1,7 +1,4 @@
-import { AnalyticsFilter, DiscussionStatistics, PlatformStatistics, TrendData } from '../types/analytics';
-import { Discussion } from '../types/discussion';
-import { Post } from '../types/post';
-import { User } from '../types/user';
+import { AnalyticsFilter } from '../types/analytics';
 
 export interface ExportOptions {
   format: 'csv' | 'json';
@@ -35,13 +32,13 @@ class DataExportService {
       const response = await fetch(`${this.API_BASE}/discussions/statistics`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           discussionIds,
-          options
-        })
+          options,
+        }),
       });
 
       if (!response.ok) {
@@ -66,13 +63,13 @@ class DataExportService {
       const response = await fetch(`${this.API_BASE}/platform/statistics`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           filter,
-          options
-        })
+          options,
+        }),
       });
 
       if (!response.ok) {
@@ -97,13 +94,13 @@ class DataExportService {
       const response = await fetch(`${this.API_BASE}/trends/${metric}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           filter,
-          options
-        })
+          options,
+        }),
       });
 
       if (!response.ok) {
@@ -119,18 +116,15 @@ class DataExportService {
   }
 
   // Export discussion posts
-  async exportDiscussionPosts(
-    discussionId: string,
-    options: ExportOptions
-  ): Promise<ExportResult> {
+  async exportDiscussionPosts(discussionId: string, options: ExportOptions): Promise<ExportResult> {
     try {
       const response = await fetch(`${this.API_BASE}/discussions/${discussionId}/posts`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ options })
+        body: JSON.stringify({ options }),
       });
 
       if (!response.ok) {
@@ -146,21 +140,18 @@ class DataExportService {
   }
 
   // Export user activity data
-  async exportUserActivity(
-    userIds: string[],
-    options: ExportOptions
-  ): Promise<ExportResult> {
+  async exportUserActivity(userIds: string[], options: ExportOptions): Promise<ExportResult> {
     try {
       const response = await fetch(`${this.API_BASE}/users/activity`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userIds,
-          options
-        })
+          options,
+        }),
       });
 
       if (!response.ok) {
@@ -178,14 +169,14 @@ class DataExportService {
   // Process export data based on format
   private processExportData(data: any, options: ExportOptions): ExportResult {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    
+
     if (options.format === 'csv') {
       const csvData = this.convertToCSV(data);
       return {
         filename: `export_${timestamp}.csv`,
         data: csvData,
         mimeType: 'text/csv',
-        size: new Blob([csvData]).size
+        size: new Blob([csvData]).size,
       };
     } else {
       const jsonData = JSON.stringify(data, null, 2);
@@ -193,7 +184,7 @@ class DataExportService {
         filename: `export_${timestamp}.json`,
         data: jsonData,
         mimeType: 'application/json',
-        size: new Blob([jsonData]).size
+        size: new Blob([jsonData]).size,
       };
     }
   }
@@ -210,18 +201,20 @@ class DataExportService {
 
     // Convert data rows
     const csvRows = data.map(row => {
-      return headers.map(header => {
-        const value = row[header];
-        // Handle nested objects and arrays
-        if (typeof value === 'object' && value !== null) {
-          return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
-        }
-        // Escape quotes in strings
-        if (typeof value === 'string') {
-          return `"${value.replace(/"/g, '""')}"`;
-        }
-        return value || '';
-      }).join(',');
+      return headers
+        .map(header => {
+          const value = row[header];
+          // Handle nested objects and arrays
+          if (typeof value === 'object' && value !== null) {
+            return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+          }
+          // Escape quotes in strings
+          if (typeof value === 'string') {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value || '';
+        })
+        .join(',');
     });
 
     return [csvHeaders, ...csvRows].join('\n');
@@ -231,19 +224,22 @@ class DataExportService {
   downloadExport(exportResult: ExportResult): void {
     const blob = new Blob([exportResult.data], { type: exportResult.mimeType });
     const url = URL.createObjectURL(blob);
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.download = exportResult.filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     URL.revokeObjectURL(url);
   }
 
   // Generate mock data for development
-  private generateMockDiscussionExport(discussionIds: string[], options: ExportOptions): ExportResult {
+  private generateMockDiscussionExport(
+    discussionIds: string[],
+    options: ExportOptions
+  ): ExportResult {
     const mockData = discussionIds.map(id => ({
       discussionId: id,
       title: `議論 ${id}`,
@@ -258,7 +254,7 @@ class DataExportService {
       lastActivityAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
       averagePostsPerParticipant: (Math.random() * 10 + 2).toFixed(2),
       uniqueViewers: Math.floor(Math.random() * 500) + 100,
-      totalViews: Math.floor(Math.random() * 2000) + 500
+      totalViews: Math.floor(Math.random() * 2000) + 500,
     }));
 
     return this.processExportData(mockData, options);
@@ -276,8 +272,8 @@ class DataExportService {
       exportedAt: new Date().toISOString(),
       dateRange: options.dateRange || {
         start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-        end: new Date().toISOString()
-      }
+        end: new Date().toISOString(),
+      },
     };
 
     return this.processExportData([mockData], options);
@@ -297,7 +293,7 @@ class DataExportService {
         metric,
         value: baseValue,
         change,
-        changePercentage: changePercentage.toFixed(2)
+        changePercentage: changePercentage.toFixed(2),
       };
     });
 
@@ -314,7 +310,7 @@ class DataExportService {
       stance: ['pros', 'cons', 'neutral', 'unknown'][Math.floor(Math.random() * 4)],
       createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
       reactionCount: Math.floor(Math.random() * 20),
-      replyCount: Math.floor(Math.random() * 10)
+      replyCount: Math.floor(Math.random() * 10),
     }));
 
     return this.processExportData(mockData, options);
@@ -332,7 +328,7 @@ class DataExportService {
       joinedAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
       lastActiveAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       followersCount: Math.floor(Math.random() * 100) + 5,
-      followingCount: Math.floor(Math.random() * 50) + 3
+      followingCount: Math.floor(Math.random() * 50) + 3,
     }));
 
     return this.processExportData(mockData, options);
@@ -341,11 +337,11 @@ class DataExportService {
   // Utility methods
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -363,11 +359,11 @@ class DataExportService {
     if (options.dateRange) {
       const start = new Date(options.dateRange.start);
       const end = new Date(options.dateRange.end);
-      
+
       if (start >= end) {
         errors.push('開始日は終了日より前の日付を指定してください');
       }
-      
+
       const maxRange = 365 * 24 * 60 * 60 * 1000; // 1 year
       if (end.getTime() - start.getTime() > maxRange) {
         errors.push('日付範囲は1年以内で指定してください');

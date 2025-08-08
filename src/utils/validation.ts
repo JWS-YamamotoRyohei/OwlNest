@@ -60,11 +60,7 @@ export class ValidationUtils {
   /**
    * Validate string length
    */
-  static isValidLength(
-    value: string,
-    minLength: number,
-    maxLength: number
-  ): boolean {
+  static isValidLength(value: string, minLength: number, maxLength: number): boolean {
     return value.length >= minLength && value.length <= maxLength;
   }
 
@@ -134,10 +130,7 @@ export class ValidationUtils {
     }
 
     // Check for prohibited content
-    const prohibitedPatterns = [
-      /\b(?:spam|scam|phishing)\b/gi,
-      /\b(?:viagra|cialis|casino)\b/gi,
-    ];
+    const prohibitedPatterns = [/\b(?:spam|scam|phishing)\b/gi, /\b(?:viagra|cialis|casino)\b/gi];
 
     for (const pattern of prohibitedPatterns) {
       if (pattern.test(sanitized)) {
@@ -363,7 +356,10 @@ export class DiscussionValidator {
     }
 
     // Validate access control
-    if (data.accessControl?.type && !ValidationUtils.isValidAccessControlType(data.accessControl.type)) {
+    if (
+      data.accessControl?.type &&
+      !ValidationUtils.isValidAccessControlType(data.accessControl.type)
+    ) {
       errors.push({
         field: 'accessControl.type',
         message: '有効なアクセス制御タイプを選択してください',
@@ -525,7 +521,8 @@ export class PostValidator {
           });
         }
 
-        if (attachment.size > 10 * 1024 * 1024) { // 10MB limit
+        if (attachment.size > 10 * 1024 * 1024) {
+          // 10MB limit
           errors.push({
             field: `content.attachments[${index}].size`,
             message: '添付ファイルのサイズは10MB以下である必要があります',
@@ -553,7 +550,12 @@ export class PostValidator {
           code: 'REQUIRED',
         });
       } else {
-        const validation = ValidationUtils.validateAndSanitizeText(data.content.text, 1, 5000, true);
+        const validation = ValidationUtils.validateAndSanitizeText(
+          data.content.text,
+          1,
+          5000,
+          true
+        );
         if (!validation.isValid) {
           validation.errors.forEach(error => {
             errors.push({

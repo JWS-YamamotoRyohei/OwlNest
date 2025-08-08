@@ -24,8 +24,8 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'international-politics', name: '国際政治', level: 1 },
       { id: 'elections', name: '選挙', level: 1 },
       { id: 'politicians-parties', name: '政治家・政党', level: 1 },
-      { id: 'constitution-law', name: '憲法・法制度', level: 1 }
-    ]
+      { id: 'constitution-law', name: '憲法・法制度', level: 1 },
+    ],
   },
   {
     id: 'economy',
@@ -37,8 +37,8 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'local-economy', name: '地方経済', level: 1 },
       { id: 'industry-general', name: '産業全般', level: 1 },
       { id: 'transportation-logistics', name: '交通・物流', level: 1 },
-      { id: 'sme-startups', name: '中小企業・スタートアップ', level: 1 }
-    ]
+      { id: 'sme-startups', name: '中小企業・スタートアップ', level: 1 },
+    ],
   },
   {
     id: 'society',
@@ -50,8 +50,8 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'disaster-prevention', name: '防災・災害対応', level: 1 },
       { id: 'lifestyle-health', name: '生活習慣・健康', level: 1 },
       { id: 'romance-marriage', name: '恋愛・結婚', level: 1 },
-      { id: 'family-childcare', name: '家族・子育て', level: 1 }
-    ]
+      { id: 'family-childcare', name: '家族・子育て', level: 1 },
+    ],
   },
   {
     id: 'technology',
@@ -63,8 +63,8 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'ai-ml', name: 'AI・機械学習', level: 1 },
       { id: 'security-privacy', name: 'セキュリティ・個人情報', level: 1 },
       { id: 'gadgets-mobile', name: 'ガジェット・スマホ', level: 1 },
-      { id: 'advanced-tech', name: '先端技術', level: 1 }
-    ]
+      { id: 'advanced-tech', name: '先端技術', level: 1 },
+    ],
   },
   {
     id: 'entertainment',
@@ -76,8 +76,8 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'comedy-entertainers', name: 'お笑い・芸人', level: 1 },
       { id: 'manga-anime', name: '漫画・アニメ', level: 1 },
       { id: 'voice-actors-2d', name: '声優・二次元文化', level: 1 },
-      { id: 'subculture-doujin', name: 'サブカル・同人', level: 1 }
-    ]
+      { id: 'subculture-doujin', name: 'サブカル・同人', level: 1 },
+    ],
   },
   {
     id: 'sports',
@@ -89,14 +89,14 @@ export const DISCUSSION_CATEGORIES: CategoryGroup[] = [
       { id: 'martial-arts', name: '格闘技', level: 1 },
       { id: 'olympics-international', name: 'オリンピック・国際大会', level: 1 },
       { id: 'athletes-teams', name: 'スポーツ選手・チーム', level: 1 },
-      { id: 'sports-culture', name: 'スポーツ観戦文化', level: 1 }
-    ]
+      { id: 'sports-culture', name: 'スポーツ観戦文化', level: 1 },
+    ],
   },
   {
     id: 'other',
     name: 'その他',
-    subcategories: []
-  }
+    subcategories: [],
+  },
 ];
 
 export type CategoryId = string;

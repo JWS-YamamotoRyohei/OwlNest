@@ -12,7 +12,7 @@ jest.mock('../RichTextEditor', () => ({
     <div data-testid="rich-text-editor">
       <textarea
         value={value}
-        onChange={(e) => onChange(e.target.value, {})}
+        onChange={e => onChange(e.target.value, {})}
         data-testid="content-textarea"
         placeholder="あなたの意見を入力してください..."
       />
@@ -24,11 +24,7 @@ jest.mock('../RichTextEditor', () => ({
 jest.mock('../StanceSelector', () => ({
   StanceSelector: ({ value, onChange, error }: any) => (
     <div data-testid="stance-selector">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        data-testid="stance-select"
-      >
+      <select value={value} onChange={e => onChange(e.target.value)} data-testid="stance-select">
         <option value="pros">賛成</option>
         <option value="cons">反対</option>
         <option value="neutral">中立</option>
@@ -45,7 +41,7 @@ jest.mock('../DiscussionPointSelector', () => ({
     <div data-testid="discussion-point-selector">
       <select
         value={selectedPointId}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         data-testid="point-select"
       >
         <option value="">論点を選択</option>
@@ -135,7 +131,9 @@ describe('PostCreationForm', () => {
     userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId('content-error')).toHaveTextContent('意見は10文字以上で入力してください');
+      expect(screen.getByTestId('content-error')).toHaveTextContent(
+        '意見は10文字以上で入力してください'
+      );
     });
 
     expect(mockOnSubmit).not.toHaveBeenCalled();
@@ -153,7 +151,9 @@ describe('PostCreationForm', () => {
     userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId('content-error')).toHaveTextContent('意見は5000文字以内で入力してください');
+      expect(screen.getByTestId('content-error')).toHaveTextContent(
+        '意見は5000文字以内で入力してください'
+      );
     });
 
     expect(mockOnSubmit).not.toHaveBeenCalled();
@@ -161,7 +161,7 @@ describe('PostCreationForm', () => {
 
   it('submits form with valid data', async () => {
     mockOnSubmit.mockResolvedValue(undefined);
-    
+
     render(<PostCreationForm {...defaultProps} />);
 
     const pointSelect = screen.getByTestId('point-select');
@@ -191,7 +191,7 @@ describe('PostCreationForm', () => {
 
   it('includes replyToId in submission when provided', async () => {
     mockOnSubmit.mockResolvedValue(undefined);
-    
+
     render(<PostCreationForm {...defaultProps} replyToId="post_123" />);
 
     const pointSelect = screen.getByTestId('point-select');
@@ -267,7 +267,7 @@ describe('PostCreationForm', () => {
   it('handles submission errors gracefully', async () => {
     const error = new Error('Submission failed');
     mockOnSubmit.mockRejectedValue(error);
-    
+
     render(<PostCreationForm {...defaultProps} />);
 
     const pointSelect = screen.getByTestId('point-select');
@@ -279,7 +279,9 @@ describe('PostCreationForm', () => {
     userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('投稿の作成に失敗しました。もう一度お試しください。')).toBeInTheDocument();
+      expect(
+        screen.getByText('投稿の作成に失敗しました。もう一度お試しください。')
+      ).toBeInTheDocument();
     });
   });
 });

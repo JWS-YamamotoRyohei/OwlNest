@@ -28,51 +28,41 @@ const TestComponent: React.FC<{ discussionId: string }> = ({ discussionId }) => 
     broadcastTyping,
   } = useRealtimeDiscussion({
     discussionId,
-    onNewPost: (post) => console.log('New post:', post),
-    onPostUpdated: (post) => console.log('Post updated:', post),
-    onPostDeleted: (postId) => console.log('Post deleted:', postId),
-    onPostReactionChanged: (postId, reactionData) => console.log('Reaction changed:', postId, reactionData),
-    onPostVisibilityChanged: (postId, isHidden) => console.log('Visibility changed:', postId, isHidden),
-    onUserJoined: (userId) => console.log('User joined:', userId),
-    onUserLeft: (userId) => console.log('User left:', userId),
+    onNewPost: post => console.log('New post:', post),
+    onPostUpdated: post => console.log('Post updated:', post),
+    onPostDeleted: postId => console.log('Post deleted:', postId),
+    onPostReactionChanged: (postId, reactionData) =>
+      console.log('Reaction changed:', postId, reactionData),
+    onPostVisibilityChanged: (postId, isHidden) =>
+      console.log('Visibility changed:', postId, isHidden),
+    onUserJoined: userId => console.log('User joined:', userId),
+    onUserLeft: userId => console.log('User left:', userId),
     onTypingStart: (userId, userName) => console.log('Typing start:', userId, userName),
-    onTypingStop: (userId) => console.log('Typing stop:', userId),
+    onTypingStop: userId => console.log('Typing stop:', userId),
     autoJoin: true,
   });
 
   return (
     <div>
-      <div data-testid="connection-status">
-        {isConnected ? 'Connected' : 'Disconnected'}
-      </div>
-      <div data-testid="connected-users">
-        {connectedUsers.length} users connected
-      </div>
-      <div data-testid="typing-users">
-        {typingUsers.size} users typing
-      </div>
+      <div data-testid="connection-status">{isConnected ? 'Connected' : 'Disconnected'}</div>
+      <div data-testid="connected-users">{connectedUsers.length} users connected</div>
+      <div data-testid="typing-users">{typingUsers.size} users typing</div>
       <button onClick={joinDiscussion} data-testid="join-button">
         Join Discussion
       </button>
       <button onClick={leaveDiscussion} data-testid="leave-button">
         Leave Discussion
       </button>
-      <button 
+      <button
         onClick={() => broadcastPost({ type: 'test', content: 'Test post' })}
         data-testid="broadcast-post-button"
       >
         Broadcast Post
       </button>
-      <button 
-        onClick={() => broadcastTyping(true)}
-        data-testid="start-typing-button"
-      >
+      <button onClick={() => broadcastTyping(true)} data-testid="start-typing-button">
         Start Typing
       </button>
-      <button 
-        onClick={() => broadcastTyping(false)}
-        data-testid="stop-typing-button"
-      >
+      <button onClick={() => broadcastTyping(false)} data-testid="stop-typing-button">
         Stop Typing
       </button>
     </div>
@@ -82,9 +72,7 @@ const TestComponent: React.FC<{ discussionId: string }> = ({ discussionId }) => 
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <AuthProvider>
-      <WebSocketProvider>
-        {component}
-      </WebSocketProvider>
+      <WebSocketProvider>{component}</WebSocketProvider>
     </AuthProvider>
   );
 };
@@ -126,7 +114,7 @@ describe('useRealtimeDiscussion', () => {
 
   it('should handle user joining and leaving', async () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-    
+
     renderWithProviders(<TestComponent discussionId="test-discussion" />);
 
     // Simulate WebSocket connection and user events
@@ -147,7 +135,7 @@ describe('useRealtimeDiscussion', () => {
 
   it('should handle typing events with timeout', async () => {
     jest.useFakeTimers();
-    
+
     renderWithProviders(<TestComponent discussionId="test-discussion" />);
 
     // Simulate typing start event
@@ -166,14 +154,14 @@ describe('useRealtimeDiscussion', () => {
 
   it('should cleanup typing timeouts on unmount', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    
+
     const { unmount } = renderWithProviders(<TestComponent discussionId="test-discussion" />);
-    
+
     unmount();
 
     // Verify cleanup was called (exact number depends on implementation)
     expect(clearTimeoutSpy).toHaveBeenCalled();
-    
+
     clearTimeoutSpy.mockRestore();
   });
 });
@@ -181,10 +169,8 @@ describe('useRealtimeDiscussion', () => {
 describe('Real-time Event Handling', () => {
   it('should handle new post events', () => {
     const onNewPost = jest.fn();
-    
-    renderWithProviders(
-      <TestComponent discussionId="test-discussion" />
-    );
+
+    renderWithProviders(<TestComponent discussionId="test-discussion" />);
 
     // Simulate receiving a new post event
     // This would normally come through WebSocket
@@ -201,10 +187,8 @@ describe('Real-time Event Handling', () => {
 
   it('should handle post update events', () => {
     const onPostUpdated = jest.fn();
-    
-    renderWithProviders(
-      <TestComponent discussionId="test-discussion" />
-    );
+
+    renderWithProviders(<TestComponent discussionId="test-discussion" />);
 
     // Similar test for post updates
     expect(onPostUpdated).not.toHaveBeenCalled();
@@ -212,10 +196,8 @@ describe('Real-time Event Handling', () => {
 
   it('should handle post deletion events', () => {
     const onPostDeleted = jest.fn();
-    
-    renderWithProviders(
-      <TestComponent discussionId="test-discussion" />
-    );
+
+    renderWithProviders(<TestComponent discussionId="test-discussion" />);
 
     // Similar test for post deletions
     expect(onPostDeleted).not.toHaveBeenCalled();

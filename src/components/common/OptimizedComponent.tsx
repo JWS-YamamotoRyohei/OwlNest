@@ -24,7 +24,7 @@ export function optimizeComponent<P extends object>(
     memo = true,
     deepMemo = false,
     performanceMonitoring = process.env.NODE_ENV === 'development',
-    displayName
+    displayName,
   } = options;
 
   let OptimizedComponent = Component;
@@ -73,7 +73,7 @@ export function OptimizedList<T>({
   style,
   virtualized = false,
   itemHeight = 100,
-  containerHeight = 400
+  containerHeight = 400,
 }: OptimizedListProps<T>) {
   const [visibleRange, setVisibleRange] = React.useState({ start: 0, end: items.length });
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -102,9 +102,7 @@ export function OptimizedList<T>({
     };
   }, [virtualized, itemHeight, containerHeight, items.length]);
 
-  const visibleItems = virtualized 
-    ? items.slice(visibleRange.start, visibleRange.end)
-    : items;
+  const visibleItems = virtualized ? items.slice(visibleRange.start, visibleRange.end) : items;
 
   const totalHeight = virtualized ? items.length * itemHeight : 'auto';
   const offsetY = virtualized ? visibleRange.start * itemHeight : 0;
@@ -116,7 +114,7 @@ export function OptimizedList<T>({
       style={{
         height: virtualized ? containerHeight : 'auto',
         overflow: virtualized ? 'auto' : 'visible',
-        ...style
+        ...style,
       }}
     >
       {virtualized && (
@@ -127,7 +125,7 @@ export function OptimizedList<T>({
               position: 'absolute',
               top: 0,
               left: 0,
-              right: 0
+              right: 0,
             }}
           >
             {visibleItems.map((item, index) => (
@@ -138,12 +136,11 @@ export function OptimizedList<T>({
           </div>
         </div>
       )}
-      
-      {!virtualized && visibleItems.map((item, index) => (
-        <div key={keyExtractor(item, index)}>
-          {renderItem(item, index)}
-        </div>
-      ))}
+
+      {!virtualized &&
+        visibleItems.map((item, index) => (
+          <div key={keyExtractor(item, index)}>{renderItem(item, index)}</div>
+        ))}
     </div>
   );
 }
@@ -169,20 +166,26 @@ export const OptimizedImageGrid = optimizeComponent<OptimizedImageGridProps>(
   ({ images, columns = 3, gap = 16, className, onImageLoad, onImageError }) => {
     const [loadedImages, setLoadedImages] = React.useState(new Set<number>());
 
-    const handleImageLoad = React.useCallback((index: number) => {
-      setLoadedImages(prev => new Set(prev).add(index));
-      onImageLoad?.(index);
-    }, [onImageLoad]);
+    const handleImageLoad = React.useCallback(
+      (index: number) => {
+        setLoadedImages(prev => new Set(prev).add(index));
+        onImageLoad?.(index);
+      },
+      [onImageLoad]
+    );
 
-    const handleImageError = React.useCallback((index: number) => {
-      onImageError?.(index);
-    }, [onImageError]);
+    const handleImageError = React.useCallback(
+      (index: number) => {
+        onImageError?.(index);
+      },
+      [onImageError]
+    );
 
     const gridStyle: React.CSSProperties = {
       display: 'grid',
       gridTemplateColumns: `repeat(${columns}, 1fr)`,
       gap: `${gap}px`,
-      width: '100%'
+      width: '100%',
     };
 
     return (
@@ -195,7 +198,7 @@ export const OptimizedImageGrid = optimizeComponent<OptimizedImageGridProps>(
               overflow: 'hidden',
               borderRadius: '8px',
               backgroundColor: '#f3f4f6',
-              aspectRatio: '1'
+              aspectRatio: '1',
             }}
           >
             <img
@@ -208,7 +211,7 @@ export const OptimizedImageGrid = optimizeComponent<OptimizedImageGridProps>(
                 height: '100%',
                 objectFit: 'cover',
                 transition: 'opacity 0.3s ease',
-                opacity: loadedImages.has(index) ? 1 : 0
+                opacity: loadedImages.has(index) ? 1 : 0,
               }}
               onLoad={() => handleImageLoad(index)}
               onError={() => handleImageError(index)}
@@ -221,7 +224,7 @@ export const OptimizedImageGrid = optimizeComponent<OptimizedImageGridProps>(
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                   color: '#6b7280',
-                  fontSize: '14px'
+                  fontSize: '14px',
                 }}
               >
                 読み込み中...
@@ -258,7 +261,7 @@ export const OptimizedText = optimizeComponent<OptimizedTextProps>(
       const element = textRef.current;
       const lineHeight = parseInt(getComputedStyle(element).lineHeight);
       const maxHeight = lineHeight * maxLines;
-      
+
       setIsTruncated(element.scrollHeight > maxHeight);
     }, [children, maxLines]);
 
@@ -268,7 +271,7 @@ export const OptimizedText = optimizeComponent<OptimizedTextProps>(
       WebkitLineClamp: isExpanded ? 'none' : maxLines,
       WebkitBoxOrient: 'vertical',
       overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      textOverflow: 'ellipsis',
     };
 
     return (
@@ -286,7 +289,7 @@ export const OptimizedText = optimizeComponent<OptimizedTextProps>(
               cursor: 'pointer',
               fontSize: '14px',
               marginTop: '4px',
-              padding: 0
+              padding: 0,
             }}
           >
             {isExpanded ? '折りたたむ' : 'もっと見る'}

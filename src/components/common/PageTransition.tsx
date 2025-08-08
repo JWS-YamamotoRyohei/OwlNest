@@ -8,10 +8,7 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export const PageTransition: React.FC<PageTransitionProps> = ({
-  children,
-  className = ''
-}) => {
+export const PageTransition: React.FC<PageTransitionProps> = ({ children, className = '' }) => {
   const { isLoading } = usePageTransition(200);
 
   return (
@@ -21,7 +18,9 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
           <LoadingSpinner size="medium" />
         </div>
       )}
-      <div className={`page-transition__content ${isLoading ? 'page-transition__content--loading' : ''}`}>
+      <div
+        className={`page-transition__content ${isLoading ? 'page-transition__content--loading' : ''}`}
+      >
         {children}
       </div>
     </div>

@@ -6,7 +6,7 @@ export enum ErrorType {
   VALIDATION = 'validation',
   NETWORK = 'network',
   SERVER = 'server',
-  NOT_FOUND = 'not_found'
+  NOT_FOUND = 'not_found',
 }
 
 export interface AppError {

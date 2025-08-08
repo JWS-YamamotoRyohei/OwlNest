@@ -237,7 +237,9 @@
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-input:focus,
@@ -342,23 +344,23 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .add-bg-buttons {
     justify-content: flex-start;
   }
-  
+
   .bg-header {
     padding: 10px 12px;
   }
-  
+
   .bg-content {
     padding: 12px;
   }
-  
+
   .empty-bg {
     padding: 32px 16px;
   }
-  
+
   .empty-bg-icon {
     font-size: 36px;
   }
@@ -368,15 +370,15 @@
   .add-bg-buttons {
     flex-direction: column;
   }
-  
+
   .add-bg-btn {
     justify-content: center;
   }
-  
+
   .bg-actions {
     gap: 2px;
   }
-  
+
   .bg-move-btn,
   .remove-bg-btn {
     width: 20px;

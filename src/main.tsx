@@ -7,9 +7,7 @@ import reportWebVitals from './reportWebVitals';
 // Service Worker registration (optional for Vite)
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <React.StrictMode>

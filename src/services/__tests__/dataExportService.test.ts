@@ -6,7 +6,7 @@ global.fetch = jest.fn();
 describe('DataExportService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -41,18 +41,18 @@ describe('DataExportService', () => {
           title: 'Test Discussion',
           participantCount: 10,
           postCount: 25,
-          engagementRate: 0.75
-        }
+          engagementRate: 0.75,
+        },
       ];
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockData
+        json: async () => mockData,
       });
 
       const options: ExportOptions = {
         format: 'csv',
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const result = await dataExportService.exportDiscussionStatistics(['1'], options);
@@ -62,13 +62,13 @@ describe('DataExportService', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer mock-token',
-            'Content-Type': 'application/json'
+            Authorization: 'Bearer mock-token',
+            'Content-Type': 'application/json',
           }),
           body: JSON.stringify({
             discussionIds: ['1'],
-            options
-          })
+            options,
+          }),
         })
       );
 
@@ -84,18 +84,18 @@ describe('DataExportService', () => {
           title: 'Test Discussion',
           participantCount: 10,
           postCount: 25,
-          engagementRate: 0.75
-        }
+          engagementRate: 0.75,
+        },
       ];
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockData
+        json: async () => mockData,
       });
 
       const options: ExportOptions = {
         format: 'json',
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const result = await dataExportService.exportDiscussionStatistics(['1'], options);
@@ -110,7 +110,7 @@ describe('DataExportService', () => {
 
       const options: ExportOptions = {
         format: 'csv',
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const result = await dataExportService.exportDiscussionStatistics(['1'], options);
@@ -126,25 +126,25 @@ describe('DataExportService', () => {
       const mockData = {
         totalUsers: 1000,
         activeUsers: 750,
-        totalDiscussions: 200
+        totalDiscussions: 200,
       };
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => [mockData]
+        json: async () => [mockData],
       });
 
       const filter = {
         timeRange: {
           start: '2024-01-01T00:00:00Z',
           end: '2024-01-31T23:59:59Z',
-          period: 'day' as const
-        }
+          period: 'day' as const,
+        },
       };
 
       const options: ExportOptions = {
         format: 'json',
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const result = await dataExportService.exportPlatformStatistics(filter, options);
@@ -153,7 +153,7 @@ describe('DataExportService', () => {
         '/api/analytics/export/platform/statistics',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ filter, options })
+          body: JSON.stringify({ filter, options }),
         })
       );
 
@@ -170,26 +170,26 @@ describe('DataExportService', () => {
           metric: 'posts',
           value: 100,
           change: 5,
-          changePercentage: 5.0
-        }
+          changePercentage: 5.0,
+        },
       ];
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockData
+        json: async () => mockData,
       });
 
       const filter = {
         timeRange: {
           start: '2024-01-01T00:00:00Z',
           end: '2024-01-31T23:59:59Z',
-          period: 'day' as const
-        }
+          period: 'day' as const,
+        },
       };
 
       const options: ExportOptions = {
         format: 'csv',
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const result = await dataExportService.exportTrendData('posts', filter, options);
@@ -198,7 +198,7 @@ describe('DataExportService', () => {
         '/api/analytics/export/trends/posts',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ filter, options })
+          body: JSON.stringify({ filter, options }),
         })
       );
 
@@ -213,7 +213,7 @@ describe('DataExportService', () => {
         filename: 'test.csv',
         data: 'test,data\n1,2',
         mimeType: 'text/csv',
-        size: 100
+        size: 100,
       };
 
       dataExportService.downloadExport(exportResult);
@@ -229,7 +229,7 @@ describe('DataExportService', () => {
       const validOptions: ExportOptions = {
         format: 'csv',
         maxRecords: 1000,
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const errors = dataExportService.validateExportOptions(validOptions);
@@ -239,7 +239,7 @@ describe('DataExportService', () => {
     it('should return errors for invalid format', () => {
       const invalidOptions: ExportOptions = {
         format: 'xml' as any,
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const errors = dataExportService.validateExportOptions(invalidOptions);
@@ -250,7 +250,7 @@ describe('DataExportService', () => {
       const invalidOptions: ExportOptions = {
         format: 'csv',
         maxRecords: 200000,
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const errors = dataExportService.validateExportOptions(invalidOptions);
@@ -262,9 +262,9 @@ describe('DataExportService', () => {
         format: 'csv',
         dateRange: {
           start: '2024-01-31T00:00:00Z',
-          end: '2024-01-01T00:00:00Z'
+          end: '2024-01-01T00:00:00Z',
         },
-        includeMetadata: true
+        includeMetadata: true,
       };
 
       const errors = dataExportService.validateExportOptions(invalidOptions);

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { DiscussionCategory } from '../../types/common';
-import {
-  getAllCategories,
-  searchCategories,
-} from '../../constants/categories';
+import { getAllCategories, searchCategories } from '../../constants/categories';
 import './CategoryFilter.css';
 
 interface CategoryFilterProps {
@@ -24,13 +21,11 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isExpanded, setIsExpanded] = useState(!compact);
 
-  const categories = searchQuery.trim() 
-    ? searchCategories(searchQuery)
-    : getAllCategories();
+  const categories = searchQuery.trim() ? searchCategories(searchQuery) : getAllCategories();
 
   const handleCategoryToggle = (categoryId: DiscussionCategory) => {
     const isSelected = selectedCategories.includes(categoryId);
-    
+
     if (isSelected) {
       onChange(selectedCategories.filter(id => id !== categoryId));
     } else {
@@ -47,14 +42,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   if (compact && !isExpanded) {
     return (
       <div className="category-filter category-filter--compact">
-        <button
-          className="category-filter__toggle"
-          onClick={() => setIsExpanded(true)}
-        >
+        <button className="category-filter__toggle" onClick={() => setIsExpanded(true)}>
           カテゴリフィルター
-          {selectedCount > 0 && (
-            <span className="category-filter__badge">{selectedCount}</span>
-          )}
+          {selectedCount > 0 && <span className="category-filter__badge">{selectedCount}</span>}
         </button>
       </div>
     );
@@ -66,18 +56,12 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         <h3 className="category-filter__title">カテゴリフィルター</h3>
         <div className="category-filter__actions">
           {selectedCount > 0 && (
-            <button
-              className="category-filter__clear"
-              onClick={handleClearAll}
-            >
+            <button className="category-filter__clear" onClick={handleClearAll}>
               クリア ({selectedCount})
             </button>
           )}
           {compact && (
-            <button
-              className="category-filter__collapse"
-              onClick={() => setIsExpanded(false)}
-            >
+            <button className="category-filter__collapse" onClick={() => setIsExpanded(false)}>
               ×
             </button>
           )}
@@ -89,7 +73,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           type="text"
           placeholder="カテゴリを検索..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           className="category-filter__search-input"
         />
       </div>
@@ -106,17 +90,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
               onClick={() => handleCategoryToggle(categoryInfo.id)}
             >
               <div className="category-filter__category-content">
-                <span className="category-filter__category-icon">
-                  {categoryInfo.icon}
-                </span>
-                <span className="category-filter__category-name">
-                  {categoryInfo.name}
-                </span>
-                {showCounts && (
-                  <span className="category-filter__category-count">
-                    ({count})
-                  </span>
-                )}
+                <span className="category-filter__category-icon">{categoryInfo.icon}</span>
+                <span className="category-filter__category-name">{categoryInfo.name}</span>
+                {showCounts && <span className="category-filter__category-count">({count})</span>}
               </div>
               <div className="category-filter__category-checkbox">
                 <input

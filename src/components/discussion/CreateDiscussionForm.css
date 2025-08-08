@@ -151,7 +151,9 @@
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-input:focus,
@@ -296,47 +298,47 @@
   .create-discussion-form {
     padding: 16px;
   }
-  
+
   .form-content {
     padding: 16px;
   }
-  
+
   .step-indicator {
     flex-direction: column;
     gap: 12px;
     padding: 0;
   }
-  
+
   .step-item {
     flex-direction: row;
     justify-content: flex-start;
     text-align: left;
   }
-  
+
   .step-item:not(:last-child)::after {
     display: none;
   }
-  
+
   .step-number {
     margin-bottom: 0;
     margin-right: 12px;
   }
-  
+
   .step-info {
     text-align: left;
   }
-  
+
   .form-actions {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .form-actions-left,
   .form-actions-right {
     width: 100%;
     justify-content: center;
   }
-  
+
   .btn {
     flex: 1;
     min-width: 120px;
@@ -347,15 +349,15 @@
   .form-header h2 {
     font-size: 20px;
   }
-  
+
   .step-title {
     font-size: 11px;
   }
-  
+
   .step-required {
     font-size: 9px;
   }
-  
+
   .form-step h3 {
     font-size: 16px;
   }

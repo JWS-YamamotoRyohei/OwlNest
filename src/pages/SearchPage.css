@@ -105,7 +105,7 @@
   .search-page {
     padding: 16px;
   }
-  
+
   .search-page__title {
     font-size: 24px;
   }
@@ -115,30 +115,30 @@
   .search-page {
     padding: 12px;
   }
-  
+
   .search-page__header {
     margin-bottom: 16px;
   }
-  
+
   .search-page__title {
     font-size: 20px;
     margin-bottom: 12px;
   }
-  
+
   .search-page__type-toggle {
     width: 100%;
   }
-  
+
   .search-page__type-button {
     flex: 1;
     text-align: center;
   }
-  
+
   .search-page__search-bar {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .search-page__history-toggle {
     align-self: flex-start;
     height: auto;
@@ -150,11 +150,11 @@
   .search-page {
     padding: 8px;
   }
-  
+
   .search-page__title {
     font-size: 18px;
   }
-  
+
   .search-page__type-button {
     padding: 6px 12px;
     font-size: 13px;
@@ -178,11 +178,11 @@
   .search-page__type-toggle {
     border-width: 2px;
   }
-  
+
   .search-page__type-button--active {
     border: 2px solid var(--color-primary-dark);
   }
-  
+
   .search-page__history-toggle:hover {
     border-width: 2px;
   }
@@ -193,7 +193,7 @@
   .search-page__history {
     animation: none;
   }
-  
+
   .search-page__type-button,
   .search-page__history-toggle {
     transition: none;
@@ -207,7 +207,7 @@
   .search-page__history {
     display: none;
   }
-  
+
   .search-page__search-bar .search-bar {
     border: 1px solid #000;
   }

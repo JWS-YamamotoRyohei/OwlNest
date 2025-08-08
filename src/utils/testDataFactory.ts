@@ -1,8 +1,4 @@
-import {
-  UserProfile,
-  CreateUserData,
-  UserListItem,
-} from '../types/User';
+import { UserProfile, CreateUserData, UserListItem } from '../types/User';
 import {
   Discussion,
   DiscussionPoint,
@@ -10,12 +6,7 @@ import {
   CreateDiscussionData,
   DiscussionListItem,
 } from '../types/discussion';
-import {
-  Post,
-  PostReaction,
-  CreatePostData,
-  PostListItem,
-} from '../types/post';
+import { Post, PostReaction, CreatePostData, PostListItem } from '../types/post';
 import {
   UserRole,
   Stance,
@@ -66,7 +57,7 @@ export class TestDataFactory {
    */
   private static randomDate(daysAgo: number): string {
     const now = new Date();
-    const pastDate = new Date(now.getTime() - (Math.random() * daysAgo * 24 * 60 * 60 * 1000));
+    const pastDate = new Date(now.getTime() - Math.random() * daysAgo * 24 * 60 * 60 * 1000);
     return pastDate.toISOString();
   }
 
@@ -91,9 +82,9 @@ export class TestDataFactory {
     const userId = DynamoDBHelpers.generateId('user_');
     const userData = this.createTestUserData();
     const role = this.randomElement(Object.values(UserRole));
-    
+
     const profile = DataTransformUtils.createUserDataToProfile(userData, userId, role);
-    
+
     return {
       ...profile,
       statistics: {
@@ -126,13 +117,15 @@ export class TestDataFactory {
   /**
    * Create test discussion data
    */
-  static createTestDiscussionData(overrides: Partial<CreateDiscussionData> = {}): CreateDiscussionData {
+  static createTestDiscussionData(
+    overrides: Partial<CreateDiscussionData> = {}
+  ): CreateDiscussionData {
     const discussionId = this.discussionCounter++;
     const categories = [
       this.randomElement(Object.values(DiscussionCategory)),
       this.randomElement(Object.values(DiscussionCategory)),
     ];
-    
+
     return {
       title: `テスト議論${discussionId}`,
       description: `これはテスト議論${discussionId}の説明です。この議論では重要なトピックについて話し合います。`,
@@ -186,14 +179,14 @@ export class TestDataFactory {
     const ownerId = DynamoDBHelpers.generateId('user_');
     const ownerDisplayName = `テストユーザー${this.randomNumber(1, 100)}`;
     const discussionData = this.createTestDiscussionData();
-    
+
     const discussion = DataTransformUtils.createDiscussionDataToDiscussion(
       discussionData,
       discussionId,
       ownerId,
       ownerDisplayName
     );
-    
+
     return {
       ...discussion,
       statistics: {
@@ -225,28 +218,28 @@ export class TestDataFactory {
   ): DiscussionPoint {
     const pointId = DynamoDBHelpers.generateId('point_');
     const order = this.randomNumber(1, 10);
-    
+
     return {
       PK: `DISCUSSION#${discussionId}`,
       SK: `POINT#${pointId}`,
       GSI1PK: `DISCUSSION#${discussionId}`,
       GSI1SK: `POINT#${order.toString().padStart(3, '0')}`,
       EntityType: EntityType.DISCUSSION_POINT,
-      
+
       pointId,
       discussionId,
       title: `テスト論点${order}`,
       description: `これはテスト論点${order}の説明です。`,
       level: 0,
       order,
-      
+
       postCount: this.randomNumber(0, 50),
       prosCount: this.randomNumber(0, 20),
       consCount: this.randomNumber(0, 20),
       neutralCount: this.randomNumber(0, 10),
-      
+
       isActive: true,
-      
+
       createdAt: this.randomDate(30),
       updatedAt: this.randomDate(7),
       ...overrides,
@@ -262,19 +255,19 @@ export class TestDataFactory {
   ): BackgroundKnowledge {
     const knowledgeId = DynamoDBHelpers.generateId('knowledge_');
     const order = this.randomNumber(1, 5);
-    
+
     return {
       PK: `DISCUSSION#${discussionId}`,
       SK: `KNOWLEDGE#${knowledgeId}`,
       EntityType: EntityType.BACKGROUND_KNOWLEDGE,
-      
+
       knowledgeId,
       discussionId,
       type: this.randomElement(['text', 'url'] as const),
       title: `前提知識${order}`,
       content: `これは前提知識${order}の内容です。`,
       order,
-      
+
       createdAt: this.randomDate(30),
       updatedAt: this.randomDate(7),
       ...overrides,
@@ -284,7 +277,9 @@ export class TestDataFactory {
   /**
    * Create test discussion list item
    */
-  static createTestDiscussionListItem(overrides: Partial<DiscussionListItem> = {}): DiscussionListItem {
+  static createTestDiscussionListItem(
+    overrides: Partial<DiscussionListItem> = {}
+  ): DiscussionListItem {
     const discussion = this.createTestDiscussion();
     return {
       ...DataTransformUtils.discussionToListItem(discussion),
@@ -302,7 +297,7 @@ export class TestDataFactory {
   ): CreatePostData {
     const postId = this.postCounter++;
     const stances = Object.values(Stance).filter(s => s !== Stance.HIDDEN);
-    
+
     return {
       discussionId,
       discussionPointId,
@@ -312,14 +307,19 @@ export class TestDataFactory {
           bold: Math.random() > 0.5,
           fontSize: this.randomElement(['small', 'medium', 'large'] as const),
         },
-        attachments: Math.random() > 0.7 ? [{
-          id: DynamoDBHelpers.generateId('file_'),
-          url: `https://example.com/files/attachment${postId}.jpg`,
-          filename: `attachment${postId}.jpg`,
-          contentType: 'image/jpeg',
-          size: this.randomNumber(1000, 1000000),
-          uploadedAt: this.randomDate(1),
-        }] : [],
+        attachments:
+          Math.random() > 0.7
+            ? [
+                {
+                  id: DynamoDBHelpers.generateId('file_'),
+                  url: `https://example.com/files/attachment${postId}.jpg`,
+                  filename: `attachment${postId}.jpg`,
+                  contentType: 'image/jpeg',
+                  size: this.randomNumber(1000, 1000000),
+                  uploadedAt: this.randomDate(1),
+                },
+              ]
+            : [],
       },
       stance: this.randomElement(stances),
       mentions: Math.random() > 0.8 ? [DynamoDBHelpers.generateId('user_')] : [],
@@ -339,14 +339,14 @@ export class TestDataFactory {
     const authorId = DynamoDBHelpers.generateId('user_');
     const authorDisplayName = `テストユーザー${this.randomNumber(1, 100)}`;
     const postData = this.createTestPostData(discussionId, discussionPointId);
-    
+
     const post = DataTransformUtils.createPostDataToPost(
       postData,
       postId,
       authorId,
       authorDisplayName
     );
-    
+
     return {
       ...post,
       reactions: {
@@ -376,13 +376,13 @@ export class TestDataFactory {
       PK: `POST#${postId}`,
       SK: `REACTION#${userId}`,
       EntityType: EntityType.POST_REACTION,
-      
+
       postId,
       userId,
       reactionType: this.randomElement(Object.values(ReactionType)),
       discussionId: DynamoDBHelpers.generateId('discussion_'),
       authorId: DynamoDBHelpers.generateId('user_'),
-      
+
       createdAt: this.randomDate(30),
       updatedAt: this.randomDate(7),
       ...overrides,
@@ -396,7 +396,7 @@ export class TestDataFactory {
     const discussionId = DynamoDBHelpers.generateId('discussion_');
     const discussionPointId = DynamoDBHelpers.generateId('point_');
     const post = this.createTestPost(discussionId, discussionPointId);
-    
+
     return {
       ...DataTransformUtils.postToListItem(
         post,
@@ -446,7 +446,7 @@ export class TestDataFactory {
     posts: Post[];
   } {
     const discussion = this.createTestDiscussion();
-    const points = Array.from({ length: 3 }, () => 
+    const points = Array.from({ length: 3 }, () =>
       this.createTestDiscussionPoint(discussion.discussionId)
     );
     const backgroundKnowledge = Array.from({ length: 2 }, () =>
@@ -476,7 +476,7 @@ export class TestDataFactory {
     const discussions = Array.from({ length: 3 }, () =>
       this.createTestDiscussion({ ownerId: userId })
     );
-    
+
     const posts = Array.from({ length: 10 }, () => {
       const discussion = this.randomElement(discussions);
       const pointId = DynamoDBHelpers.generateId('point_');
@@ -492,8 +492,11 @@ export class TestDataFactory {
   /**
    * Create discussion points for demo
    */
-  static createDiscussionPoints(count: number, discussionId = 'demo-discussion'): DiscussionPoint[] {
-    return Array.from({ length: count }, (_, index) => 
+  static createDiscussionPoints(
+    count: number,
+    discussionId = 'demo-discussion'
+  ): DiscussionPoint[] {
+    return Array.from({ length: count }, (_, index) =>
       this.createTestDiscussionPoint(discussionId, {
         title: `論点${index + 1}: ${this.randomElement([
           '基本的な考え方について',
@@ -505,7 +508,7 @@ export class TestDataFactory {
           'パフォーマンスの最適化',
           'コストと効果',
           '運用・保守性',
-          '法的・倫理的な問題'
+          '法的・倫理的な問題',
         ])}`,
         order: index + 1,
       })
@@ -516,24 +519,24 @@ export class TestDataFactory {
    * Create posts for demo
    */
   static createPosts(
-    count: number, 
+    count: number,
     options: {
       discussionId: string;
       discussionPoints: DiscussionPoint[];
     }
   ): PostListItem[] {
     const { discussionId, discussionPoints } = options;
-    
+
     return Array.from({ length: count }, (_, index) => {
       const point = this.randomElement(discussionPoints);
       const authorId = `user_${this.randomNumber(1, 10)}`;
       const authorDisplayName = `ユーザー${this.randomNumber(1, 10)}`;
-      
+
       // Create some replies
       const isReply = Math.random() > 0.7;
       const replyToId = isReply ? `post_${this.randomNumber(1, Math.max(1, index))}` : undefined;
       const threadLevel = isReply ? this.randomNumber(1, 3) : 0;
-      
+
       return {
         postId: `post_${index + 1}`,
         discussionId,
@@ -560,7 +563,8 @@ export class TestDataFactory {
           [ReactionType.INSIGHTFUL]: this.randomNumber(0, 5),
           [ReactionType.FUNNY]: this.randomNumber(0, 3),
           totalCount: 0, // Will be calculated below
-          userReaction: Math.random() > 0.7 ? this.randomElement(Object.values(ReactionType)) : undefined,
+          userReaction:
+            Math.random() > 0.7 ? this.randomElement(Object.values(ReactionType)) : undefined,
         },
         replyCount: this.randomNumber(0, 8),
         createdAt: this.randomDate(30),
@@ -583,7 +587,7 @@ export class TestDataFactory {
   /**
    * Create a single post
    */
-  
+
   static createPost(data: {
     discussionId: string;
     discussionPointId: string;
@@ -599,9 +603,9 @@ export class TestDataFactory {
     const authorId = 'user_1';
     const authorDisplayName = '現在のユーザー';
     const createdAt = new Date().toISOString();
-  
+
     const attachmentCount = data.content.attachments?.length || 0;
-  
+
     return {
       postId,
       discussionId: data.discussionId,
@@ -613,7 +617,8 @@ export class TestDataFactory {
       authorAvatar: `https://example.com/avatars/${authorId}.jpg`,
       content: {
         text: data.content.text,
-        preview: data.content.text.substring(0, 100) + (data.content.text.length > 100 ? '...' : ''),
+        preview:
+          data.content.text.substring(0, 100) + (data.content.text.length > 100 ? '...' : ''),
         hasAttachments: attachmentCount > 0 ? 1 : 0,
         hasLinks: data.content.text.includes('http') ? 1 : 0,
         attachmentCount,
@@ -644,7 +649,6 @@ export class TestDataFactory {
       canReact: true,
     };
   }
-  
 
   /**
    * Generate random post content
@@ -665,28 +669,22 @@ export class TestDataFactory {
       'ユーザビリティの向上',
       'セキュリティの観点',
       '将来的な拡張性',
-      '運用・保守の容易さ'
+      '運用・保守の容易さ',
     ];
     const examples = [
       '他社での成功事例',
       '過去のプロジェクトでの経験',
       '業界のベストプラクティス',
       '最新の技術動向',
-      'ユーザーからのフィードバック'
+      'ユーザーからのフィードバック',
     ];
-    const topics = [
-      'この機能',
-      'この提案',
-      'この実装方法',
-      'このアプローチ',
-      'この技術選択'
-    ];
+    const topics = ['この機能', 'この提案', 'この実装方法', 'このアプローチ', 'この技術選択'];
     const opinions = [
       '非常に有効',
       '慎重に検討すべき',
       '改善の余地がある',
       '実現可能',
-      '課題が多い'
+      '課題が多い',
     ];
 
     const template = this.randomElement(templates);

@@ -130,9 +130,10 @@ export const getAllCategories = (): CategoryInfo[] => {
  */
 export const searchCategories = (query: string): CategoryInfo[] => {
   const lowercaseQuery = query.toLowerCase();
-  return CATEGORY_HIERARCHY.filter(category =>
-    category.name.toLowerCase().includes(lowercaseQuery) ||
-    category.description.toLowerCase().includes(lowercaseQuery)
+  return CATEGORY_HIERARCHY.filter(
+    category =>
+      category.name.toLowerCase().includes(lowercaseQuery) ||
+      category.description.toLowerCase().includes(lowercaseQuery)
   );
 };
 
@@ -159,7 +160,9 @@ export const getCategoryStatistics = (categoryId: DiscussionCategory) => {
 /**
  * Validate category selection
  */
-export const validateCategorySelection = (categories: DiscussionCategory[]): { isValid: boolean; errors: string[] } => {
+export const validateCategorySelection = (
+  categories: DiscussionCategory[]
+): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
   if (categories.length === 0) {

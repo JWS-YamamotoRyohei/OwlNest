@@ -168,16 +168,10 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
         onClick={() => setIsExpanded(!isExpanded)}
         title="モデレーション機能"
       >
-        <span className="post-moderation-panel__toggle-icon">
-          {isExpanded ? '▼' : '▶'}
-        </span>
-        <span className="post-moderation-panel__toggle-text">
-          モデレーション
-        </span>
+        <span className="post-moderation-panel__toggle-icon">{isExpanded ? '▼' : '▶'}</span>
+        <span className="post-moderation-panel__toggle-text">モデレーション</span>
         {moderationHistory.length > 0 && (
-          <span className="post-moderation-panel__history-count">
-            ({moderationHistory.length})
-          </span>
+          <span className="post-moderation-panel__history-count">({moderationHistory.length})</span>
         )}
       </button>
 
@@ -256,11 +250,9 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
           {/* Moderation History */}
           {moderationHistory.length > 0 && (
             <div className="post-moderation-panel__history">
-              <h4 className="post-moderation-panel__history-title">
-                モデレーション履歴
-              </h4>
+              <h4 className="post-moderation-panel__history-title">モデレーション履歴</h4>
               <div className="post-moderation-panel__history-list">
-                {moderationHistory.map((action) => (
+                {moderationHistory.map(action => (
                   <div key={action.id} className="post-moderation-panel__history-item">
                     <div className="post-moderation-panel__history-header">
                       <span className="post-moderation-panel__history-action">
@@ -292,9 +284,7 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
             <div className="post-moderation-panel__info-grid">
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">投稿者:</span>
-                <span className="post-moderation-panel__info-value">
-                  {post.authorDisplayName}
-                </span>
+                <span className="post-moderation-panel__info-value">{post.authorDisplayName}</span>
               </div>
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">投稿日時:</span>
@@ -304,25 +294,21 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
               </div>
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">スタンス:</span>
-                <span className="post-moderation-panel__info-value">
-                  {post.stance}
-                </span>
+                <span className="post-moderation-panel__info-value">{post.stance}</span>
               </div>
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">リアクション数:</span>
                 <span className="post-moderation-panel__info-value">
-                {post.statistics.likeCount +
-          post.statistics.agreeCount +
-          post.statistics.disagreeCount +
-          post.statistics.insightfulCount +
-          post.statistics.funnyCount}
+                  {post.statistics.likeCount +
+                    post.statistics.agreeCount +
+                    post.statistics.disagreeCount +
+                    post.statistics.insightfulCount +
+                    post.statistics.funnyCount}
                 </span>
               </div>
               <div className="post-moderation-panel__info-item">
                 <span className="post-moderation-panel__info-label">返信数:</span>
-                <span className="post-moderation-panel__info-value">
-                  {post.replyCount}
-                </span>
+                <span className="post-moderation-panel__info-value">{post.replyCount}</span>
               </div>
             </div>
           </div>
@@ -352,12 +338,14 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
                   理由を選択してください:
                 </label>
                 <div className="post-moderation-panel__reason-options">
-                  {predefinedReasons.map((predefinedReason) => (
+                  {predefinedReasons.map(predefinedReason => (
                     <button
                       key={predefinedReason}
                       type="button"
                       className={`post-moderation-panel__reason-option ${
-                        reason === predefinedReason ? 'post-moderation-panel__reason-option--selected' : ''
+                        reason === predefinedReason
+                          ? 'post-moderation-panel__reason-option--selected'
+                          : ''
                       }`}
                       onClick={() => setReason(predefinedReason)}
                     >
@@ -368,13 +356,11 @@ export const PostModerationPanel: React.FC<PostModerationPanelProps> = ({
               </div>
 
               <div className="post-moderation-panel__reason-section">
-                <label className="post-moderation-panel__reason-label">
-                  詳細な理由（任意）:
-                </label>
+                <label className="post-moderation-panel__reason-label">詳細な理由（任意）:</label>
                 <textarea
                   className="post-moderation-panel__reason-textarea"
                   value={reason}
-                  onChange={(e) => setReason(e.target.value)}
+                  onChange={e => setReason(e.target.value)}
                   placeholder="詳細な理由を入力してください..."
                   rows={3}
                 />

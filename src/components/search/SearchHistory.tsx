@@ -23,7 +23,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
   onSavedSearchDelete,
   onSavedSearchUpdate,
   onClearHistory,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [activeTab, setActiveTab] = useState<'history' | 'saved'>('history');
   const [editingSearch, setEditingSearch] = useState<string | null>(null);
@@ -48,9 +48,9 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
 
   const formatFilters = (filters?: Record<string, any>): string => {
     if (!filters) return '';
-    
+
     const filterParts: string[] = [];
-    
+
     if (filters.categories?.length) {
       filterParts.push(`カテゴリ: ${filters.categories.length}件`);
     }
@@ -63,7 +63,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
     if (filters.isActive !== undefined) {
       filterParts.push(filters.isActive ? 'アクティブのみ' : '非アクティブのみ');
     }
-    
+
     return filterParts.join(', ');
   };
 
@@ -90,9 +90,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
       {searchHistory.length === 0 ? (
         <div className="search-history__empty">
           <div className="search-history__empty-icon">🕒</div>
-          <div className="search-history__empty-text">
-            検索履歴がありません
-          </div>
+          <div className="search-history__empty-text">検索履歴がありません</div>
         </div>
       ) : (
         <>
@@ -106,9 +104,9 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
               すべて削除
             </button>
           </div>
-          
+
           <div className="search-history__list">
-            {searchHistory.map((item) => (
+            {searchHistory.map(item => (
               <div key={item.id} className="search-history__item">
                 <button
                   className="search-history__item-content"
@@ -116,9 +114,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
                   disabled={isLoading}
                 >
                   <div className="search-history__item-main">
-                    <div className="search-history__item-query">
-                      {item.query}
-                    </div>
+                    <div className="search-history__item-query">{item.query}</div>
                     <div className="search-history__item-meta">
                       <span className="search-history__item-date">
                         {formatDate(item.timestamp)}
@@ -134,7 +130,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
                     </div>
                   </div>
                 </button>
-                
+
                 <button
                   className="search-history__item-delete"
                   onClick={() => onHistoryDelete(item.id)}
@@ -156,9 +152,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
       {savedSearches.length === 0 ? (
         <div className="search-history__empty">
           <div className="search-history__empty-icon">⭐</div>
-          <div className="search-history__empty-text">
-            保存された検索がありません
-          </div>
+          <div className="search-history__empty-text">保存された検索がありません</div>
           <div className="search-history__empty-description">
             検索条件を保存すると、ここに表示されます
           </div>
@@ -168,9 +162,9 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
           <div className="search-history__header">
             <h3>保存された検索</h3>
           </div>
-          
+
           <div className="search-history__list">
-            {savedSearches.map((search) => (
+            {savedSearches.map(search => (
               <div key={search.id} className="search-history__saved-item">
                 <button
                   className="search-history__saved-content"
@@ -183,10 +177,10 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
                         <input
                           type="text"
                           value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
+                          onChange={e => setEditName(e.target.value)}
                           className="search-history__edit-input"
                           autoFocus
-                          onKeyDown={(e) => {
+                          onKeyDown={e => {
                             if (e.key === 'Enter') {
                               handleEditSave(search.id);
                             } else if (e.key === 'Escape') {
@@ -212,14 +206,10 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
                       </div>
                     ) : (
                       <>
-                        <div className="search-history__saved-name">
-                          {search.name}
-                        </div>
+                        <div className="search-history__saved-name">{search.name}</div>
                         <div className="search-history__saved-meta">
                           {search.query && (
-                            <span className="search-history__saved-query">
-                              「{search.query}」
-                            </span>
+                            <span className="search-history__saved-query">「{search.query}」</span>
                           )}
                           {search.filters && (
                             <span className="search-history__saved-filters">
@@ -234,7 +224,7 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({
                     )}
                   </div>
                 </button>
-                
+
                 {editingSearch !== search.id && (
                   <div className="search-history__saved-actions">
                     <button

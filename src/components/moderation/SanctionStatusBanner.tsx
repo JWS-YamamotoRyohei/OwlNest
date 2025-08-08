@@ -46,13 +46,13 @@ export const SanctionStatusBanner: React.FC<SanctionStatusBannerProps> = ({
 
   const formatEndDate = (endDate?: string) => {
     if (!endDate) return null;
-    
+
     const date = new Date(endDate);
     const now = new Date();
     const diffMs = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
-    
+
     if (diffMs <= 0) {
       return '期限切れ';
     } else if (diffHours < 24) {
@@ -79,7 +79,7 @@ export const SanctionStatusBanner: React.FC<SanctionStatusBannerProps> = ({
     }
   };
 
-  const bannerClass = status.highestSanctionType 
+  const bannerClass = status.highestSanctionType
     ? `sanction-banner ${getSanctionTypeClass(status.highestSanctionType)}`
     : 'sanction-banner';
 
@@ -98,9 +98,7 @@ export const SanctionStatusBanner: React.FC<SanctionStatusBannerProps> = ({
               が適用されています
             </h4>
             {status.restrictionEndDate && (
-              <span className="sanction-duration">
-                {formatEndDate(status.restrictionEndDate)}
-              </span>
+              <span className="sanction-duration">{formatEndDate(status.restrictionEndDate)}</span>
             )}
           </div>
         </div>
@@ -114,10 +112,12 @@ export const SanctionStatusBanner: React.FC<SanctionStatusBannerProps> = ({
             <details>
               <summary>詳細を表示</summary>
               <div className="sanction-list">
-                {status.activeSanctions.map((sanction) => (
+                {status.activeSanctions.map(sanction => (
                   <div key={sanction.sanctionId} className="sanction-item">
                     <div className="sanction-item-header">
-                      <span className={`sanction-type-badge ${getSanctionTypeClass(sanction.sanctionType)}`}>
+                      <span
+                        className={`sanction-type-badge ${getSanctionTypeClass(sanction.sanctionType)}`}
+                      >
                         {getSanctionTypeLabel(sanction.sanctionType)}
                       </span>
                       <span className="sanction-date">

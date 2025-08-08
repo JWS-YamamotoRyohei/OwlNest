@@ -23,7 +23,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
 
   const getTypingMessage = (): string => {
     const userNames = otherTypingUsers.map(([, userName]) => userName);
-    
+
     if (userNames.length === 1) {
       return `${userNames[0]}が入力中...`;
     } else if (userNames.length === 2) {
@@ -43,9 +43,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
           <span className="typing-indicator__dot"></span>
           <span className="typing-indicator__dot"></span>
         </div>
-        <span className="typing-indicator__text">
-          {getTypingMessage()}
-        </span>
+        <span className="typing-indicator__text">{getTypingMessage()}</span>
       </div>
     </div>
   );

@@ -46,9 +46,5 @@ export const ErrorProvider: React.FC<ErrorProviderProps> = ({ children }) => {
     clearErrors,
   };
 
-  return (
-    <ErrorContext.Provider value={value}>
-      {children}
-    </ErrorContext.Provider>
-  );
+  return <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>;
 };

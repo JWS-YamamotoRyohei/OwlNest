@@ -12,7 +12,7 @@ export const ModerationPage: React.FC = () => {
   if (!user) {
     return (
       <div className="moderation-page">
-        <SEO 
+        <SEO
           title="モデレーション - ログインが必要"
           description="モデレーション機能を使用するにはログインが必要です。"
         />
@@ -27,7 +27,7 @@ export const ModerationPage: React.FC = () => {
   if (!canModerate) {
     return (
       <div className="moderation-page">
-        <SEO 
+        <SEO
           title="モデレーション - アクセス権限なし"
           description="モデレーション機能を使用する権限がありません。"
         />
@@ -42,11 +42,11 @@ export const ModerationPage: React.FC = () => {
 
   return (
     <div className="moderation-page">
-      <SEO 
+      <SEO
         title="モデレーション"
         description="投稿の報告を確認し、適切なモデレーション措置を実行します。"
       />
-      
+
       <div className="moderation-page__header">
         <h1 className="moderation-page__title">モデレーション</h1>
         <p className="moderation-page__description">

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TimelineItem as TimelineItemType, TimelineFilters, TimelineSortOptions } from '../../types';
+import {
+  TimelineItem as TimelineItemType,
+  TimelineFilters,
+  TimelineSortOptions,
+} from '../../types';
 import { TimelineItem } from './TimelineItem';
 import { TimelineFilters as TimelineFiltersComponent } from './TimelineFilters';
 import './TimelineList.css';
@@ -88,12 +92,8 @@ export const TimelineList: React.FC<TimelineListProps> = ({
     return (
       <div className={`timeline-list timeline-list--empty ${className}`}>
         <div className="timeline-list__empty">
-          <div className="timeline-list__empty-icon">
-            📰
-          </div>
-          <div className="timeline-list__empty-title">
-            タイムラインは空です
-          </div>
+          <div className="timeline-list__empty-icon">📰</div>
+          <div className="timeline-list__empty-title">タイムラインは空です</div>
           <div className="timeline-list__empty-message">
             ユーザーや議論をフォローすると、ここに最新の活動が表示されます。
           </div>
@@ -108,11 +108,7 @@ export const TimelineList: React.FC<TimelineListProps> = ({
       <div className="timeline-list__header">
         <div className="timeline-list__title">
           <h2>タイムライン</h2>
-          {unreadCount > 0 && (
-            <span className="timeline-list__unread-badge">
-              {unreadCount}
-            </span>
-          )}
+          {unreadCount > 0 && <span className="timeline-list__unread-badge">{unreadCount}</span>}
         </div>
 
         <div className="timeline-list__actions">
@@ -147,10 +143,8 @@ export const TimelineList: React.FC<TimelineListProps> = ({
       {/* Selection mode controls */}
       {isSelectionMode && (
         <div className="timeline-list__selection-controls">
-          <div className="timeline-list__selection-info">
-            {selectedItems.size}件選択中
-          </div>
-          
+          <div className="timeline-list__selection-info">{selectedItems.size}件選択中</div>
+
           <div className="timeline-list__selection-actions">
             <button
               className="timeline-list__selection-button"
@@ -159,7 +153,7 @@ export const TimelineList: React.FC<TimelineListProps> = ({
             >
               未読をすべて選択
             </button>
-            
+
             <button
               className="timeline-list__selection-button"
               onClick={handleMarkSelectedAsRead}
@@ -167,7 +161,7 @@ export const TimelineList: React.FC<TimelineListProps> = ({
             >
               選択項目を既読にする
             </button>
-            
+
             <button
               className="timeline-list__selection-button timeline-list__selection-button--secondary"
               onClick={handleClearSelection}
@@ -181,10 +175,7 @@ export const TimelineList: React.FC<TimelineListProps> = ({
       {/* Filters */}
       {showFilters && (
         <div className="timeline-list__filters">
-          <TimelineFiltersComponent
-            onFiltersChange={onFiltersChange}
-            onSortChange={onSortChange}
-          />
+          <TimelineFiltersComponent onFiltersChange={onFiltersChange} onSortChange={onSortChange} />
         </div>
       )}
 
@@ -194,11 +185,9 @@ export const TimelineList: React.FC<TimelineListProps> = ({
         {unreadItems.length > 0 && (
           <div className="timeline-list__section">
             <div className="timeline-list__section-header">
-              <h3 className="timeline-list__section-title">
-                未読 ({unreadItems.length})
-              </h3>
+              <h3 className="timeline-list__section-title">未読 ({unreadItems.length})</h3>
             </div>
-            
+
             <div className="timeline-list__items">
               {unreadItems.map(item => (
                 <div
@@ -219,12 +208,8 @@ export const TimelineList: React.FC<TimelineListProps> = ({
                       />
                     </div>
                   )}
-                  
-                  <TimelineItem
-                    item={item}
-                    onMarkAsRead={onMarkAsRead}
-                    onItemClick={onItemClick}
-                  />
+
+                  <TimelineItem item={item} onMarkAsRead={onMarkAsRead} onItemClick={onItemClick} />
                 </div>
               ))}
             </div>
@@ -235,22 +220,13 @@ export const TimelineList: React.FC<TimelineListProps> = ({
         {readItems.length > 0 && (
           <div className="timeline-list__section">
             <div className="timeline-list__section-header">
-              <h3 className="timeline-list__section-title">
-                既読 ({readItems.length})
-              </h3>
+              <h3 className="timeline-list__section-title">既読 ({readItems.length})</h3>
             </div>
-            
+
             <div className="timeline-list__items">
               {readItems.map(item => (
-                <div
-                  key={item.itemId}
-                  className="timeline-list__item-wrapper"
-                >
-                  <TimelineItem
-                    item={item}
-                    onMarkAsRead={onMarkAsRead}
-                    onItemClick={onItemClick}
-                  />
+                <div key={item.itemId} className="timeline-list__item-wrapper">
+                  <TimelineItem item={item} onMarkAsRead={onMarkAsRead} onItemClick={onItemClick} />
                 </div>
               ))}
             </div>
@@ -271,10 +247,7 @@ export const TimelineList: React.FC<TimelineListProps> = ({
       {/* Load more button */}
       {hasMore && !isLoading && onLoadMore && (
         <div className="timeline-list__load-more">
-          <button
-            className="timeline-list__load-more-button"
-            onClick={onLoadMore}
-          >
+          <button className="timeline-list__load-more-button" onClick={onLoadMore}>
             さらに読み込む
           </button>
         </div>

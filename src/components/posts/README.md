@@ -13,6 +13,7 @@ The file upload system provides secure, scalable file upload functionality using
 A reusable file upload button component with progress tracking and error handling.
 
 **Features:**
+
 - Multiple file selection support
 - Real-time upload progress tracking
 - File validation (size, type, count)
@@ -21,6 +22,7 @@ A reusable file upload button component with progress tracking and error handlin
 - Responsive design with mobile support
 
 **Usage:**
+
 ```tsx
 import { FileUploadButton } from './components/posts';
 
@@ -35,7 +37,7 @@ import { FileUploadButton } from './components/posts';
   postId="post-456"
 >
   📎 ファイルを選択
-</FileUploadButton>
+</FileUploadButton>;
 ```
 
 ### FileAttachmentDisplay
@@ -43,6 +45,7 @@ import { FileUploadButton } from './components/posts';
 A component for displaying uploaded file attachments with download and delete functionality.
 
 **Features:**
+
 - Image preview for image files
 - File type icons for non-image files
 - Download functionality
@@ -51,6 +54,7 @@ A component for displaying uploaded file attachments with download and delete fu
 - Error handling for failed loads
 
 **Usage:**
+
 ```tsx
 import { FileAttachmentDisplay } from './components/posts';
 
@@ -61,7 +65,7 @@ import { FileAttachmentDisplay } from './components/posts';
   showRemoveButton={true}
   showDownloadButton={true}
   maxDisplayCount={10}
-/>
+/>;
 ```
 
 ### FileUploadDemo
@@ -69,6 +73,7 @@ import { FileAttachmentDisplay } from './components/posts';
 A comprehensive demo component showcasing all file upload features.
 
 **Features:**
+
 - Interactive file upload testing
 - Progress monitoring
 - Error demonstration
@@ -82,6 +87,7 @@ A comprehensive demo component showcasing all file upload features.
 A service class that handles all file upload operations.
 
 **Key Methods:**
+
 - `uploadFile(file, options)` - Upload a single file
 - `uploadFiles(files, options)` - Upload multiple files
 - `cancelUpload(fileId)` - Cancel an active upload
@@ -89,6 +95,7 @@ A service class that handles all file upload operations.
 - `getFileInfo(fileId)` - Get file metadata
 
 **Features:**
+
 - S3 presigned URL generation
 - Upload progress tracking
 - File validation
@@ -109,6 +116,7 @@ The file upload Lambda function (`cdk/lambda/file-upload/index.ts`) handles:
 - Access control
 
 **API Endpoints:**
+
 - `POST /files/presigned-url` - Get presigned URL for upload
 - `POST /files/complete` - Mark upload as completed
 - `GET /files/file/{fileId}` - Get file information
@@ -145,22 +153,26 @@ Files are stored in the main table with the following structure:
 ### Supported File Types
 
 **Images:**
+
 - JPEG/JPG (max 10MB)
 - PNG (max 10MB)
 - GIF (max 5MB)
 - WebP (max 10MB)
 
 **Documents:**
+
 - PDF (max 20MB)
 - Plain Text (max 1MB)
 - Word Documents (.doc, .docx) (max 10MB)
 
 **Audio:**
+
 - MP3 (max 50MB)
 - WAV (max 50MB)
 - OGG (max 50MB)
 
 **Video:**
+
 - MP4 (max 100MB)
 - WebM (max 100MB)
 - QuickTime (.mov) (max 100MB)

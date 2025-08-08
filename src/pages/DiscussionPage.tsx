@@ -29,19 +29,19 @@ const DiscussionPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [showPostForm, setShowPostForm] = useState(false);
-  
+
   // Post filters and sorting
   const [postFilters, setPostFilters] = useState<PostFilters>({});
   const [postSort, setPostSort] = useState<PostSortOptions>({
     field: 'createdAt',
-    direction: 'desc'
+    direction: 'desc',
   });
 
   // Real-time discussion updates
   const {
     isConnected: isRealtimeConnected,
     connectedUsers,
-    typingUsers
+    typingUsers,
   } = useRealtimeDiscussion({
     discussionId: id || '',
     onNewPost: (post: Post) => {
@@ -53,11 +53,12 @@ const DiscussionPage: React.FC = () => {
           if (prevPosts.some(p => p.postId === post.postId)) {
             return prevPosts;
           }
-          
+
           // Convert Post to PostListItem with required additional data
           const discussionTitle = discussion?.title || '';
-          const discussionPointTitle = discussion?.points.find(p => p.pointId === post.discussionPointId)?.title || '';
-          
+          const discussionPointTitle =
+            discussion?.points.find(p => p.pointId === post.discussionPointId)?.title || '';
+
           const postListItem = createPostListItemFromMinimalData(
             {
               postId: post.postId,
@@ -77,7 +78,7 @@ const DiscussionPage: React.FC = () => {
             discussionTitle,
             discussionPointTitle
           );
-          
+
           return [postListItem, ...prevPosts];
         });
       }
@@ -85,13 +86,14 @@ const DiscussionPage: React.FC = () => {
     onPostUpdated: (post: Post) => {
       console.log('Post updated:', post);
       // Update the post in the current posts list
-      setPosts(prevPosts => 
+      setPosts(prevPosts =>
         prevPosts.map(p => {
           if (p.postId === post.postId) {
             // Convert Post to PostListItem with required additional data
             const discussionTitle = discussion?.title || '';
-            const discussionPointTitle = discussion?.points.find(pt => pt.pointId === post.discussionPointId)?.title || '';
-            
+            const discussionPointTitle =
+              discussion?.points.find(pt => pt.pointId === post.discussionPointId)?.title || '';
+
             return createPostListItemFromMinimalData(
               {
                 postId: post.postId,
@@ -124,7 +126,7 @@ const DiscussionPage: React.FC = () => {
     onPostReactionChanged: (postId: string, reactionData: any) => {
       console.log('Post reaction changed:', postId, reactionData);
       // Update the post's reaction counts
-      setPosts(prevPosts => 
+      setPosts(prevPosts =>
         prevPosts.map(p => {
           if (p.postId === postId) {
             // Update reaction counts based on the reaction data
@@ -153,16 +155,28 @@ const DiscussionPage: React.FC = () => {
                   updatedStatistics.likeCount = Math.max(0, (updatedStatistics.likeCount || 0) - 1);
                   break;
                 case 'agree':
-                  updatedStatistics.agreeCount = Math.max(0, (updatedStatistics.agreeCount || 0) - 1);
+                  updatedStatistics.agreeCount = Math.max(
+                    0,
+                    (updatedStatistics.agreeCount || 0) - 1
+                  );
                   break;
                 case 'disagree':
-                  updatedStatistics.disagreeCount = Math.max(0, (updatedStatistics.disagreeCount || 0) - 1);
+                  updatedStatistics.disagreeCount = Math.max(
+                    0,
+                    (updatedStatistics.disagreeCount || 0) - 1
+                  );
                   break;
                 case 'insightful':
-                  updatedStatistics.insightfulCount = Math.max(0, (updatedStatistics.insightfulCount || 0) - 1);
+                  updatedStatistics.insightfulCount = Math.max(
+                    0,
+                    (updatedStatistics.insightfulCount || 0) - 1
+                  );
                   break;
                 case 'funny':
-                  updatedStatistics.funnyCount = Math.max(0, (updatedStatistics.funnyCount || 0) - 1);
+                  updatedStatistics.funnyCount = Math.max(
+                    0,
+                    (updatedStatistics.funnyCount || 0) - 1
+                  );
                   break;
               }
             }
@@ -215,7 +229,8 @@ const DiscussionPage: React.FC = () => {
     EntityType: 'Discussion' as any,
     discussionId,
     title: '議論タイトル例',
-    description: 'これは議論の詳細説明です。この議論では様々な観点から意見を交換し、建設的な対話を目指します。',
+    description:
+      'これは議論の詳細説明です。この議論では様々な観点から意見を交換し、建設的な対話を目指します。',
     ownerId: 'user_1',
     ownerDisplayName: '議論作成者',
     ownerStance: Stance.NEUTRAL,
@@ -223,7 +238,7 @@ const DiscussionPage: React.FC = () => {
     tags: ['政治', '社会'],
     accessControl: {
       type: 'open' as any,
-      userIds: []
+      userIds: [],
     },
     isActive: true,
     isLocked: false,
@@ -232,7 +247,7 @@ const DiscussionPage: React.FC = () => {
     moderation: {
       isHidden: false,
       isDeleted: false,
-      isReported: false
+      isReported: false,
     },
     statistics: {
       viewCount: 150,
@@ -249,13 +264,13 @@ const DiscussionPage: React.FC = () => {
       uniqueParticipants: 25,
       averagePostLength: 150,
       engagementRate: 0.75,
-      lastActivityAt: new Date().toISOString()
+      lastActivityAt: new Date().toISOString(),
     },
     metadata: {
       version: 1,
       language: 'ja',
       lastModifiedBy: 'user_1',
-      changeLog: []
+      changeLog: [],
     },
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
@@ -278,7 +293,7 @@ const DiscussionPage: React.FC = () => {
         neutralCount: 2,
         isActive: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         PK: `DISCUSSION#${discussionId}`,
@@ -298,7 +313,7 @@ const DiscussionPage: React.FC = () => {
         neutralCount: 2,
         isActive: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         PK: `DISCUSSION#${discussionId}`,
@@ -318,8 +333,8 @@ const DiscussionPage: React.FC = () => {
         neutralCount: 2,
         isActive: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ],
     backgroundKnowledge: [],
     recentPosts: [],
@@ -327,7 +342,7 @@ const DiscussionPage: React.FC = () => {
     isFollowing: false,
     canEdit: user?.userId === 'user_1',
     canDelete: user?.userId === 'user_1' || hasPermission('canModerate'),
-    canModerate: hasPermission('canModerate')
+    canModerate: hasPermission('canModerate'),
   });
 
   // Load discussion data
@@ -344,7 +359,7 @@ const DiscussionPage: React.FC = () => {
       const mockDiscussion = generateMockDiscussion(id);
       setDiscussion(mockDiscussion);
       setIsFollowing(mockDiscussion.isFollowing || false);
-      
+
       // Set default selected point
       if (mockDiscussion.points.length > 0) {
         setSelectedPointId(mockDiscussion.points[0].pointId);
@@ -360,50 +375,61 @@ const DiscussionPage: React.FC = () => {
   // Load posts for selected point
   const loadPosts = useCallback(async () => {
     if (!selectedPointId || !discussion) return;
-    const replyCount=Math.floor(Math.random() * 5)
-    const text = `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`;
+    // const replyCount=Math.floor(Math.random() * 5)
+    // const text = `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`;
     try {
       // Mock posts data
-      const mockPosts: PostListItem[] = Array.from({ length: 10 }, (_, i) => ({
-        postId: `post_${selectedPointId}_${i + 1}`,
-        discussionId: discussion.discussionId,
-        discussionTitle: discussion.title,
-        discussionPointId: selectedPointId,
-        discussionPointTitle: discussion.points.find(p => p.pointId === selectedPointId)?.title || '',
-        authorId: `user_${Math.floor(Math.random() * 5) + 1}`,
-        authorDisplayName: `ユーザー${Math.floor(Math.random() * 5) + 1}`,
-        authorAvatar: undefined,
-        content:  {
-          text,
-          preview: text.slice(0, 100), // 任意でプレビュー生成
-          hasAttachments: 0,
-          hasLinks: /(https?:\/\/[^\s]+)/g.test(text) ? 1 : 0,
-          attachmentCount: 0,
-        },stance: [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][Math.floor(Math.random() * 4)],
-        parentId: undefined,
-        level: 0,
-        attachments: [],
-        isActive: true,
-        isEdited: Math.random() > 0.8,
-        editedAt: Math.random() > 0.8 ? new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString() : undefined,
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
-        statistics: {
-          replyCount:replyCount,
-          likeCount: Math.floor(Math.random() * 10),
-          agreeCount: Math.floor(Math.random() * 8),
-          disagreeCount: Math.floor(Math.random() * 5),
-          insightfulCount: Math.floor(Math.random() * 3),
-          funnyCount: Math.floor(Math.random() * 2),
-          viewCount: Math.floor(Math.random() * 50) + 10
-        },
-        replyCount:replyCount,
-        userReaction: undefined,
-        canEdit: Math.random() > 0.7,
-        canDelete: Math.random() > 0.8,
-        canReply: true
-      }));
+      const mockPosts: PostListItem[] = Array.from({ length: 10 }, (_, i) => {
+        const replyCount = Math.floor(Math.random() * 5);
+        const text = `これは論点「${discussion.points.find(p => p.pointId === selectedPointId)?.title}」に対する投稿 ${i + 1} です。詳細な意見や考察を含んでいます。`;
 
+        return {
+          postId: `post_${selectedPointId}_${i + 1}`,
+          discussionId: discussion.discussionId,
+          discussionTitle: discussion.title,
+          discussionPointId: selectedPointId,
+          discussionPointTitle:
+            discussion.points.find(p => p.pointId === selectedPointId)?.title || '',
+          authorId: `user_${Math.floor(Math.random() * 5) + 1}`,
+          authorDisplayName: `ユーザー${Math.floor(Math.random() * 5) + 1}`,
+          authorAvatar: undefined,
+          content: {
+            text,
+            preview: text.slice(0, 100),
+            hasAttachments: 0,
+            hasLinks: /(https?:\/\/[^\s]+)/g.test(text) ? 1 : 0,
+            attachmentCount: 0,
+          },
+          stance: [Stance.PROS, Stance.CONS, Stance.NEUTRAL, Stance.UNKNOWN][
+            Math.floor(Math.random() * 4)
+          ],
+          parentId: undefined,
+          level: 0,
+          attachments: [],
+          isActive: true,
+          isEdited: Math.random() > 0.8,
+          editedAt:
+            Math.random() > 0.8
+              ? new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString()
+              : undefined,
+          createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+          updatedAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+          statistics: {
+            replyCount,
+            likeCount: Math.floor(Math.random() * 10),
+            agreeCount: Math.floor(Math.random() * 8),
+            disagreeCount: Math.floor(Math.random() * 5),
+            insightfulCount: Math.floor(Math.random() * 3),
+            funnyCount: Math.floor(Math.random() * 2),
+            viewCount: Math.floor(Math.random() * 50) + 10,
+          },
+          replyCount,
+          userReaction: undefined,
+          canEdit: Math.random() > 0.7,
+          canDelete: Math.random() > 0.8,
+          canReply: true,
+        };
+      });
       setPosts(mockPosts);
     } catch (error) {
       console.error('Failed to load posts:', error);
@@ -456,21 +482,31 @@ const DiscussionPage: React.FC = () => {
 
   const getStanceColor = (stance: Stance): string => {
     switch (stance) {
-      case Stance.PROS: return 'var(--color-pros)';
-      case Stance.CONS: return 'var(--color-cons)';
-      case Stance.NEUTRAL: return 'var(--color-neutral)';
-      case Stance.UNKNOWN: return 'var(--color-unknown)';
-      default: return 'var(--color-neutral)';
+      case Stance.PROS:
+        return 'var(--color-pros)';
+      case Stance.CONS:
+        return 'var(--color-cons)';
+      case Stance.NEUTRAL:
+        return 'var(--color-neutral)';
+      case Stance.UNKNOWN:
+        return 'var(--color-unknown)';
+      default:
+        return 'var(--color-neutral)';
     }
   };
 
   const getStanceLabel = (stance: Stance): string => {
     switch (stance) {
-      case Stance.PROS: return '賛成';
-      case Stance.CONS: return '反対';
-      case Stance.NEUTRAL: return '中立';
-      case Stance.UNKNOWN: return 'わからない';
-      default: return '不明';
+      case Stance.PROS:
+        return '賛成';
+      case Stance.CONS:
+        return '反対';
+      case Stance.NEUTRAL:
+        return '中立';
+      case Stance.UNKNOWN:
+        return 'わからない';
+      default:
+        return '不明';
     }
   };
 
@@ -488,7 +524,7 @@ const DiscussionPage: React.FC = () => {
           items={[
             { label: 'ホーム', path: '/discussions', icon: '🏠' },
             { label: '議論一覧', path: '/discussions', icon: '💬' },
-            { label: discussion.title, icon: '📝' }
+            { label: discussion.title, icon: '📝' },
           ]}
         />
 
@@ -520,10 +556,8 @@ const DiscussionPage: React.FC = () => {
                 {discussion.ownerDisplayName.charAt(0)}
               </div>
               <div className="discussion-page__owner-info">
-                <span className="discussion-page__owner-name">
-                  {discussion.ownerDisplayName}
-                </span>
-                <span 
+                <span className="discussion-page__owner-name">{discussion.ownerDisplayName}</span>
+                <span
                   className="discussion-page__owner-stance"
                   style={{ color: getStanceColor(discussion.ownerStance) }}
                 >
@@ -563,11 +597,12 @@ const DiscussionPage: React.FC = () => {
                 {category}
               </span>
             ))}
-            {discussion.tags && discussion.tags.map((tag, index) => (
-              <span key={index} className="discussion-page__tag">
-                #{tag}
-              </span>
-            ))}
+            {discussion.tags &&
+              discussion.tags.map((tag, index) => (
+                <span key={index} className="discussion-page__tag">
+                  #{tag}
+                </span>
+              ))}
           </div>
 
           {/* Real-time Connection Status */}
@@ -588,7 +623,7 @@ const DiscussionPage: React.FC = () => {
           <div className="discussion-page__points-nav">
             <h3 className="discussion-page__points-title">議論の論点</h3>
             <div className="discussion-page__points-list">
-              {discussion.points.map((point) => (
+              {discussion.points.map(point => (
                 <button
                   key={point.pointId}
                   className={`discussion-page__point-button ${
@@ -598,9 +633,7 @@ const DiscussionPage: React.FC = () => {
                 >
                   <div className="discussion-page__point-title">{point.title}</div>
                   <div className="discussion-page__point-stats">
-                    <span className="discussion-page__point-stat">
-                      💬 {point.postCount}
-                    </span>
+                    <span className="discussion-page__point-stat">💬 {point.postCount}</span>
                     <span className="discussion-page__point-stat discussion-page__point-stat--pros">
                       👍 {point.prosCount}
                     </span>
@@ -621,7 +654,7 @@ const DiscussionPage: React.FC = () => {
                   <h3 className="discussion-page__posts-title">
                     {discussion.points.find(p => p.pointId === selectedPointId)?.title}
                   </h3>
-                  
+
                   {user && hasPermission('canPost') && (
                     <button
                       className="discussion-page__create-post-button"
@@ -654,7 +687,7 @@ const DiscussionPage: React.FC = () => {
                 />
 
                 <PostList
-                 discussionId={discussion.discussionId}
+                  discussionId={discussion.discussionId}
                   posts={posts}
                   discussionPoints={discussion.points}
                   filters={postFilters}

@@ -191,7 +191,7 @@
   margin-left: 8px;
 }
 
-.category-filter__checkbox input[type="checkbox"] {
+.category-filter__checkbox input[type='checkbox'] {
   width: 14px;
   height: 14px;
   cursor: pointer;
@@ -294,15 +294,15 @@
   .category-filter__main-category-header {
     padding: 8px 10px;
   }
-  
+
   .category-filter__subcategory {
     padding: 6px 12px;
   }
-  
+
   .category-filter__main-category-info .category-name {
     font-size: 13px;
   }
-  
+
   .category-filter__subcategory-info .category-name {
     font-size: 12px;
   }

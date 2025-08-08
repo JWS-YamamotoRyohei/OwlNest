@@ -68,21 +68,24 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
     return null;
   };
 
-  const updateProgress = useCallback((progress: UploadProgress) => {
-    setUploadProgresses(prev => {
-      const newProgresses = new Map(prev);
-      newProgresses.set(progress.fileId, progress);
-      
-      // Notify parent component
-      onProgress?.(Array.from(newProgresses.values()));
-      
-      return newProgresses;
-    });
-  }, [onProgress]);
+  const updateProgress = useCallback(
+    (progress: UploadProgress) => {
+      setUploadProgresses(prev => {
+        const newProgresses = new Map(prev);
+        newProgresses.set(progress.fileId, progress);
+
+        // Notify parent component
+        onProgress?.(Array.from(newProgresses.values()));
+
+        return newProgresses;
+      });
+    },
+    [onProgress]
+  );
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    
+
     if (files.length === 0) return;
 
     // Validate number of files
@@ -111,7 +114,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
 
     try {
       // Upload files using the file upload service
-      const uploadPromises = files.map(file => 
+      const uploadPromises = files.map(file =>
         fileUploadService.uploadFile(file, {
           discussionId,
           postId,
@@ -120,14 +123,13 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
       );
 
       const uploadedFiles = await Promise.all(uploadPromises);
-      
+
       onUpload(uploadedFiles);
-      
+
       // Clear progress after successful upload
       setTimeout(() => {
         setUploadProgresses(new Map());
       }, 2000);
-      
     } catch (error) {
       console.error('File upload failed:', error);
       setError(error instanceof Error ? error.message : 'ファイルのアップロードに失敗しました。');
@@ -166,7 +168,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
   const getOverallProgress = (): number => {
     const progresses = Array.from(uploadProgresses.values());
     if (progresses.length === 0) return 0;
-    
+
     const totalProgress = progresses.reduce((sum, p) => sum + p.progress, 0);
     return Math.round(totalProgress / progresses.length);
   };
@@ -205,12 +207,10 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
       {/* Upload Progress Display */}
       {uploadProgresses.size > 0 && (
         <div className="file-upload-button__progress-container">
-          {Array.from(uploadProgresses.values()).map((progress) => (
+          {Array.from(uploadProgresses.values()).map(progress => (
             <div key={progress.fileId} className="file-upload-button__progress-item">
               <div className="file-upload-button__progress-header">
-                <span className="file-upload-button__filename">
-                  {progress.filename}
-                </span>
+                <span className="file-upload-button__filename">{progress.filename}</span>
                 <button
                   type="button"
                   className="file-upload-button__cancel"
@@ -221,17 +221,20 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
                   ×
                 </button>
               </div>
-              
+
               <div className="file-upload-button__progress-bar">
-                <div 
+                <div
                   className={`file-upload-button__progress-fill ${
-                    progress.status === 'error' ? 'file-upload-button__progress-fill--error' :
-                    progress.status === 'completed' ? 'file-upload-button__progress-fill--completed' : ''
+                    progress.status === 'error'
+                      ? 'file-upload-button__progress-fill--error'
+                      : progress.status === 'completed'
+                        ? 'file-upload-button__progress-fill--completed'
+                        : ''
                   }`}
                   style={{ width: `${progress.progress}%` }}
                 />
               </div>
-              
+
               <div className="file-upload-button__progress-info">
                 <span className="file-upload-button__progress-percentage">
                   {Math.round(progress.progress)}%

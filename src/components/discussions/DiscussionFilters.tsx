@@ -14,7 +14,7 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
   filters,
   onFiltersChange,
   onClear,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -25,14 +25,14 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
     { value: DiscussionCategory.TECHNOLOGY, label: 'ネット・テクノロジー' },
     { value: DiscussionCategory.ENTERTAINMENT, label: 'エンタメ' },
     { value: DiscussionCategory.SPORTS, label: 'スポーツ' },
-    { value: DiscussionCategory.OTHER, label: 'その他' }
+    { value: DiscussionCategory.OTHER, label: 'その他' },
   ];
 
   const stances = [
     { value: Stance.PROS, label: '賛成', color: 'var(--color-pros)' },
     { value: Stance.CONS, label: '反対', color: 'var(--color-cons)' },
     { value: Stance.NEUTRAL, label: '中立', color: 'var(--color-neutral)' },
-    { value: Stance.UNKNOWN, label: 'わからない', color: 'var(--color-unknown)' }
+    { value: Stance.UNKNOWN, label: 'わからない', color: 'var(--color-unknown)' },
   ];
 
   const handleCategoryChange = (category: DiscussionCategory, checked: boolean) => {
@@ -40,31 +40,31 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
     const newCategories = checked
       ? [...currentCategories, category]
       : currentCategories.filter(c => c !== category);
-    
+
     onFiltersChange({
       ...filters,
-      categories: newCategories.length > 0 ? newCategories : undefined
+      categories: newCategories.length > 0 ? newCategories : undefined,
     });
   };
 
   const handleStanceChange = (stance: Stance) => {
     onFiltersChange({
       ...filters,
-      ownerStance: filters.ownerStance === stance ? undefined : stance
+      ownerStance: filters.ownerStance === stance ? undefined : stance,
     });
   };
 
   const handleStatusChange = (field: keyof DiscussionSearchFilters, value: boolean) => {
     onFiltersChange({
       ...filters,
-      [field]: filters[field] === value ? undefined : value
+      [field]: filters[field] === value ? undefined : value,
     });
   };
 
   const handleSearchChange = (field: 'titleContains' | 'descriptionContains', value: string) => {
     onFiltersChange({
       ...filters,
-      [field]: value.trim() || undefined
+      [field]: value.trim() || undefined,
     });
   };
 
@@ -92,35 +92,24 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
           aria-expanded={isExpanded}
           aria-controls="discussion-filters-content"
         >
-          <span className="discussion-filters__toggle-icon">
-            {isExpanded ? '🔽' : '▶️'}
-          </span>
+          <span className="discussion-filters__toggle-icon">{isExpanded ? '🔽' : '▶️'}</span>
           <span className="discussion-filters__toggle-text">
             フィルター
             {activeFiltersCount > 0 && (
-              <span className="discussion-filters__count">
-                ({activeFiltersCount})
-              </span>
+              <span className="discussion-filters__count">({activeFiltersCount})</span>
             )}
           </span>
         </button>
 
         {activeFiltersCount > 0 && (
-          <button
-            className="discussion-filters__clear"
-            onClick={onClear}
-            disabled={isLoading}
-          >
+          <button className="discussion-filters__clear" onClick={onClear} disabled={isLoading}>
             クリア
           </button>
         )}
       </div>
 
       {isExpanded && (
-        <div 
-          id="discussion-filters-content"
-          className="discussion-filters__content"
-        >
+        <div id="discussion-filters-content" className="discussion-filters__content">
           {/* Search filters */}
           <div className="discussion-filters__section">
             <h4 className="discussion-filters__section-title">検索</h4>
@@ -129,7 +118,7 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
                 type="text"
                 placeholder="タイトルで検索..."
                 value={filters.titleContains || ''}
-                onChange={(e) => handleSearchChange('titleContains', e.target.value)}
+                onChange={e => handleSearchChange('titleContains', e.target.value)}
                 className="discussion-filters__search-input"
                 disabled={isLoading}
               />
@@ -137,7 +126,7 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
                 type="text"
                 placeholder="説明文で検索..."
                 value={filters.descriptionContains || ''}
-                onChange={(e) => handleSearchChange('descriptionContains', e.target.value)}
+                onChange={e => handleSearchChange('descriptionContains', e.target.value)}
                 className="discussion-filters__search-input"
                 disabled={isLoading}
               />
@@ -148,18 +137,16 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
           <div className="discussion-filters__section">
             <h4 className="discussion-filters__section-title">カテゴリ</h4>
             <div className="discussion-filters__checkbox-group">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <label key={category.value} className="discussion-filters__checkbox-label">
                   <input
                     type="checkbox"
                     checked={filters.categories?.includes(category.value) || false}
-                    onChange={(e) => handleCategoryChange(category.value, e.target.checked)}
+                    onChange={e => handleCategoryChange(category.value, e.target.checked)}
                     className="discussion-filters__checkbox"
                     disabled={isLoading}
                   />
-                  <span className="discussion-filters__checkbox-text">
-                    {category.label}
-                  </span>
+                  <span className="discussion-filters__checkbox-text">{category.label}</span>
                 </label>
               ))}
             </div>
@@ -169,17 +156,21 @@ export const DiscussionFilters: React.FC<DiscussionFiltersProps> = ({
           <div className="discussion-filters__section">
             <h4 className="discussion-filters__section-title">作成者のスタンス</h4>
             <div className="discussion-filters__stance-group">
-              {stances.map((stance) => (
+              {stances.map(stance => (
                 <button
                   key={stance.value}
                   className={`discussion-filters__stance-button ${
-                    filters.ownerStance === stance.value ? 'discussion-filters__stance-button--active' : ''
+                    filters.ownerStance === stance.value
+                      ? 'discussion-filters__stance-button--active'
+                      : ''
                   }`}
                   onClick={() => handleStanceChange(stance.value)}
-                  style={{ 
-                    '--stance-color': stance.color,
-                    borderColor: filters.ownerStance === stance.value ? stance.color : undefined
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      '--stance-color': stance.color,
+                      borderColor: filters.ownerStance === stance.value ? stance.color : undefined,
+                    } as React.CSSProperties
+                  }
                   disabled={isLoading}
                 >
                   {stance.label}

@@ -15,15 +15,24 @@ const MyDiscussionsPage = lazyLoad(() => import('../pages/MyDiscussionsPage'));
 const TimelinePage = lazyLoad(() => import('../pages/TimelinePage'));
 const FollowingPage = lazyLoad(() => import('../pages/FollowingPage'));
 const SettingsPage = lazyLoad(() => import('../pages/SettingsPage'));
-const SearchPage = lazyLoad(() => import('../pages/SearchPage').then(module => ({ default: module.SearchPage })));
-const ModerationPage = lazyLoad(() => import('../pages/ModerationPage').then(module => ({ default: module.ModerationPage })));
+const SearchPage = lazyLoad(() =>
+  import('../pages/SearchPage').then(module => ({ default: module.SearchPage }))
+);
+const ModerationPage = lazyLoad(() =>
+  import('../pages/ModerationPage').then(module => ({ default: module.ModerationPage }))
+);
 const Home = lazyLoad(() => import('../pages/Home'));
 
 export interface RouteConfig {
   path: string;
   element: React.ReactNode;
   requiredRole?: UserRole;
-  requiredPermission?: 'canView' | 'canPost' | 'canCreateDiscussion' | 'canModerate' | 'canManageUsers';
+  requiredPermission?:
+    | 'canView'
+    | 'canPost'
+    | 'canCreateDiscussion'
+    | 'canModerate'
+    | 'canManageUsers';
   title?: string;
   description?: string;
   isPublic?: boolean;
@@ -40,7 +49,7 @@ export const publicRoutes: RouteConfig[] = [
     isPublic: true,
     isRestricted: true,
     title: 'ログイン - OwlNest',
-    description: 'OwlNestにログインして議論に参加しましょう'
+    description: 'OwlNestにログインして議論に参加しましょう',
   },
   {
     path: '/register',
@@ -48,20 +57,20 @@ export const publicRoutes: RouteConfig[] = [
     isPublic: true,
     isRestricted: true,
     title: '新規登録 - OwlNest',
-    description: 'OwlNestに新規登録して議論プラットフォームを始めましょう'
+    description: 'OwlNestに新規登録して議論プラットフォームを始めましょう',
   },
   {
     path: '/unauthorized',
     element: <UnauthorizedPage />,
     isPublic: true,
-    title: 'アクセス権限がありません - OwlNest'
+    title: 'アクセス権限がありません - OwlNest',
   },
   {
     path: '/404',
     element: <NotFoundPage />,
     isPublic: true,
-    title: 'ページが見つかりません - OwlNest'
-  }
+    title: 'ページが見つかりません - OwlNest',
+  },
 ];
 
 export const protectedRoutes: RouteConfig[] = [
@@ -72,7 +81,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: '議論プラットフォーム OwlNest',
     keywords: ['議論', 'ディスカッション', 'プラットフォーム'],
     breadcrumbLabel: 'ホーム',
-    preloadRoutes: ['timeline', 'create-discussion']
+    preloadRoutes: ['timeline', 'create-discussion'],
   },
   {
     path: '/home',
@@ -81,7 +90,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: 'あなたの議論活動の概要',
     keywords: ['ダッシュボード', '活動', '統計'],
     breadcrumbLabel: 'ダッシュボード',
-    preloadRoutes: ['discussions', 'my-discussions']
+    preloadRoutes: ['discussions', 'my-discussions'],
   },
   {
     path: '/discussions',
@@ -90,7 +99,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: '進行中の議論を探して参加しましょう',
     keywords: ['議論一覧', '検索', 'カテゴリ'],
     breadcrumbLabel: '議論一覧',
-    preloadRoutes: ['create-discussion', 'timeline']
+    preloadRoutes: ['create-discussion', 'timeline'],
   },
   {
     path: '/search',
@@ -99,7 +108,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: '議論と投稿を検索して見つけましょう',
     keywords: ['検索', '議論検索', '投稿検索', 'フィルター'],
     breadcrumbLabel: '検索',
-    preloadRoutes: ['discussions', 'timeline']
+    preloadRoutes: ['discussions', 'timeline'],
   },
   {
     path: '/discussion/:id',
@@ -108,7 +117,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: '議論の詳細と投稿',
     keywords: ['議論詳細', '投稿', 'コメント'],
     breadcrumbLabel: '議論詳細',
-    preloadRoutes: ['discussions']
+    preloadRoutes: ['discussions'],
   },
   {
     path: '/create-discussion',
@@ -118,7 +127,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: '新しい議論トピックを作成しましょう',
     keywords: ['議論作成', '新規', 'トピック'],
     breadcrumbLabel: '議論作成',
-    preloadRoutes: ['discussions', 'my-discussions']
+    preloadRoutes: ['discussions', 'my-discussions'],
   },
   {
     path: '/my-discussions',
@@ -128,7 +137,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: 'あなたが作成した議論の管理',
     keywords: ['自分の議論', '管理', '編集'],
     breadcrumbLabel: '自分の議論',
-    preloadRoutes: ['create-discussion', 'discussions']
+    preloadRoutes: ['create-discussion', 'discussions'],
   },
   {
     path: '/timeline',
@@ -137,7 +146,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: 'フォローしているユーザーと議論の最新投稿',
     keywords: ['タイムライン', 'フォロー', '最新'],
     breadcrumbLabel: 'タイムライン',
-    preloadRoutes: ['following', 'discussions']
+    preloadRoutes: ['following', 'discussions'],
   },
   {
     path: '/following',
@@ -146,7 +155,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: 'フォローしているユーザーと議論の管理',
     keywords: ['フォロー', 'ユーザー', '管理'],
     breadcrumbLabel: 'フォロー中',
-    preloadRoutes: ['timeline', 'discussions']
+    preloadRoutes: ['timeline', 'discussions'],
   },
   {
     path: '/settings',
@@ -155,7 +164,7 @@ export const protectedRoutes: RouteConfig[] = [
     description: 'アカウント設定と環境設定',
     keywords: ['設定', 'アカウント', 'プロフィール'],
     breadcrumbLabel: '設定',
-    preloadRoutes: []
+    preloadRoutes: [],
   },
   {
     path: '/moderation',
@@ -165,8 +174,8 @@ export const protectedRoutes: RouteConfig[] = [
     description: '投稿の報告を確認し、適切なモデレーション措置を実行します',
     keywords: ['モデレーション', '報告', '管理'],
     breadcrumbLabel: 'モデレーション',
-    preloadRoutes: []
-  }
+    preloadRoutes: [],
+  },
 ];
 
 export const adminRoutes: RouteConfig[] = [
@@ -176,5 +185,5 @@ export const adminRoutes: RouteConfig[] = [
 // Legacy route redirects
 export const legacyRoutes = [
   { from: '/discussion', to: '/discussions' },
-  { from: '/owlnest', to: '/discussions' }
+  { from: '/owlnest', to: '/discussions' },
 ];

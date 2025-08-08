@@ -63,12 +63,8 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div className="auth-modal-overlay" onClick={onClose}>
-      <div className="auth-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button
-          className="auth-modal-close"
-          onClick={onClose}
-          aria-label="モーダルを閉じる"
-        >
+      <div className="auth-modal-content" onClick={e => e.stopPropagation()}>
+        <button className="auth-modal-close" onClick={onClose} aria-label="モーダルを閉じる">
           ✕
         </button>
 
@@ -83,7 +79,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
 
           {currentView === 'register' && (
             <RegisterForm
-              onSuccess={(userSub) => {
+              onSuccess={userSub => {
                 handleRegistrationSuccess(userSub);
               }}
               onSwitchToLogin={handleLoginClick}

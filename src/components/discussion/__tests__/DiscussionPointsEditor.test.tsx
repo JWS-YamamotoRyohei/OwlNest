@@ -12,12 +12,7 @@ describe('DiscussionPointsEditor', () => {
   });
 
   it('renders empty state when no points', () => {
-    render(
-      <DiscussionPointsEditor
-        points={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={[]} onChange={mockOnChange} />);
 
     expect(screen.getByText('論点を追加してください')).toBeInTheDocument();
     expect(screen.getByText('+ 論点を追加')).toBeInTheDocument();
@@ -37,12 +32,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} />);
 
     expect(screen.getByDisplayValue('Test Point 1')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Test Point 2')).toBeInTheDocument();
@@ -51,12 +41,7 @@ describe('DiscussionPointsEditor', () => {
   });
 
   it('adds new point when add button is clicked', () => {
-    render(
-      <DiscussionPointsEditor
-        points={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={[]} onChange={mockOnChange} />);
 
     const addButton = screen.getByText('+ 論点を追加');
     fireEvent.click(addButton);
@@ -84,12 +69,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} />);
 
     const removeButtons = screen.getAllByTitle('この論点を削除');
     fireEvent.click(removeButtons[0]);
@@ -112,12 +92,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} />);
 
     const titleInput = screen.getByDisplayValue('Test Point 1');
     fireEvent.change(titleInput, { target: { value: 'Updated Point 1' } });
@@ -140,12 +115,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} />);
 
     const descriptionTextarea = screen.getByDisplayValue('Description 1');
     fireEvent.change(descriptionTextarea, { target: { value: 'Updated Description 1' } });
@@ -168,12 +138,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} />);
 
     expect(screen.getByText('10/100 文字')).toBeInTheDocument(); // Title length
     expect(screen.getByText('16/500 文字')).toBeInTheDocument(); // Description length
@@ -181,11 +146,7 @@ describe('DiscussionPointsEditor', () => {
 
   it('shows error message when provided', () => {
     render(
-      <DiscussionPointsEditor
-        points={[]}
-        onChange={mockOnChange}
-        error="Test error message"
-      />
+      <DiscussionPointsEditor points={[]} onChange={mockOnChange} error="Test error message" />
     );
 
     expect(screen.getByText('Test error message')).toBeInTheDocument();
@@ -200,13 +161,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-        disabled={true}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} disabled={true} />);
 
     expect(screen.getByDisplayValue('Test Point 1')).toBeDisabled();
     expect(screen.getByDisplayValue('Description 1')).toBeDisabled();
@@ -227,13 +182,7 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-        maxPoints={20}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} maxPoints={20} />);
 
     expect(screen.getByText('2/20 論点')).toBeInTheDocument();
   });
@@ -252,25 +201,14 @@ describe('DiscussionPointsEditor', () => {
       },
     ];
 
-    render(
-      <DiscussionPointsEditor
-        points={points}
-        onChange={mockOnChange}
-        maxPoints={2}
-      />
-    );
+    render(<DiscussionPointsEditor points={points} onChange={mockOnChange} maxPoints={2} />);
 
     const addButton = screen.getByText('+ 論点を追加');
     expect(addButton).toBeDisabled();
   });
 
   it('shows help information', () => {
-    render(
-      <DiscussionPointsEditor
-        points={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<DiscussionPointsEditor points={[]} onChange={mockOnChange} />);
 
     expect(screen.getByText('💡 論点設定のコツ')).toBeInTheDocument();
     expect(screen.getByText(/具体的で明確な論点を設定しましょう/)).toBeInTheDocument();

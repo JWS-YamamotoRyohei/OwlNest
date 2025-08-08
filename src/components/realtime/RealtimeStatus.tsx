@@ -35,18 +35,14 @@ export const RealtimeStatus: React.FC<RealtimeStatusProps> = ({
           <span className="realtime-status__icon" title={getStatusText()}>
             {getStatusIcon()}
           </span>
-          <span className="realtime-status__text">
-            {getStatusText()}
-          </span>
+          <span className="realtime-status__text">{getStatusText()}</span>
         </div>
       )}
 
       {showUserCount && isConnected && (
         <div className="realtime-status__users">
           <span className="realtime-status__user-icon">👥</span>
-          <span className="realtime-status__user-count">
-            {connectedUsers.length}人がオンライン
-          </span>
+          <span className="realtime-status__user-count">{connectedUsers.length}人がオンライン</span>
         </div>
       )}
     </div>

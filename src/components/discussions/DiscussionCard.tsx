@@ -22,12 +22,12 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
   onUnfollow,
   isFollowing = false,
   showFollowButton = true,
-  compact = false
+  compact = false,
 }) => {
   const { user } = useAuth();
-  console.log("discussion!1",discussion)
-  console.log("discussion!2",discussion.categories)
-  console.log("discussion!3",discussion.categories.slice(0, 3))
+  console.log('discussion!1', discussion);
+  console.log('discussion!2', discussion.categories);
+  console.log('discussion!3', discussion.categories.slice(0, 3));
   const getStanceColor = (stance: Stance): string => {
     switch (stance) {
       case Stance.PROS:
@@ -74,21 +74,24 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
       return date.toLocaleDateString('ja-JP', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
   };
 
-  const handleFollowClick = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (isFollowing && onUnfollow) {
-      onUnfollow(discussion.discussionId);
-    } else if (!isFollowing && onFollow) {
-      onFollow(discussion.discussionId);
-    }
-  }, [isFollowing, onUnfollow, onFollow, discussion.discussionId]);
+  const handleFollowClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (isFollowing && onUnfollow) {
+        onUnfollow(discussion.discussionId);
+      } else if (!isFollowing && onFollow) {
+        onFollow(discussion.discussionId);
+      }
+    },
+    [isFollowing, onUnfollow, onFollow, discussion.discussionId]
+  );
 
   const handleLinkHover = React.useCallback(() => {
     RoutePreloader.onLinkHover('discussion');
@@ -104,9 +107,7 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
             </span>
           )}
           {discussion.isFeatured && (
-            <span className="discussion-card__badge discussion-card__badge--featured">
-              ⭐ 注目
-            </span>
+            <span className="discussion-card__badge discussion-card__badge--featured">⭐ 注目</span>
           )}
           {discussion.isLocked && (
             <span className="discussion-card__badge discussion-card__badge--locked">
@@ -119,7 +120,7 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
             </span>
           )}
         </div>
-        
+
         {showFollowButton && user && (
           <button
             className={`discussion-card__follow-button ${
@@ -133,18 +134,14 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
         )}
       </div>
 
-      <Link 
+      <Link
         to={`/discussion/${discussion.discussionId}`}
         className="discussion-card__content"
         onMouseEnter={handleLinkHover}
       >
-        <h3 className="discussion-card__title">
-          {discussion.title}
-        </h3>
-        
-        <p className="discussion-card__description">
-          {discussion.description}
-        </p>
+        <h3 className="discussion-card__title">{discussion.title}</h3>
+
+        <p className="discussion-card__description">{discussion.description}</p>
 
         <div className="discussion-card__categories">
           {discussion.categories.slice(0, 3).map((category, index) => (
@@ -181,10 +178,8 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
             {discussion.ownerDisplayName.charAt(0)}
           </div>
           <div className="discussion-card__owner-info">
-            <span className="discussion-card__owner-name">
-              {discussion.ownerDisplayName}
-            </span>
-            <span 
+            <span className="discussion-card__owner-name">{discussion.ownerDisplayName}</span>
+            <span
               className="discussion-card__owner-stance"
               style={{ color: getStanceColor(discussion.ownerStance) }}
             >
@@ -202,9 +197,7 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
           </div>
           <div className="discussion-card__stat">
             <span className="discussion-card__stat-icon">💬</span>
-            <span className="discussion-card__stat-value">
-              {discussion.statistics.postCount}
-            </span>
+            <span className="discussion-card__stat-value">{discussion.statistics.postCount}</span>
           </div>
           <div className="discussion-card__stat">
             <span className="discussion-card__stat-icon">❤️</span>
@@ -228,5 +221,5 @@ const DiscussionCardComponent: React.FC<DiscussionCardProps> = ({
 export const DiscussionCard = optimizeComponent(DiscussionCardComponent, {
   displayName: 'DiscussionCard',
   memo: true,
-  performanceMonitoring: true
+  performanceMonitoring: true,
 });

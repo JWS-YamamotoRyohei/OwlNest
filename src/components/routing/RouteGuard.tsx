@@ -10,7 +10,12 @@ import { useRouteMetadata } from '../../hooks/useRouteMetadata';
 interface RouteGuardProps {
   children: React.ReactNode;
   requiredRole?: UserRole;
-  requiredPermission?: 'canView' | 'canPost' | 'canCreateDiscussion' | 'canModerate' | 'canManageUsers';
+  requiredPermission?:
+    | 'canView'
+    | 'canPost'
+    | 'canCreateDiscussion'
+    | 'canModerate'
+    | 'canManageUsers';
   redirectTo?: string;
   fallback?: React.ReactNode;
   showLoadingMessage?: boolean;
@@ -24,7 +29,7 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
   redirectTo = '/login',
   fallback,
   showLoadingMessage = true,
-  routeName
+  routeName,
 }) => {
   const { isAuthenticated, isLoading, user, hasPermission } = useAuth();
   const location = useLocation();
@@ -37,7 +42,7 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
       // Preload routes based on user permissions
       RoutePreloader.preloadRoutesForUser({
         canCreateDiscussion: hasPermission('canCreateDiscussion'),
-        canModerate: hasPermission('canModerate')
+        canModerate: hasPermission('canModerate'),
       });
 
       // Preload common routes
@@ -57,15 +62,13 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
 
   // Show loading spinner while checking authentication or during page transitions
   if (isLoading || isPageTransitioning) {
-    const loadingMessage = isLoading 
-      ? "認証状態を確認中..." 
-      : "ページを読み込み中...";
-    
+    const loadingMessage = isLoading ? '認証状態を確認中...' : 'ページを読み込み中...';
+
     return (
-      <LoadingSpinner 
-        size="large" 
+      <LoadingSpinner
+        size="large"
         message={showLoadingMessage ? loadingMessage : undefined}
-        fullScreen 
+        fullScreen
       />
     );
   }
@@ -81,13 +84,13 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
     if (requiredRole === UserRole.ADMIN) {
       return <Navigate to="/unauthorized" replace />;
     }
-    
+
     // For other roles, check if user has sufficient permissions
     const roleHierarchy = {
       [UserRole.VIEWER]: 0,
       [UserRole.CONTRIBUTOR]: 1,
       [UserRole.CREATOR]: 2,
-      [UserRole.ADMIN]: 3
+      [UserRole.ADMIN]: 3,
     };
 
     const userLevel = roleHierarchy[user?.role || UserRole.VIEWER];
@@ -106,9 +109,7 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
   // Wrap children with error boundary and suspense
   return (
     <ErrorBoundary fallback={fallback}>
-      <Suspense fallback={<LoadingSpinner size="large" fullScreen />}>
-        {children}
-      </Suspense>
+      <Suspense fallback={<LoadingSpinner size="large" fullScreen />}>{children}</Suspense>
     </ErrorBoundary>
   );
 };

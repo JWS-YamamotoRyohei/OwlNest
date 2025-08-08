@@ -26,12 +26,9 @@ class ApiService {
     this.baseUrl = ENV.API_GATEWAY_URL;
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -51,12 +48,9 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
-        throw new ApiError(
-          `HTTP error! status: ${response.status}`,
-          response.status
-        );
+        throw new ApiError(`HTTP error! status: ${response.status}`, response.status);
       }
 
       const data = await response.json();
@@ -69,8 +63,17 @@ class ApiService {
     }
   }
 
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  // async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+  //   return this.request<T>(endpoint, { method: 'GET' });
+  // }
+
+  async get<T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
+    let url = endpoint;
+    if (params) {
+      const searchParams = new URLSearchParams(params).toString();
+      url += (url.includes('?') ? '&' : '?') + searchParams;
+    }
+    return this.request<T>(url, { method: 'GET' });
   }
 
   async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {

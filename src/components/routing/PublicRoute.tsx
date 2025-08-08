@@ -12,7 +12,7 @@ interface PublicRouteProps {
 export const PublicRoute: React.FC<PublicRouteProps> = ({
   children,
   redirectTo = '/discussions',
-  restricted = false
+  restricted = false,
 }) => {
   const { isAuthenticated, isLoading } = useAuth();
 

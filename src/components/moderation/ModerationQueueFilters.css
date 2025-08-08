@@ -97,7 +97,7 @@
   cursor: pointer;
 }
 
-.moderation-queue-filters__checkbox input[type="checkbox"] {
+.moderation-queue-filters__checkbox input[type='checkbox'] {
   width: 1rem;
   height: 1rem;
 }
@@ -148,16 +148,16 @@
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
-  
+
   .moderation-queue-filters__checkboxes {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .moderation-queue-filters__actions {
     flex-direction: column-reverse;
   }
-  
+
   .moderation-queue-filters__button {
     width: 100%;
   }
@@ -167,7 +167,7 @@
   .moderation-queue-filters__content {
     padding: 1rem;
   }
-  
+
   .moderation-queue-filters__header {
     padding: 0.75rem 1rem;
   }

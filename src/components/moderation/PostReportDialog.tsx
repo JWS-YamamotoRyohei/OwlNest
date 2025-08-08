@@ -29,7 +29,7 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedCategory || !reason.trim()) {
       setError('カテゴリと理由を入力してください。');
       return;
@@ -53,15 +53,15 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
 
     try {
       await reportService.reportPost(reportData);
-      
+
       // Reset form
       setSelectedCategory('');
       setReason('');
       setDescription('');
-      
+
       onReportSubmitted?.();
       onClose();
-      
+
       // Show success message
       alert('報告を送信しました。モデレーターが確認いたします。');
     } catch (error) {
@@ -129,12 +129,12 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
                 id="category"
                 className="post-report-dialog__select"
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value as ReportCategory)}
+                onChange={e => setSelectedCategory(e.target.value as ReportCategory)}
                 disabled={isSubmitting}
                 required
               >
                 <option value="">カテゴリを選択してください</option>
-                {categories.map((category) => (
+                {categories.map(category => (
                   <option key={category.value} value={category.value}>
                     {category.label}
                   </option>
@@ -156,16 +156,14 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
                 id="reason"
                 className="post-report-dialog__textarea"
                 value={reason}
-                onChange={(e) => setReason(e.target.value)}
+                onChange={e => setReason(e.target.value)}
                 placeholder="この投稿を報告する理由を具体的に説明してください（10文字以上）"
                 rows={4}
                 maxLength={500}
                 disabled={isSubmitting}
                 required
               />
-              <div className="post-report-dialog__char-count">
-                {reason.length}/500文字
-              </div>
+              <div className="post-report-dialog__char-count">{reason.length}/500文字</div>
             </div>
 
             {/* Additional Description */}
@@ -177,15 +175,13 @@ export const PostReportDialog: React.FC<PostReportDialogProps> = ({
                 id="description"
                 className="post-report-dialog__textarea"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={e => setDescription(e.target.value)}
                 placeholder="追加の詳細情報があれば記入してください"
                 rows={3}
                 maxLength={1000}
                 disabled={isSubmitting}
               />
-              <div className="post-report-dialog__char-count">
-                {description.length}/1000文字
-              </div>
+              <div className="post-report-dialog__char-count">{description.length}/1000文字</div>
             </div>
 
             {/* Error Message */}

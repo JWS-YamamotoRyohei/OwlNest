@@ -19,7 +19,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
   color = '#3b82f6',
   height = 200,
   showChange = true,
-  className
+  className,
 }) => {
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return null;
@@ -32,12 +32,12 @@ const TrendChart: React.FC<TrendChartProps> = ({
     return {
       maxValue: maxValue + padding,
       minValue: Math.max(0, minValue - padding),
-      range: range + (2 * padding),
+      range: range + 2 * padding,
       points: data.map((item, index) => ({
         ...item,
         x: (index / (data.length - 1)) * 100,
-        y: ((maxValue + padding - item.value) / (range + 2 * padding)) * 100
-      }))
+        y: ((maxValue + padding - item.value) / (range + 2 * padding)) * 100,
+      })),
     };
   }, [data]);
 
@@ -55,7 +55,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -105,10 +105,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
         </div>
         {showChange && previousData && (
           <div className="chart-change">
-            <span 
-              className="change-value"
-              style={{ color: getChangeColor(latestData.change) }}
-            >
+            <span className="change-value" style={{ color: getChangeColor(latestData.change) }}>
               {formatChange(latestData.change, latestData.changePercentage)}
             </span>
             <span className="change-period">前期比</span>
@@ -126,18 +123,8 @@ const TrendChart: React.FC<TrendChartProps> = ({
         >
           {/* Grid lines */}
           <defs>
-            <pattern
-              id="grid"
-              width="10"
-              height="10"
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d="M 10 0 L 0 0 0 10"
-                fill="none"
-                stroke="#f1f5f9"
-                strokeWidth="0.5"
-              />
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#f1f5f9" strokeWidth="0.5" />
             </pattern>
           </defs>
           <rect width="100" height="100" fill="url(#grid)" />
@@ -150,13 +137,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
           />
 
           {/* Trend line */}
-          <path
-            d={pathData}
-            fill="none"
-            stroke={color}
-            strokeWidth="2"
-            className="chart-line"
-          />
+          <path d={pathData} fill="none" stroke={color} strokeWidth="2" className="chart-line" />
 
           {/* Data points */}
           {chartData.points.map((point, index) => (
@@ -179,7 +160,7 @@ const TrendChart: React.FC<TrendChartProps> = ({
               className="chart-tooltip-trigger"
               style={{
                 left: `${point.x}%`,
-                top: `${point.y}%`
+                top: `${point.y}%`,
               }}
               title={`${formatDate(point.date)}: ${formatValue(point.value)} ${metric}`}
             />
@@ -193,12 +174,8 @@ const TrendChart: React.FC<TrendChartProps> = ({
           <span className="range-end">{formatDate(data[data.length - 1].date)}</span>
         </div>
         <div className="chart-stats">
-          <span className="stat-item">
-            最高: {formatValue(chartData.maxValue)}
-          </span>
-          <span className="stat-item">
-            最低: {formatValue(chartData.minValue)}
-          </span>
+          <span className="stat-item">最高: {formatValue(chartData.maxValue)}</span>
+          <span className="stat-item">最低: {formatValue(chartData.minValue)}</span>
         </div>
       </div>
     </div>

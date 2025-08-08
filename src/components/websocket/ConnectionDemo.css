@@ -314,19 +314,19 @@
   .connection-demo {
     padding: 1rem;
   }
-  
+
   .connection-demo__info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .connection-demo__buttons {
     flex-direction: column;
   }
-  
+
   .connection-demo__button {
     width: 100%;
   }
-  
+
   .connection-demo__events-header {
     flex-direction: column;
     align-items: flex-start;
@@ -340,15 +340,15 @@
     background: #111827;
     color: #f9fafb;
   }
-  
+
   .connection-demo__header h2 {
     color: #f9fafb;
   }
-  
+
   .connection-demo__header p {
     color: #9ca3af;
   }
-  
+
   .connection-demo__status,
   .connection-demo__info,
   .connection-demo__controls,
@@ -357,28 +357,28 @@
     background: #1f2937;
     border-color: #374151;
   }
-  
+
   .connection-demo__info-item {
     background: #111827;
   }
-  
+
   .connection-demo__info-item label,
   .connection-demo__controls h3,
   .connection-demo__events-header h3,
   .connection-demo__features h3 {
     color: #f9fafb;
   }
-  
+
   .connection-demo__events-list {
     background: #111827;
     border-color: #374151;
   }
-  
+
   .connection-demo__event {
     background: #1f2937;
     border-left-color: #4b5563;
   }
-  
+
   .connection-demo__features-list li {
     background: #111827;
   }

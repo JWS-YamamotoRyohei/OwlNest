@@ -1,16 +1,53 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { UserSanctionManager } from '../UserSanctionManager';
 import { userSanctionService } from '../../../services/userSanctionService';
-import { SanctionType } from '../../../types/moderation';
+import { SanctionType, UserSanction } from '../../../types/moderation';
+
+import { EntityType } from '@/types/common';
 
 // Mock the service
 jest.mock('../../../services/userSanctionService');
 const mockUserSanctionService = userSanctionService as jest.Mocked<typeof userSanctionService>;
+const makeSanction = (
+  base: Omit<UserSanction, 'PK' | 'SK' | 'GSI1PK' | 'GSI1SK' | 'EntityType'>
+): UserSanction => {
+  // const { sanctionId, userId, moderatorId, ...rest } = base;
+  return {
+    ...base,
+    // 残り
+    // ...rest,
+    // DynamoDB keys
+    PK: `USER#${base.userId}`,
+    SK: `SANCTION#${base.sanctionId}`,
+    GSI1PK: `MODERATOR#${base.moderatorId}`,
+    GSI1SK: `SANCTION#${base.sanctionId}`,
+    EntityType: EntityType.USER_SANCTION,
+    userId: base.userId,
+    sanctionId: base.sanctionId,
+    moderatorId: base.moderatorId,
+    userDisplayName: base.userDisplayName,
+    moderatorDisplayName: base.modeeratorDisplayName,
+    sanctionType: base.sanctionType,
+    reason: base.reason,
+    description: base.desctiption,
+    startDate: base.startDate,
+    isActive: base.isActive,
+    isAppealed: base.isAppend,
+    previousSanctions: base.previousSanctions,
+    userNotified: base.userNotified,
+    notifiedAt: base.notifiedAt,
+    notificationMethod: base.notificationMethod,
+    createdAt: base.creaatedAt,
+    updatedAt: base.updatedAt,
 
-// Mock data
-const mockSanctions = [
-  {
+    // required domain fields
+    // sanctionId,
+    // userId,
+    // moderatorId,
+  };
+};
+const mockSanctions: UserSanction[] = [
+  makeSanction({
     sanctionId: 'sanction-1',
     userId: 'user-1',
     userDisplayName: 'Test User',
@@ -28,8 +65,8 @@ const mockSanctions = [
     notificationMethod: 'both',
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z',
-  },
-  {
+  }),
+  makeSanction({
     sanctionId: 'sanction-2',
     userId: 'user-2',
     userDisplayName: 'Another User',
@@ -52,8 +89,54 @@ const mockSanctions = [
     notificationMethod: 'email',
     createdAt: '2024-01-02T00:00:00Z',
     updatedAt: '2024-01-03T00:00:00Z',
-  },
+  }),
 ];
+// Mock data
+// const mockSanctions = [
+//   {
+//     sanctionId: 'sanction-1',
+//     userId: 'user-1',
+//     userDisplayName: 'Test User',
+//     moderatorId: 'mod-1',
+//     moderatorDisplayName: 'Test Moderator',
+//     sanctionType: SanctionType.WARNING,
+//     reason: 'Inappropriate behavior',
+//     description: 'User posted inappropriate content',
+//     startDate: '2024-01-01T00:00:00Z',
+//     isActive: true,
+//     isAppealed: false,
+//     previousSanctions: [],
+//     userNotified: true,
+//     notifiedAt: '2024-01-01T00:00:00Z',
+//     notificationMethod: 'both',
+//     createdAt: '2024-01-01T00:00:00Z',
+//     updatedAt: '2024-01-01T00:00:00Z',
+//   },
+//   {
+//     sanctionId: 'sanction-2',
+//     userId: 'user-2',
+//     userDisplayName: 'Another User',
+//     moderatorId: 'mod-1',
+//     moderatorDisplayName: 'Test Moderator',
+//     sanctionType: SanctionType.TEMPORARY_SUSPENSION,
+//     reason: 'Spam posting',
+//     description: 'User posted spam content multiple times',
+//     startDate: '2024-01-02T00:00:00Z',
+//     endDate: '2024-01-09T00:00:00Z',
+//     duration: 168,
+//     isActive: true,
+//     isAppealed: true,
+//     appealStatus: 'pending',
+//     appealReason: 'I believe this was a mistake',
+//     appealedAt: '2024-01-03T00:00:00Z',
+//     previousSanctions: [],
+//     userNotified: true,
+//     notifiedAt: '2024-01-02T00:00:00Z',
+//     notificationMethod: 'email',
+//     createdAt: '2024-01-02T00:00:00Z',
+//     updatedAt: '2024-01-03T00:00:00Z',
+//   },
+// ];
 
 describe('UserSanctionManager', () => {
   beforeEach(() => {
@@ -70,7 +153,7 @@ describe('UserSanctionManager', () => {
 
     it('renders sanctions list after loading', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('制裁管理')).toBeInTheDocument();
       });
@@ -81,7 +164,7 @@ describe('UserSanctionManager', () => {
 
     it('renders user-specific title when userId is provided', async () => {
       render(<UserSanctionManager userId="user-1" />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('ユーザー制裁履歴')).toBeInTheDocument();
       });
@@ -89,7 +172,7 @@ describe('UserSanctionManager', () => {
 
     it('shows create sanction button for general view', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('新しい制裁を作成')).toBeInTheDocument();
       });
@@ -97,7 +180,7 @@ describe('UserSanctionManager', () => {
 
     it('does not show create sanction button for user-specific view', async () => {
       render(<UserSanctionManager userId="user-1" />);
-      
+
       await waitFor(() => {
         expect(screen.queryByText('新しい制裁を作成')).not.toBeInTheDocument();
       });
@@ -107,7 +190,7 @@ describe('UserSanctionManager', () => {
   describe('Sanction Cards', () => {
     it('displays sanction information correctly', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('警告')).toBeInTheDocument();
         expect(screen.getByText('一時停止')).toBeInTheDocument();
@@ -118,7 +201,7 @@ describe('UserSanctionManager', () => {
 
     it('shows appeal status for appealed sanctions', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('審査中')).toBeInTheDocument();
         expect(screen.getByText('I believe this was a mistake')).toBeInTheDocument();
@@ -127,7 +210,7 @@ describe('UserSanctionManager', () => {
 
     it('shows revoke button for active sanctions', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         const revokeButtons = screen.getAllByText('制裁を取り消す');
         expect(revokeButtons).toHaveLength(2);
@@ -136,7 +219,7 @@ describe('UserSanctionManager', () => {
 
     it('shows appeal review buttons for pending appeals', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('異議を承認')).toBeInTheDocument();
         expect(screen.getByText('異議を却下')).toBeInTheDocument();
@@ -145,7 +228,7 @@ describe('UserSanctionManager', () => {
 
     it('shows notification button for active sanctions', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         const notificationButtons = screen.getAllByTitle('ユーザーに通知を再送信');
         expect(notificationButtons).toHaveLength(2);
@@ -156,7 +239,7 @@ describe('UserSanctionManager', () => {
   describe('Filtering', () => {
     it('filters by sanction type', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         const typeFilter = screen.getByDisplayValue('すべて');
         fireEvent.change(typeFilter, { target: { value: 'warning' } });
@@ -170,7 +253,7 @@ describe('UserSanctionManager', () => {
 
     it('filters by active status', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         const activeFilter = screen.getByLabelText('アクティブな制裁のみ');
         fireEvent.click(activeFilter);
@@ -183,7 +266,7 @@ describe('UserSanctionManager', () => {
 
     it('filters by appeal status', async () => {
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         const appealFilter = screen.getByDisplayValue('すべて');
         fireEvent.change(appealFilter, { target: { value: 'true' } });
@@ -199,13 +282,13 @@ describe('UserSanctionManager', () => {
   describe('Actions', () => {
     it('handles sanction creation', async () => {
       mockUserSanctionService.createSanction.mockResolvedValue({
-        sanctionId: 'new-sanction',
         ...mockSanctions[0],
+        sanctionId: 'new-sanction',
       });
       mockUserSanctionService.notifyUser.mockResolvedValue();
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         fireEvent.click(screen.getByText('新しい制裁を作成'));
       });
@@ -235,7 +318,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.revokeSanction.mockResolvedValue();
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         fireEvent.click(screen.getAllByText('制裁を取り消す')[0]);
       });
@@ -259,7 +342,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.reviewAppeal.mockResolvedValue();
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         fireEvent.click(screen.getByText('異議を承認'));
       });
@@ -277,7 +360,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.notifyUser.mockResolvedValue();
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         fireEvent.click(screen.getAllByTitle('ユーザーに通知を再送信')[0]);
       });
@@ -293,7 +376,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.getAllSanctions.mockRejectedValue(new Error('Network error'));
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Network error')).toBeInTheDocument();
       });
@@ -303,7 +386,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.revokeSanction.mockRejectedValue(new Error('Revocation failed'));
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         fireEvent.click(screen.getAllByText('制裁を取り消す')[0]);
       });
@@ -323,7 +406,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.getAllSanctions.mockRejectedValue(new Error('Network error'));
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Network error')).toBeInTheDocument();
       });
@@ -339,7 +422,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.getAllSanctions.mockResolvedValue([]);
 
       render(<UserSanctionManager />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('制裁が見つかりませんでした。')).toBeInTheDocument();
       });
@@ -349,7 +432,7 @@ describe('UserSanctionManager', () => {
       mockUserSanctionService.getUserSanctions.mockResolvedValue([]);
 
       render(<UserSanctionManager userId="user-1" />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('このユーザーに対する制裁はありません。')).toBeInTheDocument();
       });

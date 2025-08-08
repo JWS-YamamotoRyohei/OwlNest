@@ -101,7 +101,7 @@ describe('CreateDiscussionForm', () => {
 
     expect(screen.getByDisplayValue('Initial Title')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Initial Description')).toBeInTheDocument();
-    
+
     // Check select element value
     const selectElement = screen.getByLabelText(/あなたのスタンス/) as HTMLSelectElement;
     expect(selectElement.value).toBe(Stance.PROS);

@@ -32,7 +32,7 @@ class PerformanceMonitor {
     // Observe navigation timing
     if ('PerformanceObserver' in window) {
       try {
-        const navObserver = new PerformanceObserver((list) => {
+        const navObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
             if (entry.entryType === 'navigation') {
               const navEntry = entry as PerformanceNavigationTiming;
@@ -48,7 +48,7 @@ class PerformanceMonitor {
 
       // Observe paint timing
       try {
-        const paintObserver = new PerformanceObserver((list) => {
+        const paintObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
             if (entry.name === 'first-contentful-paint') {
               this.vitals.FCP = entry.startTime;
@@ -63,7 +63,7 @@ class PerformanceMonitor {
 
       // Observe largest contentful paint
       try {
-        const lcpObserver = new PerformanceObserver((list) => {
+        const lcpObserver = new PerformanceObserver(list => {
           const entries = list.getEntries();
           const lastEntry = entries[entries.length - 1];
           this.vitals.LCP = lastEntry.startTime;
@@ -76,7 +76,7 @@ class PerformanceMonitor {
 
       // Observe layout shift
       try {
-        const clsObserver = new PerformanceObserver((list) => {
+        const clsObserver = new PerformanceObserver(list => {
           let clsValue = 0;
           for (const entry of list.getEntries()) {
             if (!(entry as any).hadRecentInput) {
@@ -107,7 +107,7 @@ class PerformanceMonitor {
     try {
       performance.mark(`${name}-end`);
       performance.measure(name, `${name}-start`, `${name}-end`);
-      
+
       const measure = performance.getEntriesByName(name, 'measure')[0];
       if (measure) {
         const metric: PerformanceMetrics = {
@@ -115,16 +115,16 @@ class PerformanceMonitor {
           duration: measure.duration,
           startTime: measure.startTime,
           endTime: measure.startTime + measure.duration,
-          type: 'measure'
+          type: 'measure',
         };
-        
+
         this.metrics.push(metric);
         return metric;
       }
     } catch (e) {
       console.warn(`Failed to measure ${name}:`, e);
     }
-    
+
     return null;
   }
 
@@ -136,7 +136,7 @@ class PerformanceMonitor {
     fn: () => T | Promise<T>
   ): Promise<{ result: T; metric: PerformanceMetrics | null }> {
     this.startMeasure(name);
-    
+
     try {
       const result = await fn();
       const metric = this.endMeasure(name);
@@ -171,7 +171,7 @@ class PerformanceMonitor {
       duration: entry.duration,
       startTime: entry.startTime,
       endTime: entry.startTime + entry.duration,
-      type: 'resource' as const
+      type: 'resource' as const,
     }));
   }
 
@@ -206,16 +206,16 @@ class PerformanceMonitor {
       resources: this.getResourceMetrics(),
       timestamp: Date.now(),
       userAgent: navigator.userAgent,
-      url: window.location.href
+      url: window.location.href,
     };
 
     if (endpoint) {
       fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(metrics)
+        body: JSON.stringify(metrics),
       }).catch(error => {
         console.warn('Failed to send metrics:', error);
       });
@@ -244,7 +244,7 @@ export function usePerformanceMonitor() {
     measureFunction: performanceMonitor.measureFunction.bind(performanceMonitor),
     getMetrics: performanceMonitor.getMetrics.bind(performanceMonitor),
     getVitals: performanceMonitor.getVitals.bind(performanceMonitor),
-    reportMetrics: performanceMonitor.reportMetrics.bind(performanceMonitor)
+    reportMetrics: performanceMonitor.reportMetrics.bind(performanceMonitor),
   };
 }
 
@@ -256,14 +256,16 @@ export function withPerformanceMonitoring<P extends object>(
   componentName?: string
 ) {
   const displayName = componentName || WrappedComponent.displayName || WrappedComponent.name;
-  
+
   return React.memo((props: P) => {
     React.useEffect(() => {
       performanceMonitor.startMeasure(`${displayName}-render`);
-      
+
       return () => {
         performanceMonitor.endMeasure(`${displayName}-render`);
       };
     });
 
-    return <WrappedComponent {...props} />;})}
+    return <WrappedComponent {...props} />;
+  });
+}

@@ -36,7 +36,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to hide post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to hide post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -49,7 +51,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to show post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to show post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -60,7 +64,9 @@ export class ModerationService {
     try {
       await apiService.delete(`/moderation/posts/${postId}?reason=${encodeURIComponent(reason)}`);
     } catch (error) {
-      throw new Error(`Failed to delete post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -73,7 +79,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to restore post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to restore post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -87,7 +95,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to flag post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to flag post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -100,7 +110,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to unflag post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to unflag post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -109,10 +121,14 @@ export class ModerationService {
    */
   async getModerationHistory(postId: string): Promise<ModerationAction[]> {
     try {
-      const response = await apiService.get(`/moderation/posts/${postId}/history`);
+      const response = await apiService.get<ModerationAction[]>(
+        `/moderation/posts/${postId}/history`
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get moderation history: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get moderation history: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -121,12 +137,14 @@ export class ModerationService {
    */
   async getModerationLogs(postIds: string[]): Promise<ModerationLog[]> {
     try {
-      const response = await apiService.post('/moderation/posts/logs', {
+      const response = await apiService.post<ModerationLog[]>('/moderation/posts/logs', {
         postIds,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get moderation logs: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get moderation logs: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -140,12 +158,14 @@ export class ModerationService {
     discussionId?: string;
   }): Promise<ModerationStats> {
     try {
-      const response = await apiService.get('/moderation/stats', {
+      const response = await apiService.get<ModerationStats>('/moderation/stats', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get moderation stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get moderation stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -165,7 +185,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to perform bulk moderation: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to perform bulk moderation: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -183,12 +205,18 @@ export class ModerationService {
     hasMore: boolean;
   }> {
     try {
-      const response = await apiService.get('/moderation/posts/pending', {
+      const response = await apiService.get<{
+        posts: any[];
+        totalCount: number;
+        hasMore: boolean;
+      }>('/moderation/posts/pending', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get pending posts: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get pending posts: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -209,7 +237,9 @@ export class ModerationService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to report post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to report post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -218,12 +248,17 @@ export class ModerationService {
    */
   async getUserModerationHistory(userId: string, limit = 50): Promise<ModerationAction[]> {
     try {
-      const response = await apiService.get(`/moderation/users/${userId}/history`, {
-        params: { limit },
-      });
+      const response = await apiService.get<ModerationAction[]>(
+        `/moderation/users/${userId}/history`,
+        {
+          params: { limit },
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get user moderation history: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get user moderation history: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -240,10 +275,20 @@ export class ModerationService {
     lastModerationAt?: string;
   }> {
     try {
-      const response = await apiService.get(`/moderation/discussions/${discussionId}/summary`);
+      const response = await apiService.get<{
+        totalPosts: number;
+        hiddenPosts: number;
+        deletedPosts: number;
+        flaggedPosts: number;
+        reportedPosts: number;
+        moderationActions: number;
+        lastModerationAt?: string;
+      }>(`/moderation/discussions/${discussionId}/summary`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get discussion moderation summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get discussion moderation summary: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -262,7 +307,7 @@ export class ModerationService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('owlnest_auth_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('owlnest_auth_token')}`,
         },
         body: JSON.stringify(filters),
       });
@@ -273,7 +318,9 @@ export class ModerationService {
 
       return await response.blob();
     } catch (error) {
-      throw new Error(`Failed to export moderation data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export moderation data: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

@@ -6,7 +6,7 @@ import {
   EngagementMetrics,
   TrendData,
   AnalyticsFilter,
-  AnalyticsTimeRange
+  AnalyticsTimeRange,
 } from '../types/analytics';
 import analyticsService from '../services/analyticsService';
 
@@ -17,27 +17,29 @@ interface UseAnalyticsState<T> {
   refetch: () => Promise<void>;
 }
 
-export function useDiscussionStatistics(discussionId: string): UseAnalyticsState<DiscussionStatistics> {
+export function useDiscussionStatistics(
+  discussionId: string
+): UseAnalyticsState<DiscussionStatistics> {
   const [state, setState] = useState<UseAnalyticsState<DiscussionStatistics>>({
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
     if (!discussionId) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getDiscussionStatistics(discussionId);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [discussionId]);
@@ -48,16 +50,18 @@ export function useDiscussionStatistics(discussionId: string): UseAnalyticsState
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
-export function useMultipleDiscussionStatistics(discussionIds: string[]): UseAnalyticsState<DiscussionStatistics[]> {
+export function useMultipleDiscussionStatistics(
+  discussionIds: string[]
+): UseAnalyticsState<DiscussionStatistics[]> {
   const [state, setState] = useState<UseAnalyticsState<DiscussionStatistics[]>>({
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
@@ -67,15 +71,15 @@ export function useMultipleDiscussionStatistics(discussionIds: string[]): UseAna
     }
 
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getMultipleDiscussionStatistics(discussionIds);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [discussionIds]);
@@ -86,7 +90,7 @@ export function useMultipleDiscussionStatistics(discussionIds: string[]): UseAna
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
@@ -95,22 +99,22 @@ export function useUserStatistics(userId: string): UseAnalyticsState<UserStatist
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
     if (!userId) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getUserStatistics(userId);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [userId]);
@@ -121,29 +125,31 @@ export function useUserStatistics(userId: string): UseAnalyticsState<UserStatist
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
-export function usePlatformStatistics(filter?: AnalyticsFilter): UseAnalyticsState<PlatformStatistics> {
+export function usePlatformStatistics(
+  filter?: AnalyticsFilter
+): UseAnalyticsState<PlatformStatistics> {
   const [state, setState] = useState<UseAnalyticsState<PlatformStatistics>>({
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getPlatformStatistics(filter);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [filter]);
@@ -154,34 +160,34 @@ export function usePlatformStatistics(filter?: AnalyticsFilter): UseAnalyticsSta
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
 export function useEngagementMetrics(
-  discussionId: string, 
+  discussionId: string,
   timeRange: AnalyticsTimeRange
 ): UseAnalyticsState<EngagementMetrics> {
   const [state, setState] = useState<UseAnalyticsState<EngagementMetrics>>({
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
     if (!discussionId) return;
 
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getEngagementMetrics(discussionId, timeRange);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [discussionId, timeRange]);
@@ -192,7 +198,7 @@ export function useEngagementMetrics(
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
@@ -205,20 +211,20 @@ export function useTrendData(
     data: null,
     loading: true,
     error: null,
-    refetch: async () => {}
+    refetch: async () => {},
   });
 
   const fetchData = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
       const data = await analyticsService.getTrendData(metric, timeRange, filter);
       setState(prev => ({ ...prev, data, loading: false }));
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
+      setState(prev => ({
+        ...prev,
         error: error instanceof Error ? error.message : 'Unknown error',
-        loading: false 
+        loading: false,
       }));
     }
   }, [metric, timeRange, filter]);
@@ -229,7 +235,7 @@ export function useTrendData(
 
   return {
     ...state,
-    refetch: fetchData
+    refetch: fetchData,
   };
 }
 
@@ -239,8 +245,8 @@ export function useAnalyticsFilter() {
     timeRange: {
       start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       end: new Date().toISOString(),
-      period: 'day'
-    }
+      period: 'day',
+    },
   });
 
   const updateTimeRange = useCallback((timeRange: AnalyticsTimeRange) => {
@@ -268,8 +274,8 @@ export function useAnalyticsFilter() {
       timeRange: {
         start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         end: new Date().toISOString(),
-        period: 'day'
-      }
+        period: 'day',
+      },
     });
   }, []);
 
@@ -280,6 +286,6 @@ export function useAnalyticsFilter() {
     updateUserIds,
     updateDiscussionIds,
     updateStances,
-    resetFilter
+    resetFilter,
   };
 }

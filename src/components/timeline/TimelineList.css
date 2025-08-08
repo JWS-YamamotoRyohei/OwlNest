@@ -192,7 +192,7 @@
   justify-content: center;
 }
 
-.timeline-list__item-checkbox input[type="checkbox"] {
+.timeline-list__item-checkbox input[type='checkbox'] {
   width: 1rem;
   height: 1rem;
   cursor: pointer;
@@ -255,8 +255,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Load more */
@@ -290,30 +294,30 @@
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .timeline-list__title {
     justify-content: center;
   }
-  
+
   .timeline-list__actions {
     justify-content: center;
   }
-  
+
   .timeline-list__selection-controls {
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
-  
+
   .timeline-list__selection-actions {
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .timeline-list__item-wrapper--selectable {
     padding-left: 1.5rem;
   }
-  
+
   .timeline-list__item-checkbox {
     left: -0.25rem;
   }
@@ -323,33 +327,33 @@
   .timeline-list__title h2 {
     font-size: 1.25rem;
   }
-  
+
   .timeline-list__action-button {
     padding: 0.375rem 0.75rem;
     font-size: 0.8125rem;
   }
-  
+
   .timeline-list__selection-button {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
   }
-  
+
   .timeline-list__section-title {
     font-size: 1rem;
   }
-  
+
   .timeline-list__empty {
     padding: 2rem 1rem;
   }
-  
+
   .timeline-list__empty-icon {
     font-size: 3rem;
   }
-  
+
   .timeline-list__empty-title {
     font-size: 1.125rem;
   }
-  
+
   .timeline-list__empty-message {
     font-size: 0.875rem;
   }
@@ -360,67 +364,67 @@
   .timeline-list__header {
     border-color: var(--color-secondary-700);
   }
-  
+
   .timeline-list__title h2 {
     color: var(--color-secondary-100);
   }
-  
+
   .timeline-list__action-button {
     background-color: var(--color-secondary-800);
     color: var(--color-secondary-300);
     border-color: var(--color-secondary-600);
   }
-  
+
   .timeline-list__action-button:hover {
     background-color: var(--color-secondary-700);
     border-color: var(--color-secondary-500);
   }
-  
+
   .timeline-list__selection-controls {
     background-color: var(--color-primary-900);
     border-color: var(--color-primary-700);
   }
-  
+
   .timeline-list__selection-info {
     color: var(--color-primary-300);
   }
-  
+
   .timeline-list__filters {
     background-color: var(--color-secondary-900);
     border-color: var(--color-secondary-700);
   }
-  
+
   .timeline-list__section-title {
     color: var(--color-secondary-200);
   }
-  
+
   .timeline-list__item-wrapper--selected {
     background-color: var(--color-primary-900);
   }
-  
+
   .timeline-list__empty {
     background-color: var(--color-secondary-900);
     border-color: var(--color-secondary-600);
   }
-  
+
   .timeline-list__empty-title {
     color: var(--color-secondary-300);
   }
-  
+
   .timeline-list__empty-message {
     color: var(--color-secondary-400);
   }
-  
+
   .timeline-list__loading {
     color: var(--color-secondary-400);
   }
-  
+
   .timeline-list__load-more-button {
     background-color: var(--color-secondary-800);
     color: var(--color-secondary-300);
     border-color: var(--color-secondary-600);
   }
-  
+
   .timeline-list__load-more-button:hover {
     background-color: var(--color-secondary-700);
     border-color: var(--color-secondary-500);
@@ -432,23 +436,23 @@
   .timeline-list__header {
     border-width: 2px;
   }
-  
+
   .timeline-list__action-button {
     border-width: 2px;
   }
-  
+
   .timeline-list__selection-controls {
     border-width: 2px;
   }
-  
+
   .timeline-list__filters {
     border-width: 2px;
   }
-  
+
   .timeline-list__title h2 {
     font-weight: 700;
   }
-  
+
   .timeline-list__section-title {
     font-weight: 700;
   }
@@ -459,15 +463,15 @@
   .timeline-list__action-button {
     transition: none;
   }
-  
+
   .timeline-list__selection-button {
     transition: none;
   }
-  
+
   .timeline-list__load-more-button {
     transition: none;
   }
-  
+
   .spinner {
     animation: none;
   }

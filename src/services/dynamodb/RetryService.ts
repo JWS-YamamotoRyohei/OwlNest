@@ -46,7 +46,7 @@ export class RetryService {
 
         // Calculate delay for next retry
         const delay = this.calculateDelay(attempt, config);
-        
+
         console.warn(
           `Operation failed (attempt ${attempt + 1}/${config.maxRetries + 1}), retrying in ${delay}ms:`,
           error instanceof Error ? error.message : String(error)
@@ -109,7 +109,7 @@ export class RetryService {
    * Sleep for specified milliseconds
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**

@@ -18,14 +18,14 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
   exportType,
   title,
   dataIds = [],
-  metric
+  metric,
 }) => {
   const [options, setOptions] = useState<ExportOptions>({
     format: 'csv',
     includeMetadata: true,
-    maxRecords: 10000
+    maxRecords: 10000,
   });
-  
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
@@ -36,7 +36,7 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
       setOptions({
         format: 'csv',
         includeMetadata: true,
-        maxRecords: 10000
+        maxRecords: 10000,
       });
       setErrors([]);
       setExportProgress(0);
@@ -49,21 +49,24 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
       dateRange: {
         ...prev.dateRange,
         start: field === 'start' ? value : prev.dateRange?.start || '',
-        end: field === 'end' ? value : prev.dateRange?.end || ''
-      }
+        end: field === 'end' ? value : prev.dateRange?.end || '',
+      },
     }));
   };
 
   const handleCategoriesChange = (categories: string) => {
     setOptions(prev => ({
       ...prev,
-      categories: categories.split(',').map(c => c.trim()).filter(c => c.length > 0)
+      categories: categories
+        .split(',')
+        .map(c => c.trim())
+        .filter(c => c.length > 0),
     }));
   };
 
   const validateAndExport = async () => {
     const validationErrors = dataExportService.validateExportOptions(options);
-    
+
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
@@ -88,13 +91,15 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
         case 'platform':
           const filter = {
             timeRange: {
-              start: options.dateRange?.start || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+              start:
+                options.dateRange?.start ||
+                new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
               end: options.dateRange?.end || new Date().toISOString(),
-              period: 'day' as const
+              period: 'day' as const,
             },
             categories: options.categories,
             userIds: options.userIds,
-            discussionIds: options.discussionIds
+            discussionIds: options.discussionIds,
           };
           exportResult = await dataExportService.exportPlatformStatistics(filter, options);
           break;
@@ -102,11 +107,13 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
           if (!metric) throw new Error('Metric is required for trend export');
           const trendFilter = {
             timeRange: {
-              start: options.dateRange?.start || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+              start:
+                options.dateRange?.start ||
+                new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
               end: options.dateRange?.end || new Date().toISOString(),
-              period: 'day' as const
+              period: 'day' as const,
             },
-            categories: options.categories
+            categories: options.categories,
           };
           exportResult = await dataExportService.exportTrendData(metric, trendFilter, options);
           break;
@@ -131,7 +138,6 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
       setTimeout(() => {
         onClose();
       }, 1000);
-
     } catch (error) {
       setErrors([error instanceof Error ? error.message : 'エクスポートに失敗しました']);
     } finally {
@@ -162,7 +168,9 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
                   name="format"
                   value="csv"
                   checked={options.format === 'csv'}
-                  onChange={(e) => setOptions(prev => ({ ...prev, format: e.target.value as 'csv' | 'json' }))}
+                  onChange={e =>
+                    setOptions(prev => ({ ...prev, format: e.target.value as 'csv' | 'json' }))
+                  }
                 />
                 <span className="radio-indicator"></span>
                 CSV形式
@@ -174,7 +182,9 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
                   name="format"
                   value="json"
                   checked={options.format === 'json'}
-                  onChange={(e) => setOptions(prev => ({ ...prev, format: e.target.value as 'csv' | 'json' }))}
+                  onChange={e =>
+                    setOptions(prev => ({ ...prev, format: e.target.value as 'csv' | 'json' }))
+                  }
                 />
                 <span className="radio-indicator"></span>
                 JSON形式
@@ -190,14 +200,24 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
               <input
                 type="date"
                 value={options.dateRange?.start?.split('T')[0] || ''}
-                onChange={(e) => handleDateRangeChange('start', e.target.value ? new Date(e.target.value).toISOString() : '')}
+                onChange={e =>
+                  handleDateRangeChange(
+                    'start',
+                    e.target.value ? new Date(e.target.value).toISOString() : ''
+                  )
+                }
                 placeholder="開始日"
               />
               <span className="date-separator">〜</span>
               <input
                 type="date"
                 value={options.dateRange?.end?.split('T')[0] || ''}
-                onChange={(e) => handleDateRangeChange('end', e.target.value ? new Date(e.target.value).toISOString() : '')}
+                onChange={e =>
+                  handleDateRangeChange(
+                    'end',
+                    e.target.value ? new Date(e.target.value).toISOString() : ''
+                  )
+                }
                 placeholder="終了日"
               />
             </div>
@@ -210,7 +230,7 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
               <input
                 type="text"
                 placeholder="政治,テクノロジー,社会（カンマ区切り）"
-                onChange={(e) => handleCategoriesChange(e.target.value)}
+                onChange={e => handleCategoriesChange(e.target.value)}
               />
               <small>特定のカテゴリのみをエクスポートする場合に指定</small>
             </div>
@@ -224,7 +244,9 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
               min="1"
               max="100000"
               value={options.maxRecords || ''}
-              onChange={(e) => setOptions(prev => ({ ...prev, maxRecords: parseInt(e.target.value) || undefined }))}
+              onChange={e =>
+                setOptions(prev => ({ ...prev, maxRecords: parseInt(e.target.value) || undefined }))
+              }
               placeholder="10000"
             />
             <small>大量データの場合、処理時間を短縮するために制限できます</small>
@@ -236,7 +258,7 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
               <input
                 type="checkbox"
                 checked={options.includeMetadata || false}
-                onChange={(e) => setOptions(prev => ({ ...prev, includeMetadata: e.target.checked }))}
+                onChange={e => setOptions(prev => ({ ...prev, includeMetadata: e.target.checked }))}
               />
               <span className="checkbox-indicator"></span>
               メタデータを含める
@@ -259,31 +281,18 @@ const DataExportDialog: React.FC<DataExportDialogProps> = ({
           {isExporting && (
             <div className="export-progress">
               <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{ width: `${exportProgress}%` }}
-                ></div>
+                <div className="progress-fill" style={{ width: `${exportProgress}%` }}></div>
               </div>
-              <div className="progress-text">
-                エクスポート中... {exportProgress}%
-              </div>
+              <div className="progress-text">エクスポート中... {exportProgress}%</div>
             </div>
           )}
         </div>
 
         <div className="dialog-footer">
-          <button 
-            className="cancel-button" 
-            onClick={onClose}
-            disabled={isExporting}
-          >
+          <button className="cancel-button" onClick={onClose} disabled={isExporting}>
             キャンセル
           </button>
-          <button 
-            className="export-button" 
-            onClick={validateAndExport}
-            disabled={isExporting}
-          >
+          <button className="export-button" onClick={validateAndExport} disabled={isExporting}>
             {isExporting ? 'エクスポート中...' : 'エクスポート開始'}
           </button>
         </div>

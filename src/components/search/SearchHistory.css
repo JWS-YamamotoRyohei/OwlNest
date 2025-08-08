@@ -377,18 +377,18 @@
     padding: 12px;
     max-height: 300px;
   }
-  
+
   .search-history__item-meta,
   .search-history__saved-meta {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
   }
-  
+
   .search-history__saved-date {
     margin-left: 0;
   }
-  
+
   .search-history__saved-actions {
     flex-direction: column;
     padding: 4px;

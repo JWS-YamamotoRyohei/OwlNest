@@ -26,8 +26,7 @@ beforeAll(() => {
   console.warn = (...args: any[]) => {
     if (
       typeof args[0] === 'string' &&
-      (args[0].includes('componentWillReceiveProps') ||
-       args[0].includes('componentWillUpdate'))
+      (args[0].includes('componentWillReceiveProps') || args[0].includes('componentWillUpdate'))
     ) {
       return;
     }
@@ -74,8 +73,8 @@ Object.defineProperty(global, 'crypto', {
         arr[i] = Math.floor(Math.random() * 256);
       }
       return arr;
-    })
-  }
+    }),
+  },
 });
 
 // Mock URL.createObjectURL
@@ -209,14 +208,17 @@ global.Notification = class MockNotification {
   static permission = 'granted';
   static requestPermission = jest.fn(() => Promise.resolve('granted'));
 
-  constructor(public title: string, public options?: NotificationOptions) {}
+  constructor(
+    public title: string,
+    public options?: NotificationOptions
+  ) {}
 
   close() {}
 } as any;
 
 // Mock geolocation
 global.navigator.geolocation = {
-  getCurrentPosition: jest.fn((success) => {
+  getCurrentPosition: jest.fn(success => {
     success({
       coords: {
         latitude: 35.6762,
@@ -225,37 +227,39 @@ global.navigator.geolocation = {
         altitude: null,
         altitudeAccuracy: null,
         heading: null,
-        speed: null
+        speed: null,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }),
   watchPosition: jest.fn(),
-  clearWatch: jest.fn()
+  clearWatch: jest.fn(),
 } as any;
 
 // Mock clipboard API
 global.navigator.clipboard = {
   writeText: jest.fn(() => Promise.resolve()),
-  readText: jest.fn(() => Promise.resolve('mock clipboard text'))
+  readText: jest.fn(() => Promise.resolve('mock clipboard text')),
 } as any;
 
 // Mock service worker
 global.navigator.serviceWorker = {
-  register: jest.fn(() => Promise.resolve({
-    installing: null,
-    waiting: null,
-    active: null,
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn()
-  })),
+  register: jest.fn(() =>
+    Promise.resolve({
+      installing: null,
+      waiting: null,
+      active: null,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    })
+  ),
   ready: Promise.resolve({
     installing: null,
     waiting: null,
     active: null,
     addEventListener: jest.fn(),
-    removeEventListener: jest.fn()
-  })
+    removeEventListener: jest.fn(),
+  }),
 } as any;
 
 // Increase timeout for async tests
@@ -265,11 +269,11 @@ jest.setTimeout(10000);
 afterEach(() => {
   jest.clearAllMocks();
   jest.clearAllTimers();
-  
+
   // Clear localStorage and sessionStorage
   localStorageMock.clear();
   sessionStorageMock.clear();
-  
+
   // Reset fetch mock
   (global.fetch as jest.Mock).mockClear();
 });

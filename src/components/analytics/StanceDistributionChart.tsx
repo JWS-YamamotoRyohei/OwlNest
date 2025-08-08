@@ -23,7 +23,7 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
   title = 'スタンス分布分析',
   showLegend = true,
   showPercentages = true,
-  className
+  className,
 }) => {
   const stanceData = useMemo(() => {
     if (!data || data.length === 0) return [];
@@ -33,7 +33,7 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
         pros: acc.pros + discussion.prosCount,
         cons: acc.cons + discussion.consCount,
         neutral: acc.neutral + discussion.neutralCount,
-        unknown: acc.unknown + discussion.unknownCount
+        unknown: acc.unknown + discussion.unknownCount,
       }),
       { pros: 0, cons: 0, neutral: 0, unknown: 0 }
     );
@@ -48,29 +48,29 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
         label: '賛成',
         count: totalCounts.pros,
         percentage: (totalCounts.pros / total) * 100,
-        color: '#22c55e'
+        color: '#22c55e',
       },
       {
         stance: 'cons',
         label: '反対',
         count: totalCounts.cons,
         percentage: (totalCounts.cons / total) * 100,
-        color: '#ef4444'
+        color: '#ef4444',
       },
       {
         stance: 'neutral',
         label: '中立',
         count: totalCounts.neutral,
         percentage: (totalCounts.neutral / total) * 100,
-        color: '#64748b'
+        color: '#64748b',
       },
       {
         stance: 'unknown',
         label: 'わからない',
         count: totalCounts.unknown,
         percentage: (totalCounts.unknown / total) * 100,
-        color: '#a855f7'
-      }
+        color: '#a855f7',
+      },
     ];
 
     return stances.filter(stance => stance.count > 0);
@@ -94,22 +94,22 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
     return stanceData.map((stance, index) => {
       const startAngle = (cumulativePercentage / 100) * 360;
       const endAngle = ((cumulativePercentage + stance.percentage) / 100) * 360;
-      
+
       const startAngleRad = (startAngle - 90) * (Math.PI / 180);
       const endAngleRad = (endAngle - 90) * (Math.PI / 180);
-      
+
       const x1 = centerX + radius * Math.cos(startAngleRad);
       const y1 = centerY + radius * Math.sin(startAngleRad);
       const x2 = centerX + radius * Math.cos(endAngleRad);
       const y2 = centerY + radius * Math.sin(endAngleRad);
-      
+
       const largeArcFlag = stance.percentage > 50 ? 1 : 0;
-      
+
       const pathData = [
         `M ${centerX} ${centerY}`,
         `L ${x1} ${y1}`,
         `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-        'Z'
+        'Z',
       ].join(' ');
 
       cumulativePercentage += stance.percentage;
@@ -153,7 +153,7 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
   }
 
   const totalPosts = stanceData.reduce((sum, stance) => sum + stance.count, 0);
-  const dominantStance = stanceData.reduce((max, stance) => 
+  const dominantStance = stanceData.reduce((max, stance) =>
     stance.percentage > max.percentage ? stance : max
   );
 
@@ -162,24 +162,17 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
       <div className="chart-header">
         <h3>{title}</h3>
         <div className="chart-summary">
-          <div className="total-posts">
-            総投稿数: {formatNumber(totalPosts)}
-          </div>
+          <div className="total-posts">総投稿数: {formatNumber(totalPosts)}</div>
           <div className="dominant-stance">
-            最多: <span style={{ color: dominantStance.color }}>{dominantStance.label}</span>
-            ({dominantStance.percentage.toFixed(1)}%)
+            最多: <span style={{ color: dominantStance.color }}>{dominantStance.label}</span>(
+            {dominantStance.percentage.toFixed(1)}%)
           </div>
         </div>
       </div>
 
       <div className="chart-content">
         <div className="pie-chart-container">
-          <svg
-            width="200"
-            height="200"
-            viewBox="0 0 100 100"
-            className="pie-chart"
-          >
+          <svg width="200" height="200" viewBox="0 0 100 100" className="pie-chart">
             {generatePieChart()}
           </svg>
           <div className="chart-center">
@@ -190,20 +183,15 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
 
         {showLegend && (
           <div className="chart-legend">
-            {stanceData.map((stance) => (
+            {stanceData.map(stance => (
               <div key={stance.stance} className="legend-item">
-                <div 
-                  className="legend-color"
-                  style={{ backgroundColor: stance.color }}
-                />
+                <div className="legend-color" style={{ backgroundColor: stance.color }} />
                 <div className="legend-content">
                   <div className="legend-label">{stance.label}</div>
                   <div className="legend-stats">
                     <span className="legend-count">{formatNumber(stance.count)}</span>
                     {showPercentages && (
-                      <span className="legend-percentage">
-                        ({stance.percentage.toFixed(1)}%)
-                      </span>
+                      <span className="legend-percentage">({stance.percentage.toFixed(1)}%)</span>
                     )}
                   </div>
                 </div>
@@ -219,31 +207,29 @@ const StanceDistributionChart: React.FC<StanceDistributionChartProps> = ({
           <div className="insight-item">
             <span className="insight-label">議論の傾向:</span>
             <span className="insight-value">
-              {dominantStance.percentage > 60 
-                ? `${dominantStance.label}寄り` 
-                : dominantStance.percentage > 40 
-                ? '意見が分かれている' 
-                : 'バランスが取れている'
-              }
+              {dominantStance.percentage > 60
+                ? `${dominantStance.label}寄り`
+                : dominantStance.percentage > 40
+                  ? '意見が分かれている'
+                  : 'バランスが取れている'}
             </span>
           </div>
           <div className="insight-item">
             <span className="insight-label">参加度:</span>
             <span className="insight-value">
-              {stanceData.find(s => s.stance === 'unknown')?.percentage || 0 < 20 
-                ? '高い' 
-                : '中程度'
-              }
+              {stanceData.find(s => s.stance === 'unknown')?.percentage || 0 < 20
+                ? '高い'
+                : '中程度'}
             </span>
           </div>
           <div className="insight-item">
             <span className="insight-label">議論の活発さ:</span>
             <span className="insight-value">
-              {(stanceData.find(s => s.stance === 'pros')?.percentage || 0) + 
-               (stanceData.find(s => s.stance === 'cons')?.percentage || 0) > 70 
-                ? '活発' 
-                : '穏やか'
-              }
+              {(stanceData.find(s => s.stance === 'pros')?.percentage || 0) +
+                (stanceData.find(s => s.stance === 'cons')?.percentage || 0) >
+              70
+                ? '活発'
+                : '穏やか'}
             </span>
           </div>
         </div>

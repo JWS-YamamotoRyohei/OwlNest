@@ -9,10 +9,7 @@ interface RegisterFormProps {
   onSwitchToLogin?: () => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({
-  onSuccess,
-  onSwitchToLogin,
-}) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin }) => {
   const { register, isLoading, error, clearError } = useAuth();
   const [formData, setFormData] = useState<RegisterData>({
     email: '',
@@ -27,7 +24,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
-    
+
     if (password.length < 8) {
       errors.push('8文字以上である必要があります');
     }
@@ -43,13 +40,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       errors.push('記号を含む必要があります');
     }
-    
+
     return errors;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === 'password') {
       setFormData(prev => ({ ...prev, [name]: value }));
       setPasswordErrors(validatePassword(value));
@@ -58,7 +55,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
-    
+
     // Clear error when user starts typing
     if (error) {
       clearError();
@@ -67,7 +64,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       return;
     }
@@ -222,17 +219,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
             </button>
           </div>
           {confirmPassword && formData.password !== confirmPassword && (
-            <div className="field-error">
-              パスワードが一致しません
-            </div>
+            <div className="field-error">パスワードが一致しません</div>
           )}
         </div>
 
-        <button
-          type="submit"
-          className="auth-submit-button"
-          disabled={isLoading || !isFormValid()}
-        >
+        <button type="submit" className="auth-submit-button" disabled={isLoading || !isFormValid()}>
           {isLoading ? (
             <>
               <span className="loading-spinner"></span>

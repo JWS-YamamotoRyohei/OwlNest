@@ -27,7 +27,7 @@ export interface Discussion extends DynamoDBItem, BaseEntity {
   GSI2PK: `OWNER#${string}`;
   GSI2SK: `DISCUSSION#${string}`;
   EntityType: EntityType.DISCUSSION;
-  
+
   // Core discussion information
   discussionId: string;
   title: string;
@@ -35,26 +35,26 @@ export interface Discussion extends DynamoDBItem, BaseEntity {
   ownerId: string;
   ownerDisplayName: string;
   ownerStance: Stance;
-  
+
   // Categorization
   categories: DiscussionCategory[];
   tags?: string[];
-  
+
   // Access control
   accessControl: AccessControl;
-  
+
   // Discussion status
   isActive: boolean;
   isLocked: boolean;
   isPinned: boolean;
   isFeatured: boolean;
-  
+
   // Moderation
   moderation: ModerationStatus;
-  
+
   // Statistics
   statistics: DiscussionStatistics;
-  
+
   // Metadata
   metadata: DiscussionMetadata;
 }
@@ -72,24 +72,24 @@ export interface DiscussionPoint extends DynamoDBItem, BaseEntity {
   GSI1PK: `DISCUSSION#${string}`;
   GSI1SK: `POINT#${string}`;
   EntityType: EntityType.DISCUSSION_POINT;
-  
+
   // Core point information
   pointId: string;
   discussionId: string;
   title: string;
   description?: string;
-  
+
   // Hierarchy
   parentId?: string;
   level: number;
   order: number;
-  
+
   // Statistics
   postCount: number;
   prosCount: number;
   consCount: number;
   neutralCount: number;
-  
+
   // Status
   isActive: boolean;
 }
@@ -103,7 +103,7 @@ export interface BackgroundKnowledge extends DynamoDBItem, BaseEntity {
   PK: `DISCUSSION#${string}`;
   SK: `KNOWLEDGE#${string}`;
   EntityType: EntityType.BACKGROUND_KNOWLEDGE;
-  
+
   // Core information
   knowledgeId: string;
   discussionId: string;
@@ -111,10 +111,10 @@ export interface BackgroundKnowledge extends DynamoDBItem, BaseEntity {
   title?: string;
   content: string;
   order: number;
-  
+
   // File information (if type is 'file')
   fileAttachment?: FileAttachment;
-  
+
   // URL information (if type is 'url')
   urlMetadata?: {
     title?: string;

@@ -244,7 +244,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -257,11 +258,11 @@
   .connection-status {
     font-size: 0.8125rem;
   }
-  
+
   .connection-status__details {
     font-size: 0.75rem;
   }
-  
+
   .connection-status__retry-button {
     font-size: 0.75rem;
     padding: 0.1875rem 0.625rem;

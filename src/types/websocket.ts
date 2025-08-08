@@ -13,7 +13,7 @@ export interface WebSocketContextType {
   emit: (event: string, data: any) => void;
 }
 
-export type WebSocketEvent = 
+export type WebSocketEvent =
   | 'NEW_POST'
   | 'POST_UPDATED'
   | 'POST_DELETED'

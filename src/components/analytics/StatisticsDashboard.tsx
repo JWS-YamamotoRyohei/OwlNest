@@ -15,10 +15,10 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
 
   const handlePeriodChange = (period: 'day' | 'week' | 'month') => {
     setSelectedPeriod(period);
-    
+
     const now = new Date();
     let start: Date;
-    
+
     switch (period) {
       case 'day':
         start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days
@@ -34,7 +34,7 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
     const timeRange: AnalyticsTimeRange = {
       start: start.toISOString(),
       end: now.toISOString(),
-      period
+      period,
     };
 
     updateTimeRange(timeRange);
@@ -148,7 +148,9 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
               <div className="stat-label">総投稿数</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatPercentage(platformStats.averageEngagementRate)}</div>
+              <div className="stat-value">
+                {formatPercentage(platformStats.averageEngagementRate)}
+              </div>
               <div className="stat-label">平均エンゲージメント率</div>
             </div>
           </div>
@@ -159,19 +161,27 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
           <h3>成長指標</h3>
           <div className="stats-cards">
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.dailyActiveUsers)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.dailyActiveUsers)}
+              </div>
               <div className="stat-label">日間アクティブユーザー</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.weeklyActiveUsers)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.weeklyActiveUsers)}
+              </div>
               <div className="stat-label">週間アクティブユーザー</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.monthlyActiveUsers)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.monthlyActiveUsers)}
+              </div>
               <div className="stat-label">月間アクティブユーザー</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatPercentage(platformStats.growthMetrics.retentionRate)}</div>
+              <div className="stat-value">
+                {formatPercentage(platformStats.growthMetrics.retentionRate)}
+              </div>
               <div className="stat-label">ユーザー継続率</div>
             </div>
           </div>
@@ -182,15 +192,21 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
           <h3>新規ユーザー</h3>
           <div className="stats-cards">
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.newUsersToday)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.newUsersToday)}
+              </div>
               <div className="stat-label">今日</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.newUsersThisWeek)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.newUsersThisWeek)}
+              </div>
               <div className="stat-label">今週</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(platformStats.growthMetrics.newUsersThisMonth)}</div>
+              <div className="stat-value">
+                {formatNumber(platformStats.growthMetrics.newUsersThisMonth)}
+              </div>
               <div className="stat-label">今月</div>
             </div>
           </div>
@@ -224,31 +240,63 @@ const StatisticsDashboard: React.FC<StatisticsDashboardProps> = ({ className }) 
           <h3>スタンス分布</h3>
           <div className="stance-distribution">
             <div className="stance-item pros">
-              <div className="stance-bar" style={{ width: `${platformStats.userActivityDistribution.stanceDistribution.pros * 100}%` }}></div>
+              <div
+                className="stance-bar"
+                style={{
+                  width: `${platformStats.userActivityDistribution.stanceDistribution.pros * 100}%`,
+                }}
+              ></div>
               <div className="stance-label">
                 <span className="stance-name">賛成</span>
-                <span className="stance-percentage">{formatPercentage(platformStats.userActivityDistribution.stanceDistribution.pros)}</span>
+                <span className="stance-percentage">
+                  {formatPercentage(platformStats.userActivityDistribution.stanceDistribution.pros)}
+                </span>
               </div>
             </div>
             <div className="stance-item cons">
-              <div className="stance-bar" style={{ width: `${platformStats.userActivityDistribution.stanceDistribution.cons * 100}%` }}></div>
+              <div
+                className="stance-bar"
+                style={{
+                  width: `${platformStats.userActivityDistribution.stanceDistribution.cons * 100}%`,
+                }}
+              ></div>
               <div className="stance-label">
                 <span className="stance-name">反対</span>
-                <span className="stance-percentage">{formatPercentage(platformStats.userActivityDistribution.stanceDistribution.cons)}</span>
+                <span className="stance-percentage">
+                  {formatPercentage(platformStats.userActivityDistribution.stanceDistribution.cons)}
+                </span>
               </div>
             </div>
             <div className="stance-item neutral">
-              <div className="stance-bar" style={{ width: `${platformStats.userActivityDistribution.stanceDistribution.neutral * 100}%` }}></div>
+              <div
+                className="stance-bar"
+                style={{
+                  width: `${platformStats.userActivityDistribution.stanceDistribution.neutral * 100}%`,
+                }}
+              ></div>
               <div className="stance-label">
                 <span className="stance-name">中立</span>
-                <span className="stance-percentage">{formatPercentage(platformStats.userActivityDistribution.stanceDistribution.neutral)}</span>
+                <span className="stance-percentage">
+                  {formatPercentage(
+                    platformStats.userActivityDistribution.stanceDistribution.neutral
+                  )}
+                </span>
               </div>
             </div>
             <div className="stance-item unknown">
-              <div className="stance-bar" style={{ width: `${platformStats.userActivityDistribution.stanceDistribution.unknown * 100}%` }}></div>
+              <div
+                className="stance-bar"
+                style={{
+                  width: `${platformStats.userActivityDistribution.stanceDistribution.unknown * 100}%`,
+                }}
+              ></div>
               <div className="stance-label">
                 <span className="stance-name">わからない</span>
-                <span className="stance-percentage">{formatPercentage(platformStats.userActivityDistribution.stanceDistribution.unknown)}</span>
+                <span className="stance-percentage">
+                  {formatPercentage(
+                    platformStats.userActivityDistribution.stanceDistribution.unknown
+                  )}
+                </span>
               </div>
             </div>
           </div>

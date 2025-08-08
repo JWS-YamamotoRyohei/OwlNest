@@ -18,7 +18,7 @@ export const SEO: React.FC<SEOProps> = ({
   keywords = ['議論', 'ディスカッション', 'プラットフォーム', 'オンライン', '意見交換'],
   image = '/logo512.png',
   type = 'website',
-  noIndex = false
+  noIndex = false,
 }) => {
   const location = useLocation();
   const currentUrl = `${window.location.origin}${location.pathname}`;
@@ -31,10 +31,10 @@ export const SEO: React.FC<SEOProps> = ({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywordsString} />
-      
+
       {/* Robots */}
       {noIndex && <meta name="robots" content="noindex, nofollow" />}
-      
+
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={currentUrl} />
@@ -43,39 +43,39 @@ export const SEO: React.FC<SEOProps> = ({
       <meta property="og:image" content={image} />
       <meta property="og:site_name" content="OwlNest" />
       <meta property="og:locale" content="ja_JP" />
-      
+
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={currentUrl} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
-      
+
       {/* Additional Meta Tags */}
       <meta name="author" content="OwlNest" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="Content-Language" content="ja" />
-      
+
       {/* Canonical URL */}
       <link rel="canonical" href={currentUrl} />
-      
+
       {/* Preconnect to external domains */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      
+
       {/* JSON-LD Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "OwlNest",
-          "description": description,
-          "url": currentUrl,
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": `${window.location.origin}/discussions?search={search_term_string}`,
-            "query-input": "required name=search_term_string"
-          }
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'OwlNest',
+          description: description,
+          url: currentUrl,
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: `${window.location.origin}/discussions?search={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+          },
         })}
       </script>
     </Helmet>

@@ -117,11 +117,7 @@ export class DynamoDBError extends Error {
   /**
    * Create a DynamoDBError from a generic error
    */
-  static fromError(
-    error: any,
-    operation: string,
-    context: any = {}
-  ): DynamoDBError {
+  static fromError(error: any, operation: string, context: any = {}): DynamoDBError {
     if (error instanceof DynamoDBError) {
       return error;
     }

@@ -20,34 +20,34 @@ export interface Notification extends DynamoDBItem, BaseEntity {
   GSI1PK: `USER#${string}`;
   GSI1SK: `NOTIFICATION#${string}`;
   EntityType: EntityType.NOTIFICATION;
-  
+
   // Core notification information
   notificationId: string;
   userId: string;
   type: NotificationType;
   title: string;
   message: string;
-  
+
   // Notification data
   data: NotificationData;
-  
+
   // Status
   isRead: boolean;
   isArchived: boolean;
-  
+
   // Priority and category
   priority: NotificationPriority;
   category: NotificationCategory;
-  
+
   // Actions
   actions?: NotificationAction[];
-  
+
   // Metadata
   sourceId?: string;
   sourceType?: string;
   relatedUserId?: string;
   relatedUserName?: string;
-  
+
   // TTL for automatic cleanup (90 days)
   ttl: number;
 }
@@ -55,7 +55,7 @@ export interface Notification extends DynamoDBItem, BaseEntity {
 /**
  * Notification data based on type
  */
-export type NotificationData = 
+export type NotificationData =
   | PostReplyNotificationData
   | PostMentionNotificationData
   | DiscussionFollowNotificationData
@@ -142,7 +142,12 @@ export interface DiscussionUpdateNotificationData {
  */
 export interface ModerationActionNotificationData {
   type: NotificationType.MODERATION_ACTION;
-  actionType: 'post_hidden' | 'post_deleted' | 'discussion_locked' | 'user_warned' | 'user_suspended';
+  actionType:
+    | 'post_hidden'
+    | 'post_deleted'
+    | 'discussion_locked'
+    | 'user_warned'
+    | 'user_suspended';
   targetId: string;
   targetType: 'post' | 'discussion' | 'user';
   reason: string;
@@ -219,12 +224,12 @@ export enum NotificationActionType {
  */
 export interface NotificationPreferences {
   userId: string;
-  
+
   // Channel preferences
   email: boolean;
   push: boolean;
   inApp: boolean;
-  
+
   // Type preferences
   postReplies: boolean;
   postMentions: boolean;
@@ -233,18 +238,18 @@ export interface NotificationPreferences {
   discussionUpdates: boolean;
   moderationActions: boolean;
   systemAnnouncements: boolean;
-  
+
   // Frequency settings
   frequency: NotificationFrequency;
   quietHours: QuietHours;
-  
+
   // Grouping preferences
   groupSimilar: boolean;
   maxGroupSize: number;
-  
+
   // Priority filtering
   minPriority: NotificationPriority;
-  
+
   updatedAt: string;
 }
 
@@ -265,7 +270,7 @@ export enum NotificationFrequency {
 export interface QuietHours {
   enabled: boolean;
   startTime: string; // HH:mm format
-  endTime: string;   // HH:mm format
+  endTime: string; // HH:mm format
   timezone: string;
   days: number[]; // 0-6, Sunday = 0
 }

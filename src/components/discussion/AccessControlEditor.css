@@ -52,7 +52,7 @@
   background: #eff6ff;
 }
 
-.control-type-option input[type="radio"] {
+.control-type-option input[type='radio'] {
   margin-top: 2px;
   cursor: pointer;
 }
@@ -123,7 +123,9 @@
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .user-input:focus {
@@ -305,29 +307,29 @@
   .user-input-group {
     flex-direction: column;
   }
-  
+
   .add-user-btn {
     align-self: flex-start;
   }
-  
+
   .user-list-section {
     padding: 16px;
   }
-  
+
   .control-type-option {
     padding: 12px;
   }
-  
+
   .control-type-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
   }
-  
+
   .control-type-icon {
     font-size: 16px;
   }
-  
+
   .control-type-title {
     font-size: 15px;
   }
@@ -339,15 +341,15 @@
     align-items: flex-start;
     gap: 8px;
   }
-  
-  .control-type-option input[type="radio"] {
+
+  .control-type-option input[type='radio'] {
     margin-top: 0;
   }
-  
+
   .user-item {
     padding: 10px 12px;
   }
-  
+
   .user-id {
     font-size: 13px;
     word-break: break-all;

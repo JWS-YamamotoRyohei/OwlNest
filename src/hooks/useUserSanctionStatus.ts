@@ -26,28 +26,32 @@ export const useUserSanctionStatus = (userId?: string): UseUserSanctionStatusRet
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const checkStatus = useCallback(async (targetUserId?: string) => {
-    const userIdToCheck = targetUserId || userId || user?.userId;
-    
-    if (!userIdToCheck) {
-      setError('ユーザーIDが指定されていません');
-      return;
-    }
+  const checkStatus = useCallback(
+    async (targetUserId?: string) => {
+      const userIdToCheck = targetUserId || userId || user?.userId;
 
-    setLoading(true);
-    setError(null);
+      if (!userIdToCheck) {
+        setError('ユーザーIDが指定されていません');
+        return;
+      }
 
-    try {
-      const response = await userSanctionService.isUserSanctioned(userIdToCheck);
-      setStatus(response);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'ユーザー制裁状況の確認に失敗しました';
-      setError(errorMessage);
-      console.error('Failed to check user sanction status:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, user?.userId]);
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await userSanctionService.isUserSanctioned(userIdToCheck);
+        setStatus(response);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'ユーザー制裁状況の確認に失敗しました';
+        setError(errorMessage);
+        console.error('Failed to check user sanction status:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userId, user?.userId]
+  );
 
   const refreshStatus = useCallback(async () => {
     await checkStatus();
@@ -64,9 +68,12 @@ export const useUserSanctionStatus = (userId?: string): UseUserSanctionStatusRet
   useEffect(() => {
     if (!status) return;
 
-    const interval = setInterval(() => {
-      refreshStatus();
-    }, 5 * 60 * 1000); // 5 minutes
+    const interval = setInterval(
+      () => {
+        refreshStatus();
+      },
+      5 * 60 * 1000
+    ); // 5 minutes
 
     return () => clearInterval(interval);
   }, [status, refreshStatus]);

@@ -11,10 +11,10 @@ export const CreateDiscussionDemo: React.FC = () => {
 
   const handleSubmit = async (data: CreateDiscussionData) => {
     setIsLoading(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     console.log('Submitted discussion data:', data);
     setSubmittedData(data);
     setIsLoading(false);
@@ -33,7 +33,8 @@ export const CreateDiscussionDemo: React.FC = () => {
   // Sample initial data for testing
   const sampleData: Partial<CreateDiscussionData> = {
     title: 'AI技術の社会への影響について',
-    description: 'AI技術の急速な発展が社会に与える影響について議論しましょう。雇用、プライバシー、倫理的な観点から様々な意見を交換したいと思います。',
+    description:
+      'AI技術の急速な発展が社会に与える影響について議論しましょう。雇用、プライバシー、倫理的な観点から様々な意見を交換したいと思います。',
     ownerStance: Stance.NEUTRAL,
     categories: [DiscussionCategory.TECHNOLOGY, DiscussionCategory.SOCIETY],
     points: [
@@ -52,7 +53,8 @@ export const CreateDiscussionDemo: React.FC = () => {
       {
         type: 'text',
         title: 'AI技術の現状',
-        content: '現在のAI技術は機械学習、特に深層学習の発展により、画像認識、自然言語処理、音声認識などの分野で人間レベルの性能を達成しています。',
+        content:
+          '現在のAI技術は機械学習、特に深層学習の発展により、画像認識、自然言語処理、音声認識などの分野で人間レベルの性能を達成しています。',
         order: 0,
       },
     ],
@@ -143,14 +145,15 @@ export const CreateDiscussionDemo: React.FC = () => {
                 <span className="result-label">タイプ:</span>
                 <span className="result-value">{submittedData.accessControl?.type || 'open'}</span>
               </div>
-              {submittedData.accessControl?.userIds && submittedData.accessControl.userIds.length > 0 && (
-                <div className="result-item">
-                  <span className="result-label">対象ユーザー:</span>
-                  <span className="result-value">
-                    {submittedData.accessControl.userIds.join(', ')}
-                  </span>
-                </div>
-              )}
+              {submittedData.accessControl?.userIds &&
+                submittedData.accessControl.userIds.length > 0 && (
+                  <div className="result-item">
+                    <span className="result-label">対象ユーザー:</span>
+                    <span className="result-value">
+                      {submittedData.accessControl.userIds.join(', ')}
+                    </span>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -177,12 +180,9 @@ export const CreateDiscussionDemo: React.FC = () => {
       <div className="demo-header">
         <h1>議論作成フォーム デモ</h1>
         <p>新しい議論を作成するためのフォームです。各ステップを進めて議論を作成してください。</p>
-        
+
         <div className="demo-actions">
-          <button
-            onClick={() => window.location.reload()}
-            className="demo-btn demo-btn-secondary"
-          >
+          <button onClick={() => window.location.reload()} className="demo-btn demo-btn-secondary">
             空のフォームで開始
           </button>
           <button

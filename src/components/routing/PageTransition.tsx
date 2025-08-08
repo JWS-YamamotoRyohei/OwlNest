@@ -11,7 +11,7 @@ interface PageTransitionProps {
 export const PageTransition: React.FC<PageTransitionProps> = ({
   children,
   duration = 300,
-  type = 'fade'
+  type = 'fade',
 }) => {
   const location = useLocation();
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -20,7 +20,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
   useEffect(() => {
     if (location !== displayLocation) {
       setIsTransitioning(true);
-      
+
       const timer = setTimeout(() => {
         setDisplayLocation(location);
         setIsTransitioning(false);
@@ -34,7 +34,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
   const activeClass = isTransitioning ? 'page-transition--transitioning' : '';
 
   return (
-    <div 
+    <div
       className={`${transitionClass} ${activeClass}`}
       style={{ '--transition-duration': `${duration}ms` } as React.CSSProperties}
     >

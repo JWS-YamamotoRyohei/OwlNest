@@ -32,13 +32,13 @@ class BundleAnalyzer {
 
     // This would integrate with webpack-bundle-analyzer in a real implementation
     console.group('Bundle Analysis');
-    
+
     // Simulate bundle analysis
     this.analyzeChunks();
     this.analyzeDependencies();
     this.reportLargeModules();
     this.reportDuplicates();
-    
+
     console.groupEnd();
   }
 
@@ -52,11 +52,11 @@ class BundleAnalyzer {
       { name: 'vendor', size: 800000, chunks: ['vendor'] },
       { name: 'discussions', size: 45000, chunks: ['discussions'] },
       { name: 'timeline', size: 32000, chunks: ['timeline'] },
-      { name: 'moderation', size: 28000, chunks: ['moderation'] }
+      { name: 'moderation', size: 28000, chunks: ['moderation'] },
     ];
 
     console.table(mockChunks);
-    
+
     // Warn about large chunks
     mockChunks.forEach(chunk => {
       if (chunk.size > 500000) {
@@ -74,7 +74,7 @@ class BundleAnalyzer {
       { name: 'react-dom', size: 130000 },
       { name: 'react-router-dom', size: 25000 },
       { name: '@aws-sdk/client-dynamodb', size: 180000 },
-      { name: '@mui/material', size: 220000 }
+      { name: '@mui/material', size: 220000 },
     ];
 
     console.log('Large Dependencies:');
@@ -88,7 +88,7 @@ class BundleAnalyzer {
     const largeModules = [
       { name: 'src/components/discussions/DiscussionList.tsx', size: 15000 },
       { name: 'src/services/discussionService.ts', size: 12000 },
-      { name: 'src/components/posts/PostCard.tsx', size: 11000 }
+      { name: 'src/components/posts/PostCard.tsx', size: 11000 },
     ];
 
     console.log('Large Modules (>10KB):');
@@ -101,7 +101,7 @@ class BundleAnalyzer {
   private reportDuplicates(): void {
     const duplicates = [
       { name: 'lodash/isEqual', instances: 3, totalSize: 4500 },
-      { name: 'moment', instances: 2, totalSize: 67000 }
+      { name: 'moment', instances: 2, totalSize: 67000 },
     ];
 
     if (duplicates.length > 0) {
@@ -123,7 +123,7 @@ class BundleAnalyzer {
       'Consider using a smaller date library instead of moment',
       'Implement virtual scrolling for large lists',
       'Use React.memo for expensive components',
-      'Optimize bundle with webpack-bundle-analyzer'
+      'Optimize bundle with webpack-bundle-analyzer',
     ];
 
     return suggestions;
@@ -145,8 +145,8 @@ class BundleAnalyzer {
       warnings: [
         'Vendor bundle is larger than recommended (800KB)',
         'Consider splitting large components',
-        'Some dependencies might be duplicated'
-      ]
+        'Some dependencies might be duplicated',
+      ],
     };
   }
 }
@@ -169,7 +169,7 @@ export function useBundleAnalysis() {
 
   return {
     generateReport: bundleAnalyzer.generateReport.bind(bundleAnalyzer),
-    getOptimizationSuggestions: bundleAnalyzer.getOptimizationSuggestions.bind(bundleAnalyzer)
+    getOptimizationSuggestions: bundleAnalyzer.getOptimizationSuggestions.bind(bundleAnalyzer),
   };
 }
 
@@ -180,7 +180,7 @@ export function setupBundleAnalyzer() {
   if (process.env.ANALYZE_BUNDLE === 'true') {
     // This would be used in webpack config
     console.log('Bundle analyzer enabled');
-    
+
     // In a real implementation, this would configure webpack-bundle-analyzer
     return {
       plugins: [
@@ -189,9 +189,9 @@ export function setupBundleAnalyzer() {
         //   openAnalyzer: true,
         //   generateStatsFile: true
         // })
-      ]
+      ],
     };
   }
-  
+
   return { plugins: [] };
 }

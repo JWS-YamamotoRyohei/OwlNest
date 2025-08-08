@@ -15,7 +15,7 @@ describe('FileUploadService', () => {
 
   beforeEach(() => {
     fileUploadService = new FileUploadService();
-    
+
     // Create a mock file
     mockFile = new File(['test content'], 'test.txt', {
       type: 'text/plain',
@@ -80,7 +80,7 @@ describe('FileUploadService', () => {
   describe('generateFileId', () => {
     it('should generate unique file IDs', () => {
       const generateFileId = (fileUploadService as any).generateFileId;
-      
+
       const id1 = generateFileId();
       const id2 = generateFileId();
 

@@ -98,25 +98,21 @@ export const TimelineItem: React.FC<TimelineItemProps> = ({
     getPriorityClass(item.priority),
     item.isRead ? 'timeline-item--read' : 'timeline-item--unread',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className={itemClasses} onClick={handleClick}>
       <div className="timeline-item__header">
         <div className="timeline-item__type">
-          <span className="timeline-item__type-icon">
-            {getItemTypeIcon(item.itemType)}
-          </span>
-          <span className="timeline-item__type-label">
-            {getItemTypeLabel(item.itemType)}
-          </span>
+          <span className="timeline-item__type-icon">{getItemTypeIcon(item.itemType)}</span>
+          <span className="timeline-item__type-label">{getItemTypeLabel(item.itemType)}</span>
         </div>
-        
+
         <div className="timeline-item__meta">
-          <span className="timeline-item__date">
-            {formatDate(item.createdAt)}
-          </span>
-          
+          <span className="timeline-item__date">{formatDate(item.createdAt)}</span>
+
           {!item.isRead && (
             <button
               className="timeline-item__mark-read"
@@ -141,40 +137,26 @@ export const TimelineItem: React.FC<TimelineItemProps> = ({
               </div>
             )}
           </div>
-          
+
           <div className="timeline-item__author-info">
-            <span className="timeline-item__author-name">
-              {item.authorDisplayName}
-            </span>
-            
+            <span className="timeline-item__author-name">{item.authorDisplayName}</span>
+
             {item.discussionTitle && (
-              <span className="timeline-item__discussion">
-                in {item.discussionTitle}
-              </span>
+              <span className="timeline-item__discussion">in {item.discussionTitle}</span>
             )}
-            
-            {item.pointTitle && (
-              <span className="timeline-item__point">
-                → {item.pointTitle}
-              </span>
-            )}
+
+            {item.pointTitle && <span className="timeline-item__point">→ {item.pointTitle}</span>}
           </div>
         </div>
 
         <div className="timeline-item__main">
-          <h3 className="timeline-item__title">
-            {item.title}
-          </h3>
-          
-          <p className="timeline-item__preview">
-            {item.preview}
-          </p>
+          <h3 className="timeline-item__title">{item.title}</h3>
+
+          <p className="timeline-item__preview">{item.preview}</p>
         </div>
       </div>
 
-      {!item.isRead && (
-        <div className="timeline-item__unread-indicator" />
-      )}
+      {!item.isRead && <div className="timeline-item__unread-indicator" />}
     </div>
   );
 };

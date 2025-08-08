@@ -28,8 +28,9 @@
 .page-transition--scale {
   transform: scale(1);
   opacity: 1;
-  transition: transform var(--transition-duration) ease-in-out,
-              opacity var(--transition-duration) ease-in-out;
+  transition:
+    transform var(--transition-duration) ease-in-out,
+    opacity var(--transition-duration) ease-in-out;
 }
 
 .page-transition--scale.page-transition--transitioning {
@@ -42,7 +43,7 @@
   .page-transition {
     --transition-duration: 200ms;
   }
-  
+
   .page-transition--slide.page-transition--transitioning {
     transform: translateX(-10px);
   }
@@ -53,7 +54,7 @@
   .page-transition {
     --transition-duration: 0ms;
   }
-  
+
   .page-transition--fade,
   .page-transition--slide,
   .page-transition--scale {

@@ -28,7 +28,12 @@ export interface SpamDetectionResult {
   reasons: string[];
   spamScore: number; // 0-100
   detectedPatterns: Array<{
-    type: 'duplicate_content' | 'excessive_links' | 'promotional' | 'repetitive_text' | 'suspicious_patterns';
+    type:
+      | 'duplicate_content'
+      | 'excessive_links'
+      | 'promotional'
+      | 'repetitive_text'
+      | 'suspicious_patterns';
     description: string;
     confidence: number;
   }>;
@@ -63,9 +68,22 @@ export interface FilterMatchResult {
 export class ContentFilterService {
   private readonly ngWords = [
     // 基本的な不適切語句（実際の実装では外部設定ファイルから読み込み）
-    'スパム', 'spam', '詐欺', 'scam', '荒らし', 'troll',
-    '誹謗中傷', '差別', 'discrimination', 'harassment',
-    '暴力', 'violence', '脅迫', 'threat', '殺害', 'kill',
+    'スパム',
+    'spam',
+    '詐欺',
+    'scam',
+    '荒らし',
+    'troll',
+    '誹謗中傷',
+    '差別',
+    'discrimination',
+    'harassment',
+    '暴力',
+    'violence',
+    '脅迫',
+    'threat',
+    '殺害',
+    'kill',
     // 追加のNGワードは設定で管理
   ];
 
@@ -80,15 +98,18 @@ export class ContentFilterService {
   /**
    * Analyze content for inappropriate material
    */
-  async analyzeContent(content: string, metadata?: {
-    authorId?: string;
-    discussionId?: string;
-    contentType?: 'post' | 'comment' | 'discussion_title';
-  }): Promise<ContentAnalysisResult> {
+  async analyzeContent(
+    content: string,
+    metadata?: {
+      authorId?: string;
+      discussionId?: string;
+      contentType?: 'post' | 'comment' | 'discussion_title';
+    }
+  ): Promise<ContentAnalysisResult> {
     try {
       // クライアントサイドでの基本的な分析
       const basicAnalysis = this.performBasicAnalysis(content);
-      
+
       // サーバーサイドでの詳細分析
       const response = await apiService.post('/moderation/content/analyze', {
         content,
@@ -107,11 +128,14 @@ export class ContentFilterService {
   /**
    * Detect spam content
    */
-  async detectSpam(content: string, metadata?: {
-    authorId?: string;
-    authorPostHistory?: number;
-    ipAddress?: string;
-  }): Promise<SpamDetectionResult> {
+  async detectSpam(
+    content: string,
+    metadata?: {
+      authorId?: string;
+      authorPostHistory?: number;
+      ipAddress?: string;
+    }
+  ): Promise<SpamDetectionResult> {
     try {
       const response = await apiService.post('/moderation/content/spam-detection', {
         content,
@@ -134,31 +158,45 @@ export class ContentFilterService {
       const response = await apiService.get('/moderation/filters/active');
       return response.data as ContentFilterRule[];
     } catch (error) {
-      throw new Error(`Failed to get active filters: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get active filters: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Create a new content filter
    */
-  async createFilter(filterData: Omit<ContentFilterRule, 'filterId' | 'createdAt' | 'updatedAt' | 'PK' | 'SK' | 'EntityType' | 'stats'>): Promise<ContentFilterRule> {
+  async createFilter(
+    filterData: Omit<
+      ContentFilterRule,
+      'filterId' | 'createdAt' | 'updatedAt' | 'PK' | 'SK' | 'EntityType' | 'stats'
+    >
+  ): Promise<ContentFilterRule> {
     try {
       const response = await apiService.post('/moderation/filters', filterData);
       return response.data as ContentFilterRule;
     } catch (error) {
-      throw new Error(`Failed to create filter: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to create filter: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Update a content filter
    */
-  async updateFilter(filterId: string, updates: Partial<ContentFilterRule>): Promise<ContentFilterRule> {
+  async updateFilter(
+    filterId: string,
+    updates: Partial<ContentFilterRule>
+  ): Promise<ContentFilterRule> {
     try {
       const response = await apiService.put(`/moderation/filters/${filterId}`, updates);
       return response.data as ContentFilterRule;
     } catch (error) {
-      throw new Error(`Failed to update filter: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to update filter: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -169,7 +207,9 @@ export class ContentFilterService {
     try {
       await apiService.delete(`/moderation/filters/${filterId}`);
     } catch (error) {
-      throw new Error(`Failed to delete filter: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete filter: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -183,17 +223,22 @@ export class ContentFilterService {
       });
       return response.data as FilterMatchResult;
     } catch (error) {
-      throw new Error(`Failed to test filter: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to test filter: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Get filter statistics
    */
-  async getFilterStats(filterId: string, timeRange?: {
-    startDate: string;
-    endDate: string;
-  }): Promise<{
+  async getFilterStats(
+    filterId: string,
+    timeRange?: {
+      startDate: string;
+      endDate: string;
+    }
+  ): Promise<{
     totalMatches: number;
     truePositives: number;
     falsePositives: number;
@@ -230,14 +275,20 @@ export class ContentFilterService {
         }>;
       };
     } catch (error) {
-      throw new Error(`Failed to get filter stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get filter stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Update filter accuracy based on moderation feedback
    */
-  async updateFilterAccuracy(filterId: string, contentId: string, wasCorrect: boolean): Promise<void> {
+  async updateFilterAccuracy(
+    filterId: string,
+    contentId: string,
+    wasCorrect: boolean
+  ): Promise<void> {
     try {
       await apiService.post(`/moderation/filters/${filterId}/feedback`, {
         contentId,
@@ -245,7 +296,9 @@ export class ContentFilterService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to update filter accuracy: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to update filter accuracy: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -257,7 +310,9 @@ export class ContentFilterService {
       const response = await apiService.get('/moderation/config/filters');
       return response.data as ContentFilterConfig;
     } catch (error) {
-      throw new Error(`Failed to get filter config: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get filter config: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -269,7 +324,9 @@ export class ContentFilterService {
       const response = await apiService.put('/moderation/config/filters', config);
       return response.data as ContentFilterConfig;
     } catch (error) {
-      throw new Error(`Failed to update filter config: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to update filter config: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -312,9 +369,8 @@ export class ContentFilterService {
 
     // 結果の決定
     const isAppropriate = detectedIssues.length === 0;
-    const confidence = detectedIssues.length > 0 
-      ? Math.max(...detectedIssues.map(issue => issue.confidence))
-      : 0.9;
+    const confidence =
+      detectedIssues.length > 0 ? Math.max(...detectedIssues.map(issue => issue.confidence)) : 0.9;
 
     let suggestedAction: ContentAnalysisResult['suggestedAction'] = 'allow';
     if (maxSeverity === 'high') {
@@ -330,7 +386,7 @@ export class ContentFilterService {
       confidence,
       detectedIssues,
       suggestedAction,
-      explanation: isAppropriate 
+      explanation: isAppropriate
         ? 'コンテンツに問題は検出されませんでした。'
         : `${detectedIssues.length}件の問題が検出されました。`,
     };
@@ -348,7 +404,8 @@ export class ContentFilterService {
     for (const pattern of this.spamPatterns) {
       const matches = content.match(pattern);
       if (matches && matches.length > 0) {
-        if (pattern === this.spamPatterns[0]) { // 同じ文字の連続
+        if (pattern === this.spamPatterns[0]) {
+          // 同じ文字の連続
           detectedPatterns.push({
             type: 'repetitive_text',
             description: '同じ文字の異常な連続が検出されました',
@@ -356,7 +413,8 @@ export class ContentFilterService {
           });
           reasons.push('repetitive_text');
           spamScore += 30;
-        } else if (pattern === this.spamPatterns[1]) { // URL検出
+        } else if (pattern === this.spamPatterns[1]) {
+          // URL検出
           if (matches.length > 3) {
             detectedPatterns.push({
               type: 'excessive_links',
@@ -366,7 +424,8 @@ export class ContentFilterService {
             reasons.push('excessive_links');
             spamScore += 25;
           }
-        } else if (pattern === this.spamPatterns[2]) { // 長い数字列
+        } else if (pattern === this.spamPatterns[2]) {
+          // 長い数字列
           detectedPatterns.push({
             type: 'suspicious_patterns',
             description: '疑わしい数字パターンが検出されました',
@@ -374,7 +433,8 @@ export class ContentFilterService {
           });
           reasons.push('suspicious_patterns');
           spamScore += 20;
-        } else if (pattern === this.spamPatterns[3] || pattern === this.spamPatterns[4]) { // 記号の連続
+        } else if (pattern === this.spamPatterns[3] || pattern === this.spamPatterns[4]) {
+          // 記号の連続
           detectedPatterns.push({
             type: 'suspicious_patterns',
             description: '記号の異常な連続が検出されました',
@@ -425,7 +485,7 @@ export class ContentFilterService {
   private getNGWordSeverity(word: string): 'low' | 'medium' | 'high' {
     const highSeverityWords = ['殺害', 'kill', '脅迫', 'threat', '暴力', 'violence'];
     const mediumSeverityWords = ['誹謗中傷', 'harassment', '差別', 'discrimination'];
-    
+
     if (highSeverityWords.includes(word.toLowerCase())) {
       return 'high';
     } else if (mediumSeverityWords.includes(word.toLowerCase())) {
@@ -437,11 +497,14 @@ export class ContentFilterService {
   /**
    * Process content with automatic filtering
    */
-  async processContentWithFilters(content: string, metadata?: {
-    authorId?: string;
-    discussionId?: string;
-    contentType?: 'post' | 'comment' | 'discussion_title';
-  }): Promise<{
+  async processContentWithFilters(
+    content: string,
+    metadata?: {
+      authorId?: string;
+      discussionId?: string;
+      contentType?: 'post' | 'comment' | 'discussion_title';
+    }
+  ): Promise<{
     shouldAllow: boolean;
     action: 'allow' | 'flag' | 'hide' | 'delete' | 'queue_for_review';
     reason?: string;
@@ -463,14 +526,14 @@ export class ContentFilterService {
     } catch (error) {
       // フォールバック処理
       console.warn('Server-side content processing failed, using basic processing:', error);
-      
+
       const analysis = this.performBasicAnalysis(content);
       const spamResult = this.performBasicSpamDetection(content);
-      
+
       const shouldAllow = analysis.isAppropriate && !spamResult.isSpam;
       const action = shouldAllow ? 'allow' : analysis.suggestedAction;
       const confidence = Math.max(analysis.confidence, spamResult.confidence);
-      
+
       return {
         shouldAllow,
         action,

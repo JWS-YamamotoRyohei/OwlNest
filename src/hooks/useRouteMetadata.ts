@@ -45,6 +45,6 @@ export const useRouteMetadata = () => {
         }
         return route.path === location.pathname;
       });
-    }
+    },
   };
 };

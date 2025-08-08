@@ -1,6 +1,6 @@
 import { apiService, ApiResponse } from './api';
 import { getWebSocketService } from './websocketService';
-import { Post, CreatePostData, UpdatePostData, PostFilters, PostSortOption } from '../types/post';
+import { Post, CreatePostData, UpdatePostData, PostFilters, PostSortOptions } from '../types/post';
 
 export interface PostsResponse {
   posts: Post[];
@@ -16,13 +16,13 @@ export class PostService {
   async createPost(data: CreatePostData): Promise<Post> {
     try {
       const response: ApiResponse<Post> = await apiService.post('/posts', data);
-      
+
       if (response.success && response.data) {
         // Broadcast the new post via WebSocket
         this.broadcastNewPost(response.data);
         return response.data;
       }
-      
+
       throw new Error(response.message || 'Failed to create post');
     } catch (error) {
       console.error('Error creating post:', error);
@@ -34,13 +34,13 @@ export class PostService {
   async updatePost(postId: string, data: UpdatePostData): Promise<Post> {
     try {
       const response: ApiResponse<Post> = await apiService.put(`/posts/${postId}`, data);
-      
+
       if (response.success && response.data) {
         // Broadcast the updated post via WebSocket
         this.broadcastPostUpdate(response.data);
         return response.data;
       }
-      
+
       throw new Error(response.message || 'Failed to update post');
     } catch (error) {
       console.error('Error updating post:', error);
@@ -51,9 +51,9 @@ export class PostService {
   // Delete a post
   async deletePost(postId: string): Promise<void> {
     try {
-      const response: ApiResponse<{ postId: string; discussionId: string }> = 
+      const response: ApiResponse<{ postId: string; discussionId: string }> =
         await apiService.delete(`/posts/${postId}`);
-      
+
       if (response.success && response.data) {
         // Broadcast the post deletion via WebSocket
         this.broadcastPostDeletion(response.data.postId, response.data.discussionId);
@@ -70,32 +70,36 @@ export class PostService {
   async getDiscussionPosts(
     discussionId: string,
     filters?: PostFilters,
-    sortBy?: PostSortOption,
+    sortBy?: PostSortOptions,
     limit?: number,
     nextToken?: string
   ): Promise<PostsResponse> {
     try {
       const params = new URLSearchParams();
-      
-      if (filters?.pointId) params.append('pointId', filters.pointId);
+      if (filters?.discussionPointId) params.append('pointId', filters.discussionPointId);
+      // if (filters?.pointId) params.append('pointId', filters.pointId);
       if (filters?.authorId) params.append('authorId', filters.authorId);
       if (filters?.stance) params.append('stance', filters.stance);
       if (filters?.hasAttachments !== undefined) {
         params.append('hasAttachments', filters.hasAttachments.toString());
       }
-      if (sortBy) params.append('sortBy', sortBy);
+      // if (sortBy) params.append('sortBy', sortBy);
+      if (sortBy) {
+        params.append('sortField', sortBy.field);
+        params.append('sortDirection', sortBy.direction);
+      }
       if (limit) params.append('limit', limit.toString());
       if (nextToken) params.append('nextToken', nextToken);
 
       const queryString = params.toString();
       const endpoint = `/discussions/${discussionId}/posts${queryString ? `?${queryString}` : ''}`;
-      
+
       const response: ApiResponse<PostsResponse> = await apiService.get(endpoint);
-      
+
       if (response.success && response.data) {
         return response.data;
       }
-      
+
       throw new Error(response.message || 'Failed to fetch posts');
     } catch (error) {
       console.error('Error fetching discussion posts:', error);
@@ -107,11 +111,11 @@ export class PostService {
   async getPost(postId: string): Promise<Post> {
     try {
       const response: ApiResponse<Post> = await apiService.get(`/posts/${postId}`);
-      
+
       if (response.success && response.data) {
         return response.data;
       }
-      
+
       throw new Error(response.message || 'Failed to fetch post');
     } catch (error) {
       console.error('Error fetching post:', error);
@@ -120,11 +124,7 @@ export class PostService {
   }
 
   // Get posts by user
-  async getUserPosts(
-    userId: string,
-    limit?: number,
-    nextToken?: string
-  ): Promise<PostsResponse> {
+  async getUserPosts(userId: string, limit?: number, nextToken?: string): Promise<PostsResponse> {
     try {
       const params = new URLSearchParams();
       if (limit) params.append('limit', limit.toString());
@@ -132,13 +132,13 @@ export class PostService {
 
       const queryString = params.toString();
       const endpoint = `/users/${userId}/posts${queryString ? `?${queryString}` : ''}`;
-      
+
       const response: ApiResponse<PostsResponse> = await apiService.get(endpoint);
-      
+
       if (response.success && response.data) {
         return response.data;
       }
-      
+
       throw new Error(response.message || 'Failed to fetch user posts');
     } catch (error) {
       console.error('Error fetching user posts:', error);
@@ -149,13 +149,20 @@ export class PostService {
   // React to a post (like, agree, disagree, etc.)
   async reactToPost(postId: string, reactionType: string): Promise<void> {
     try {
-      const response: ApiResponse<{ post: Post; reactionData: any }> = await apiService.post(`/posts/${postId}/reactions`, {
-        reactionType,
-      });
-      
+      const response: ApiResponse<{ post: Post; reactionData: any }> = await apiService.post(
+        `/posts/${postId}/reactions`,
+        {
+          reactionType,
+        }
+      );
+
       if (response.success && response.data) {
         // Broadcast the reaction change via WebSocket
-        this.broadcastPostReaction(postId, response.data.post.discussionId, response.data.reactionData);
+        this.broadcastPostReaction(
+          postId,
+          response.data.post.discussionId,
+          response.data.reactionData
+        );
       } else {
         throw new Error(response.message || 'Failed to react to post');
       }
@@ -168,11 +175,17 @@ export class PostService {
   // Remove reaction from a post
   async removeReaction(postId: string): Promise<void> {
     try {
-      const response: ApiResponse<{ post: Post; reactionData: any }> = await apiService.delete(`/posts/${postId}/reactions`);
-      
+      const response: ApiResponse<{ post: Post; reactionData: any }> = await apiService.delete(
+        `/posts/${postId}/reactions`
+      );
+
       if (response.success && response.data) {
         // Broadcast the reaction change via WebSocket
-        this.broadcastPostReaction(postId, response.data.post.discussionId, response.data.reactionData);
+        this.broadcastPostReaction(
+          postId,
+          response.data.post.discussionId,
+          response.data.reactionData
+        );
       } else {
         throw new Error(response.message || 'Failed to remove reaction');
       }
@@ -189,7 +202,7 @@ export class PostService {
         reason,
         details,
       });
-      
+
       if (!response.success) {
         throw new Error(response.message || 'Failed to report post');
       }
@@ -202,14 +215,22 @@ export class PostService {
   // Hide/unhide a post (for discussion owners)
   async togglePostVisibility(postId: string, isHidden: boolean, reason?: string): Promise<void> {
     try {
-      const response: ApiResponse<{ post: Post }> = await apiService.put(`/posts/${postId}/visibility`, {
-        isHidden,
-        reason,
-      });
-      
+      const response: ApiResponse<{ post: Post }> = await apiService.put(
+        `/posts/${postId}/visibility`,
+        {
+          isHidden,
+          reason,
+        }
+      );
+
       if (response.success && response.data) {
         // Broadcast the visibility change via WebSocket
-        this.broadcastPostVisibilityChange(postId, response.data.post.discussionId, isHidden, reason);
+        this.broadcastPostVisibilityChange(
+          postId,
+          response.data.post.discussionId,
+          isHidden,
+          reason
+        );
       } else {
         throw new Error(response.message || 'Failed to toggle post visibility');
       }
@@ -231,7 +252,7 @@ export class PostService {
           discussionId: post.discussionId,
           discussionPointId: post.discussionPointId,
           authorId: post.authorId,
-        }
+        },
       });
     }
   }
@@ -247,7 +268,7 @@ export class PostService {
           discussionId: post.discussionId,
           discussionPointId: post.discussionPointId,
           authorId: post.authorId,
-        }
+        },
       });
     }
   }
@@ -262,7 +283,7 @@ export class PostService {
         metadata: {
           action: 'delete',
           discussionId,
-        }
+        },
       });
     }
   }
@@ -279,13 +300,18 @@ export class PostService {
         metadata: {
           action: 'reaction',
           discussionId,
-        }
+        },
       });
     }
   }
 
   // Broadcast post visibility changes
-  private broadcastPostVisibilityChange(postId: string, discussionId: string, isHidden: boolean, reason?: string): void {
+  private broadcastPostVisibilityChange(
+    postId: string,
+    discussionId: string,
+    isHidden: boolean,
+    reason?: string
+  ): void {
     if (this.websocketService.isConnected()) {
       this.websocketService.broadcastPost(discussionId, {
         type: 'post_visibility_changed',
@@ -297,7 +323,7 @@ export class PostService {
         metadata: {
           action: 'visibility_change',
           discussionId,
-        }
+        },
       });
     }
   }

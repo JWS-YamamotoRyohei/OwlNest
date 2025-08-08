@@ -19,7 +19,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
   onFiltersChange,
   onClear,
   onSave,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
@@ -32,14 +32,14 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
     { value: DiscussionCategory.TECHNOLOGY, label: 'ネット・テクノロジー' },
     { value: DiscussionCategory.ENTERTAINMENT, label: 'エンタメ' },
     { value: DiscussionCategory.SPORTS, label: 'スポーツ' },
-    { value: DiscussionCategory.OTHER, label: 'その他' }
+    { value: DiscussionCategory.OTHER, label: 'その他' },
   ];
 
   const stances = [
     { value: Stance.PROS, label: '賛成', color: 'var(--color-pros)' },
     { value: Stance.CONS, label: '反対', color: 'var(--color-cons)' },
     { value: Stance.NEUTRAL, label: '中立', color: 'var(--color-neutral)' },
-    { value: Stance.UNKNOWN, label: 'わからない', color: 'var(--color-unknown)' }
+    { value: Stance.UNKNOWN, label: 'わからない', color: 'var(--color-unknown)' },
   ];
 
   const getActiveFiltersCount = (): number => {
@@ -56,7 +56,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
   const handleFilterChange = (key: string, value: any) => {
     onFiltersChange({
       ...filters,
-      [key]: value
+      [key]: value,
     });
   };
 
@@ -65,7 +65,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
     const newArray = checked
       ? [...currentArray, item]
       : currentArray.filter((i: any) => i !== item);
-    
+
     handleFilterChange(key, newArray.length > 0 ? newArray : undefined);
   };
 
@@ -98,15 +98,11 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
           onClick={() => setIsExpanded(!isExpanded)}
           aria-expanded={isExpanded}
         >
-          <span className="advanced-search-filters__toggle-icon">
-            {isExpanded ? '🔽' : '▶️'}
-          </span>
+          <span className="advanced-search-filters__toggle-icon">{isExpanded ? '🔽' : '▶️'}</span>
           <span className="advanced-search-filters__toggle-text">
             詳細フィルター
             {activeFiltersCount > 0 && (
-              <span className="advanced-search-filters__count">
-                ({activeFiltersCount})
-              </span>
+              <span className="advanced-search-filters__count">({activeFiltersCount})</span>
             )}
           </span>
         </button>
@@ -140,18 +136,18 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
             <div className="advanced-search-filters__section">
               <h4 className="advanced-search-filters__section-title">カテゴリ</h4>
               <div className="advanced-search-filters__checkbox-group">
-                {categories.map((category) => (
+                {categories.map(category => (
                   <label key={category.value} className="advanced-search-filters__checkbox-label">
                     <input
                       type="checkbox"
                       checked={(filters as any).categories?.includes(category.value) || false}
-                      onChange={(e) => handleArrayFilterChange('categories', category.value, e.target.checked)}
+                      onChange={e =>
+                        handleArrayFilterChange('categories', category.value, e.target.checked)
+                      }
                       className="advanced-search-filters__checkbox"
                       disabled={isLoading}
                     />
-                    <span className="advanced-search-filters__checkbox-text">
-                      {category.label}
-                    </span>
+                    <span className="advanced-search-filters__checkbox-text">{category.label}</span>
                   </label>
                 ))}
               </div>
@@ -164,23 +160,33 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
               {type === 'discussions' ? '作成者のスタンス' : 'スタンス'}
             </h4>
             <div className="advanced-search-filters__stance-group">
-              {stances.map((stance) => (
+              {stances.map(stance => (
                 <button
                   key={stance.value}
                   className={`advanced-search-filters__stance-button ${
-                    (filters as any)[type === 'discussions' ? 'ownerStance' : 'stance'] === stance.value 
-                      ? 'advanced-search-filters__stance-button--active' : ''
+                    (filters as any)[type === 'discussions' ? 'ownerStance' : 'stance'] ===
+                    stance.value
+                      ? 'advanced-search-filters__stance-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const field = type === 'discussions' ? 'ownerStance' : 'stance';
                     const currentValue = (filters as any)[field];
-                    handleFilterChange(field, currentValue === stance.value ? undefined : stance.value);
+                    handleFilterChange(
+                      field,
+                      currentValue === stance.value ? undefined : stance.value
+                    );
                   }}
-                  style={{ 
-                    '--stance-color': stance.color,
-                    borderColor: (filters as any)[type === 'discussions' ? 'ownerStance' : 'stance'] === stance.value 
-                      ? stance.color : undefined
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      '--stance-color': stance.color,
+                      borderColor:
+                        (filters as any)[type === 'discussions' ? 'ownerStance' : 'stance'] ===
+                        stance.value
+                          ? stance.color
+                          : undefined,
+                    } as React.CSSProperties
+                  }
                   disabled={isLoading}
                 >
                   {stance.label}
@@ -198,7 +204,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 <input
                   type="date"
                   value={(filters as any).createdAfter?.split('T')[0] || ''}
-                  onChange={(e) => handleDateRangeChange('start', 'created', e.target.value)}
+                  onChange={e => handleDateRangeChange('start', 'created', e.target.value)}
                   className="advanced-search-filters__date-input"
                   disabled={isLoading}
                 />
@@ -208,7 +214,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 <input
                   type="date"
                   value={(filters as any).createdBefore?.split('T')[0] || ''}
-                  onChange={(e) => handleDateRangeChange('end', 'created', e.target.value)}
+                  onChange={e => handleDateRangeChange('end', 'created', e.target.value)}
                   className="advanced-search-filters__date-input"
                   disabled={isLoading}
                 />
@@ -226,7 +232,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                   <input
                     type="date"
                     value={(filters as any).lastActivityAfter?.split('T')[0] || ''}
-                    onChange={(e) => handleDateRangeChange('start', 'lastActivity', e.target.value)}
+                    onChange={e => handleDateRangeChange('start', 'lastActivity', e.target.value)}
                     className="advanced-search-filters__date-input"
                     disabled={isLoading}
                   />
@@ -236,7 +242,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                   <input
                     type="date"
                     value={(filters as any).lastActivityBefore?.split('T')[0] || ''}
-                    onChange={(e) => handleDateRangeChange('end', 'lastActivity', e.target.value)}
+                    onChange={e => handleDateRangeChange('end', 'lastActivity', e.target.value)}
                     className="advanced-search-filters__date-input"
                     disabled={isLoading}
                   />
@@ -256,7 +262,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                     type="number"
                     min="0"
                     value={(filters as any).minParticipants || ''}
-                    onChange={(e) => handleNumberRangeChange('min', 'participants', e.target.value)}
+                    onChange={e => handleNumberRangeChange('min', 'participants', e.target.value)}
                     className="advanced-search-filters__number-input"
                     disabled={isLoading}
                   />
@@ -267,7 +273,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                     type="number"
                     min="0"
                     value={(filters as any).maxParticipants || ''}
-                    onChange={(e) => handleNumberRangeChange('max', 'participants', e.target.value)}
+                    onChange={e => handleNumberRangeChange('max', 'participants', e.target.value)}
                     className="advanced-search-filters__number-input"
                     disabled={isLoading}
                   />
@@ -286,7 +292,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                   type="number"
                   min="0"
                   value={(filters as any).minPosts || ''}
-                  onChange={(e) => handleNumberRangeChange('min', 'posts', e.target.value)}
+                  onChange={e => handleNumberRangeChange('min', 'posts', e.target.value)}
                   className="advanced-search-filters__number-input"
                   disabled={isLoading}
                 />
@@ -297,7 +303,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                   type="number"
                   min="0"
                   value={(filters as any).maxPosts || ''}
-                  onChange={(e) => handleNumberRangeChange('max', 'posts', e.target.value)}
+                  onChange={e => handleNumberRangeChange('max', 'posts', e.target.value)}
                   className="advanced-search-filters__number-input"
                   disabled={isLoading}
                 />
@@ -312,7 +318,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
               <div className="advanced-search-filters__status-group">
                 <button
                   className={`advanced-search-filters__status-button ${
-                    (filters as any).isActive === true ? 'advanced-search-filters__status-button--active' : ''
+                    (filters as any).isActive === true
+                      ? 'advanced-search-filters__status-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).isActive;
@@ -324,7 +332,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 </button>
                 <button
                   className={`advanced-search-filters__status-button ${
-                    (filters as any).isPinned === true ? 'advanced-search-filters__status-button--active' : ''
+                    (filters as any).isPinned === true
+                      ? 'advanced-search-filters__status-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).isPinned;
@@ -336,7 +346,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 </button>
                 <button
                   className={`advanced-search-filters__status-button ${
-                    (filters as any).isFeatured === true ? 'advanced-search-filters__status-button--active' : ''
+                    (filters as any).isFeatured === true
+                      ? 'advanced-search-filters__status-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).isFeatured;
@@ -348,7 +360,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 </button>
                 <button
                   className={`advanced-search-filters__status-button ${
-                    (filters as any).isLocked === false ? 'advanced-search-filters__status-button--active' : ''
+                    (filters as any).isLocked === false
+                      ? 'advanced-search-filters__status-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).isLocked;
@@ -369,7 +383,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
               <div className="advanced-search-filters__content-group">
                 <button
                   className={`advanced-search-filters__content-button ${
-                    (filters as any).hasAttachments === true ? 'advanced-search-filters__content-button--active' : ''
+                    (filters as any).hasAttachments === true
+                      ? 'advanced-search-filters__content-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).hasAttachments;
@@ -381,7 +397,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 </button>
                 <button
                   className={`advanced-search-filters__content-button ${
-                    (filters as any).hasLinks === true ? 'advanced-search-filters__content-button--active' : ''
+                    (filters as any).hasLinks === true
+                      ? 'advanced-search-filters__content-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).hasLinks;
@@ -393,7 +411,9 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
                 </button>
                 <button
                   className={`advanced-search-filters__content-button ${
-                    (filters as any).isReply === true ? 'advanced-search-filters__content-button--active' : ''
+                    (filters as any).isReply === true
+                      ? 'advanced-search-filters__content-button--active'
+                      : ''
                   }`}
                   onClick={() => {
                     const current = (filters as any).isReply;
@@ -417,7 +437,7 @@ export const AdvancedSearchFilters: React.FC<AdvancedSearchFiltersProps> = ({
             <input
               type="text"
               value={saveName}
-              onChange={(e) => setSaveName(e.target.value)}
+              onChange={e => setSaveName(e.target.value)}
               placeholder="保存名を入力..."
               className="advanced-search-filters__save-input"
               autoFocus

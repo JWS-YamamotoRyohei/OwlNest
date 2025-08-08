@@ -17,7 +17,7 @@ describe('CI/CD Pipeline', () => {
       // Check if we're in a build environment
       const isBuildEnv = process.env.CI || process.env.NODE_ENV === 'production';
       const nodeEnv = process.env.NODE_ENV || 'development';
-      
+
       expect(isBuildEnv ? nodeEnv : 'development').toMatch(/^(test|production|development)$/);
     });
   });
@@ -38,7 +38,7 @@ describe('CI/CD Pipeline', () => {
 
     it('should have proper package.json configuration', () => {
       const packageJson = require('../../package.json');
-      
+
       // Verify essential scripts exist
       expect(packageJson.scripts).toBeDefined();
       expect(packageJson.scripts.build).toBeDefined();
@@ -56,7 +56,9 @@ describe('CI/CD Pipeline', () => {
 
     it('should have TypeScript as a dev dependency', () => {
       const packageJson = require('../../package.json');
-      expect(packageJson.dependencies.typescript || packageJson.devDependencies?.typescript).toBeDefined();
+      expect(
+        packageJson.dependencies.typescript || packageJson.devDependencies?.typescript
+      ).toBeDefined();
     });
 
     it('should have testing libraries', () => {
@@ -70,21 +72,25 @@ describe('CI/CD Pipeline', () => {
     it('should have GitHub Actions workflows', () => {
       const fs = require('fs');
       const path = require('path');
-      
+
       const workflowsPath = path.join(process.cwd(), '.github', 'workflows');
       const workflowsExist = fs.existsSync(workflowsPath);
-      
+
       // Either workflows exist with CI files, or we're using AWS CodePipeline
-      expect(workflowsExist ? (() => {
-        const files = fs.readdirSync(workflowsPath);
-        return files.length > 0 && files.some((file: string) => file.includes('ci'));
-      })() : true).toBe(true);
+      expect(
+        workflowsExist
+          ? (() => {
+              const files = fs.readdirSync(workflowsPath);
+              return files.length > 0 && files.some((file: string) => file.includes('ci'));
+            })()
+          : true
+      ).toBe(true);
     });
 
     it('should have buildspec.yml for AWS CodeBuild', () => {
       const fs = require('fs');
       const path = require('path');
-      
+
       const buildspecPath = path.join(process.cwd(), 'buildspec.yml');
       expect(fs.existsSync(buildspecPath)).toBe(true);
     });
@@ -92,10 +98,10 @@ describe('CI/CD Pipeline', () => {
     it('should have CDK configuration', () => {
       const fs = require('fs');
       const path = require('path');
-      
+
       const cdkPath = path.join(process.cwd(), 'cdk');
       expect(fs.existsSync(cdkPath)).toBe(true);
-      
+
       const cdkJsonPath = path.join(cdkPath, 'cdk.json');
       expect(fs.existsSync(cdkJsonPath)).toBe(true);
     });
@@ -105,18 +111,18 @@ describe('CI/CD Pipeline', () => {
     it('should handle missing environment variables gracefully', () => {
       // Test that the app doesn't crash with missing env vars
       const originalEnv = process.env.NODE_ENV;
-      
+
       // Create a copy of process.env to modify
       const testEnv: Record<string, string | undefined> = { ...process.env };
       testEnv.NODE_ENV = undefined;
-      
+
       // App should still work
       expect(() => {
         // Simulate app initialization
         const env = testEnv.NODE_ENV || 'development';
         expect(env).toBe('development');
       }).not.toThrow();
-      
+
       // Original env should still be intact
       expect(process.env.NODE_ENV).toBe(originalEnv);
     });

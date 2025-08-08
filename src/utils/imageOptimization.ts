@@ -19,25 +19,25 @@ export function getOptimizedImageUrl(
   options: ImageOptimizationOptions = {}
 ): string {
   if (!originalUrl) return '';
-  
+
   const url = new URL(originalUrl, window.location.origin);
-  
+
   if (options.quality) {
     url.searchParams.set('quality', options.quality.toString());
   }
-  
+
   if (options.format) {
     url.searchParams.set('format', options.format);
   }
-  
+
   if (options.width) {
     url.searchParams.set('w', options.width.toString());
   }
-  
+
   if (options.height) {
     url.searchParams.set('h', options.height.toString());
   }
-  
+
   return url.toString();
 }
 
@@ -60,18 +60,18 @@ export function generatePlaceholder(width: number = 40, height: number = 40): st
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  
+
   const ctx = canvas.getContext('2d');
   if (!ctx) return '';
-  
+
   // Create gradient placeholder
   const gradient = ctx.createLinearGradient(0, 0, width, height);
   gradient.addColorStop(0, '#f3f4f6');
   gradient.addColorStop(1, '#e5e7eb');
-  
+
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
-  
+
   return canvas.toDataURL('image/jpeg', 0.1);
 }
 

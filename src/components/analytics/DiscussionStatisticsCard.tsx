@@ -17,7 +17,7 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
   title,
   showDetailedStats = false,
   className,
-  onViewDetails
+  onViewDetails,
 }) => {
   const { data: stats, loading, error, refetch } = useDiscussionStatistics(discussionId);
 
@@ -37,7 +37,7 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
     return date.toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -96,10 +96,7 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
             size="small"
           />
           {onViewDetails && (
-            <button 
-              className="view-details-button"
-              onClick={() => onViewDetails(discussionId)}
-            >
+            <button className="view-details-button" onClick={() => onViewDetails(discussionId)}>
               詳細を見る
             </button>
           )}
@@ -138,10 +135,10 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
                 <span className="stance-count">{stats.prosCount}</span>
               </div>
               <div className="stance-bar">
-                <div 
+                <div
                   className="stance-fill pros"
-                  style={{ 
-                    width: `${(stats.prosCount / stats.postCount) * 100}%` 
+                  style={{
+                    width: `${(stats.prosCount / stats.postCount) * 100}%`,
                   }}
                 ></div>
               </div>
@@ -152,10 +149,10 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
                 <span className="stance-count">{stats.consCount}</span>
               </div>
               <div className="stance-bar">
-                <div 
+                <div
                   className="stance-fill cons"
-                  style={{ 
-                    width: `${(stats.consCount / stats.postCount) * 100}%` 
+                  style={{
+                    width: `${(stats.consCount / stats.postCount) * 100}%`,
                   }}
                 ></div>
               </div>
@@ -166,10 +163,10 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
                 <span className="stance-count">{stats.neutralCount}</span>
               </div>
               <div className="stance-bar">
-                <div 
+                <div
                   className="stance-fill neutral"
-                  style={{ 
-                    width: `${(stats.neutralCount / stats.postCount) * 100}%` 
+                  style={{
+                    width: `${(stats.neutralCount / stats.postCount) * 100}%`,
                   }}
                 ></div>
               </div>
@@ -180,10 +177,10 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
                 <span className="stance-count">{stats.unknownCount}</span>
               </div>
               <div className="stance-bar">
-                <div 
+                <div
                   className="stance-fill unknown"
-                  style={{ 
-                    width: `${(stats.unknownCount / stats.postCount) * 100}%` 
+                  style={{
+                    width: `${(stats.unknownCount / stats.postCount) * 100}%`,
                   }}
                 ></div>
               </div>
@@ -196,7 +193,9 @@ const DiscussionStatisticsCard: React.FC<DiscussionStatisticsCardProps> = ({
           <div className="detailed-stats">
             <div className="detailed-stat-row">
               <div className="detailed-stat-item">
-                <div className="detailed-stat-value">{stats.averagePostsPerParticipant.toFixed(1)}</div>
+                <div className="detailed-stat-value">
+                  {stats.averagePostsPerParticipant.toFixed(1)}
+                </div>
                 <div className="detailed-stat-label">平均投稿数/参加者</div>
               </div>
               <div className="detailed-stat-item">

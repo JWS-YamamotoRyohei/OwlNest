@@ -52,13 +52,10 @@ const PermissionDemo: React.FC = () => {
     <div className="permission-demo">
       <div className="permission-demo__header">
         <h2>権限管理システム デモ</h2>
-        
+
         <AuthGate
           fallback={
-            <button
-              className="auth-button"
-              onClick={() => setShowAuthModal(true)}
-            >
+            <button className="auth-button" onClick={() => setShowAuthModal(true)}>
               ログイン
             </button>
           }
@@ -108,39 +105,36 @@ const PermissionDemo: React.FC = () => {
           <h3>権限別表示</h3>
           <div className="role-demos">
             <RoleGate
-              allowedRoles={[UserRole.VIEWER, UserRole.CONTRIBUTOR, UserRole.CREATOR, UserRole.ADMIN]}
+              allowedRoles={[
+                UserRole.VIEWER,
+                UserRole.CONTRIBUTOR,
+                UserRole.CREATOR,
+                UserRole.ADMIN,
+              ]}
               fallback={<div className="demo-fallback">閲覧者以上の権限が必要</div>}
             >
-              <div className="demo-item demo-item--viewer">
-                👁️ 閲覧者以上に表示される内容
-              </div>
+              <div className="demo-item demo-item--viewer">👁️ 閲覧者以上に表示される内容</div>
             </RoleGate>
 
             <RoleGate
               allowedRoles={[UserRole.CONTRIBUTOR, UserRole.CREATOR, UserRole.ADMIN]}
               fallback={<div className="demo-fallback">投稿者以上の権限が必要</div>}
             >
-              <div className="demo-item demo-item--contributor">
-                ✍️ 投稿者以上に表示される内容
-              </div>
+              <div className="demo-item demo-item--contributor">✍️ 投稿者以上に表示される内容</div>
             </RoleGate>
 
             <RoleGate
               allowedRoles={[UserRole.CREATOR, UserRole.ADMIN]}
               fallback={<div className="demo-fallback">作成者以上の権限が必要</div>}
             >
-              <div className="demo-item demo-item--creator">
-                🎯 作成者以上に表示される内容
-              </div>
+              <div className="demo-item demo-item--creator">🎯 作成者以上に表示される内容</div>
             </RoleGate>
 
             <RoleGate
               allowedRoles={[UserRole.ADMIN]}
               fallback={<div className="demo-fallback">管理者権限が必要</div>}
             >
-              <div className="demo-item demo-item--admin">
-                👑 管理者のみに表示される内容
-              </div>
+              <div className="demo-item demo-item--admin">👑 管理者のみに表示される内容</div>
             </RoleGate>
           </div>
         </section>
@@ -186,28 +180,15 @@ const PermissionDemo: React.FC = () => {
         <section className="demo-section">
           <h3>権限ゲート</h3>
           <div className="gate-demos">
-            <PermissionGate
-              permission="canPost"
-              fallback={<PostPermissionError />}
-            >
-              <div className="demo-item demo-item--success">
-                ✅ 投稿機能が利用可能です
-              </div>
+            <PermissionGate permission="canPost" fallback={<PostPermissionError />}>
+              <div className="demo-item demo-item--success">✅ 投稿機能が利用可能です</div>
             </PermissionGate>
 
-            <PermissionGate
-              permission="canCreateDiscussion"
-              fallback={<CreateDiscussionError />}
-            >
-              <div className="demo-item demo-item--success">
-                ✅ 議論作成機能が利用可能です
-              </div>
+            <PermissionGate permission="canCreateDiscussion" fallback={<CreateDiscussionError />}>
+              <div className="demo-item demo-item--success">✅ 議論作成機能が利用可能です</div>
             </PermissionGate>
 
-            <PermissionGate
-              permission="canModerate"
-              fallback={<ModerateError />}
-            >
+            <PermissionGate permission="canModerate" fallback={<ModerateError />}>
               <div className="demo-item demo-item--success">
                 ✅ モデレーション機能が利用可能です
               </div>
@@ -223,9 +204,7 @@ const PermissionDemo: React.FC = () => {
               contentOwnerId={user?.userId || 'other-user'}
               fallback={<div className="demo-fallback">自分のコンテンツではありません</div>}
             >
-              <div className="demo-item demo-item--success">
-                ✅ 自分のコンテンツを編集できます
-              </div>
+              <div className="demo-item demo-item--success">✅ 自分のコンテンツを編集できます</div>
             </ContentOwnershipGate>
 
             <ContentOwnershipGate
@@ -253,14 +232,8 @@ const PermissionDemo: React.FC = () => {
           <section className="demo-section">
             <h3>権限管理（管理者のみ）</h3>
             <div className="role-management">
-              <RoleSelector
-                currentRole={selectedRole}
-                onRoleChange={setSelectedRole}
-              />
-              <button
-                className="role-change-button"
-                onClick={() => handleRoleChange(selectedRole)}
-              >
+              <RoleSelector currentRole={selectedRole} onRoleChange={setSelectedRole} />
+              <button className="role-change-button" onClick={() => handleRoleChange(selectedRole)}>
                 権限を変更
               </button>
             </div>
@@ -271,12 +244,8 @@ const PermissionDemo: React.FC = () => {
         <section className="demo-section">
           <h3>権限情報</h3>
           <div className="role-info-grid">
-            {Object.values(UserRole).map((role) => (
-              <UserRoleDisplay
-                key={role}
-                role={role}
-                showDescription={true}
-              />
+            {Object.values(UserRole).map(role => (
+              <UserRoleDisplay key={role} role={role} showDescription={true} />
             ))}
           </div>
         </section>

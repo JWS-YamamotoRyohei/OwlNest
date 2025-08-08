@@ -1,5 +1,10 @@
 import React, { useState, useCallback } from 'react';
-import { CreateDiscussionData, CreateDiscussionPointData, CreateBackgroundKnowledgeData, AccessControl } from '../../types/discussion';
+import {
+  CreateDiscussionData,
+  CreateDiscussionPointData,
+  CreateBackgroundKnowledgeData,
+  AccessControl,
+} from '../../types/discussion';
 import { DiscussionCategory, Stance, AccessControlType } from '../../types/common';
 import CategorySelector from './CategorySelector';
 import DiscussionPointsEditor from './DiscussionPointsEditor';
@@ -104,7 +109,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
   // Form handlers
   const handleInputChange = (field: keyof CreateDiscussionData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear related errors
     if (errors[field as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -114,7 +119,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
   const handleStepChange = (step: number) => {
     // Validate current step before moving
     let stepErrors: FormErrors = {};
-    
+
     switch (currentStep) {
       case 0:
         stepErrors = validateBasicInfo();
@@ -165,7 +170,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
         return (
           <div className="form-step">
             <h3>基本情報</h3>
-            
+
             <div className="form-group">
               <label htmlFor="title" className="form-label">
                 議題 <span className="required">*</span>
@@ -174,16 +179,14 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
                 id="title"
                 type="text"
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={e => handleInputChange('title', e.target.value)}
                 className={`form-input ${errors.title ? 'error' : ''}`}
                 placeholder="議論のタイトルを入力してください"
                 maxLength={200}
                 disabled={isLoading}
               />
               {errors.title && <div className="form-error">{errors.title}</div>}
-              <div className="form-help">
-                {formData.title.length}/200 文字
-              </div>
+              <div className="form-help">{formData.title.length}/200 文字</div>
             </div>
 
             <div className="form-group">
@@ -193,7 +196,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
               <textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={e => handleInputChange('description', e.target.value)}
                 className={`form-textarea ${errors.description ? 'error' : ''}`}
                 placeholder="議論の概要や背景を詳しく説明してください"
                 rows={6}
@@ -201,9 +204,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
                 disabled={isLoading}
               />
               {errors.description && <div className="form-error">{errors.description}</div>}
-              <div className="form-help">
-                {formData.description.length}/2000 文字
-              </div>
+              <div className="form-help">{formData.description.length}/2000 文字</div>
             </div>
 
             <div className="form-group">
@@ -213,7 +214,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
               <select
                 id="ownerStance"
                 value={formData.ownerStance}
-                onChange={(e) => handleInputChange('ownerStance', e.target.value as Stance)}
+                onChange={e => handleInputChange('ownerStance', e.target.value as Stance)}
                 className={`form-select ${errors.ownerStance ? 'error' : ''}`}
                 disabled={isLoading}
               >
@@ -237,7 +238,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
             <h3>カテゴリ選択</h3>
             <CategorySelector
               selectedCategories={formData.categories}
-              onChange={(categories) => handleInputChange('categories', categories)}
+              onChange={categories => handleInputChange('categories', categories)}
               maxSelections={5}
               required={true}
               error={errors.categories}
@@ -252,7 +253,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
             <h3>議論の論点</h3>
             <DiscussionPointsEditor
               points={formData.points}
-              onChange={(points) => handleInputChange('points', points)}
+              onChange={points => handleInputChange('points', points)}
               error={errors.points}
               disabled={isLoading}
             />
@@ -265,7 +266,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
             <h3>前提知識（任意）</h3>
             <BackgroundKnowledgeEditor
               backgroundKnowledge={formData.backgroundKnowledge || []}
-              onChange={(bg) => handleInputChange('backgroundKnowledge', bg)}
+              onChange={bg => handleInputChange('backgroundKnowledge', bg)}
               disabled={isLoading}
             />
           </div>
@@ -276,8 +277,10 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
           <div className="form-step">
             <h3>アクセス制御（任意）</h3>
             <AccessControlEditor
-              accessControl={formData.accessControl || { type: AccessControlType.OPEN, userIds: [] }}
-              onChange={(ac) => handleInputChange('accessControl', ac)}
+              accessControl={
+                formData.accessControl || { type: AccessControlType.OPEN, userIds: [] }
+              }
+              onChange={ac => handleInputChange('accessControl', ac)}
               disabled={isLoading}
             />
           </div>
@@ -317,9 +320,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
       <form onSubmit={handleSubmit} className="form-content">
         {renderStepContent()}
 
-        {errors.general && (
-          <div className="form-error general-error">{errors.general}</div>
-        )}
+        {errors.general && <div className="form-error general-error">{errors.general}</div>}
 
         <div className="form-actions">
           <div className="form-actions-left">
@@ -357,11 +358,7 @@ export const CreateDiscussionForm: React.FC<CreateDiscussionFormProps> = ({
                 次へ
               </button>
             ) : (
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={isLoading}
-              >
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 {isLoading ? '作成中...' : '議論を作成'}
               </button>
             )}

@@ -6,11 +6,8 @@ import {
   TrendData,
   AnalyticsFilter,
   AnalyticsTimeRange,
-  StatisticsCache
+  StatisticsCache,
 } from '../types/analytics';
-import { Discussion } from '../types/discussion';
-import { Post } from '../types/post';
-import { User } from '../types/user';
 
 class AnalyticsService {
   private cache: Map<string, StatisticsCache> = new Map();
@@ -36,7 +33,7 @@ class AnalyticsService {
       key,
       data,
       timestamp: now,
-      expiresAt: now + this.CACHE_DURATION
+      expiresAt: now + this.CACHE_DURATION,
     });
   }
 
@@ -49,9 +46,9 @@ class AnalyticsService {
     try {
       const response = await fetch(`/api/analytics/discussions/${discussionId}/statistics`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -77,10 +74,10 @@ class AnalyticsService {
       const response = await fetch('/api/analytics/discussions/batch-statistics', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ discussionIds })
+        body: JSON.stringify({ discussionIds }),
       });
 
       if (!response.ok) {
@@ -105,9 +102,9 @@ class AnalyticsService {
     try {
       const response = await fetch(`/api/analytics/users/${userId}/statistics`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -133,9 +130,9 @@ class AnalyticsService {
       const queryParams = filter ? `?${new URLSearchParams(this.serializeFilter(filter))}` : '';
       const response = await fetch(`/api/analytics/platform/statistics${queryParams}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -152,7 +149,10 @@ class AnalyticsService {
   }
 
   // Engagement Metrics
-  async getEngagementMetrics(discussionId: string, timeRange: AnalyticsTimeRange): Promise<EngagementMetrics> {
+  async getEngagementMetrics(
+    discussionId: string,
+    timeRange: AnalyticsTimeRange
+  ): Promise<EngagementMetrics> {
     const cacheKey = this.getCacheKey('engagementMetrics', { discussionId, timeRange });
     const cached = this.getFromCache<EngagementMetrics>(cacheKey);
     if (cached) return cached;
@@ -161,10 +161,10 @@ class AnalyticsService {
       const response = await fetch(`/api/analytics/discussions/${discussionId}/engagement`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ timeRange })
+        body: JSON.stringify({ timeRange }),
       });
 
       if (!response.ok) {
@@ -194,10 +194,10 @@ class AnalyticsService {
       const response = await fetch(`/api/analytics/trends/${metric}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ timeRange, filter })
+        body: JSON.stringify({ timeRange, filter }),
       });
 
       if (!response.ok) {
@@ -216,27 +216,27 @@ class AnalyticsService {
   // Utility methods
   private serializeFilter(filter: AnalyticsFilter): Record<string, string> {
     const params: Record<string, string> = {};
-    
+
     params.startDate = filter.timeRange.start;
     params.endDate = filter.timeRange.end;
     params.period = filter.timeRange.period;
-    
+
     if (filter.categories?.length) {
       params.categories = filter.categories.join(',');
     }
-    
+
     if (filter.userIds?.length) {
       params.userIds = filter.userIds.join(',');
     }
-    
+
     if (filter.discussionIds?.length) {
       params.discussionIds = filter.discussionIds.join(',');
     }
-    
+
     if (filter.stances?.length) {
       params.stances = filter.stances.join(',');
     }
-    
+
     return params;
   }
 
@@ -256,7 +256,7 @@ class AnalyticsService {
       lastActivityAt: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
       averagePostsPerParticipant: Math.random() * 10 + 2,
       uniqueViewers: Math.floor(Math.random() * 500) + 100,
-      totalViews: Math.floor(Math.random() * 2000) + 500
+      totalViews: Math.floor(Math.random() * 2000) + 500,
     };
   }
 
@@ -272,7 +272,7 @@ class AnalyticsService {
       joinedAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
       lastActiveAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       followersCount: Math.floor(Math.random() * 100) + 5,
-      followingCount: Math.floor(Math.random() * 50) + 3
+      followingCount: Math.floor(Math.random() * 50) + 3,
     };
   }
 
@@ -286,9 +286,30 @@ class AnalyticsService {
       totalReactions: 15600,
       averageEngagementRate: 0.68,
       topCategories: [
-        { categoryId: 'politics', categoryName: '政治', discussionCount: 85, postCount: 2100, participantCount: 320, engagementRate: 0.72 },
-        { categoryId: 'technology', categoryName: 'テクノロジー', discussionCount: 62, postCount: 1800, participantCount: 280, engagementRate: 0.69 },
-        { categoryId: 'society', categoryName: '社会', discussionCount: 58, postCount: 1650, participantCount: 250, engagementRate: 0.65 }
+        {
+          categoryId: 'politics',
+          categoryName: '政治',
+          discussionCount: 85,
+          postCount: 2100,
+          participantCount: 320,
+          engagementRate: 0.72,
+        },
+        {
+          categoryId: 'technology',
+          categoryName: 'テクノロジー',
+          discussionCount: 62,
+          postCount: 1800,
+          participantCount: 280,
+          engagementRate: 0.69,
+        },
+        {
+          categoryId: 'society',
+          categoryName: '社会',
+          discussionCount: 58,
+          postCount: 1650,
+          participantCount: 250,
+          engagementRate: 0.65,
+        },
       ],
       growthMetrics: {
         dailyActiveUsers: 245,
@@ -297,26 +318,51 @@ class AnalyticsService {
         newUsersToday: 12,
         newUsersThisWeek: 85,
         newUsersThisMonth: 320,
-        retentionRate: 0.78
+        retentionRate: 0.78,
       },
       userActivityDistribution: {
         timeOfDay: {
-          '0': 45, '1': 32, '2': 28, '3': 25, '4': 22, '5': 30,
-          '6': 55, '7': 85, '8': 120, '9': 145, '10': 160, '11': 175,
-          '12': 190, '13': 185, '14': 170, '15': 165, '16': 155, '17': 145,
-          '18': 180, '19': 195, '20': 210, '21': 185, '22': 140, '23': 85
+          '0': 45,
+          '1': 32,
+          '2': 28,
+          '3': 25,
+          '4': 22,
+          '5': 30,
+          '6': 55,
+          '7': 85,
+          '8': 120,
+          '9': 145,
+          '10': 160,
+          '11': 175,
+          '12': 190,
+          '13': 185,
+          '14': 170,
+          '15': 165,
+          '16': 155,
+          '17': 145,
+          '18': 180,
+          '19': 195,
+          '20': 210,
+          '21': 185,
+          '22': 140,
+          '23': 85,
         },
         dayOfWeek: {
-          'Monday': 180, 'Tuesday': 195, 'Wednesday': 210, 'Thursday': 205,
-          'Friday': 185, 'Saturday': 165, 'Sunday': 150
+          Monday: 180,
+          Tuesday: 195,
+          Wednesday: 210,
+          Thursday: 205,
+          Friday: 185,
+          Saturday: 165,
+          Sunday: 150,
         },
         stanceDistribution: {
           pros: 0.35,
           cons: 0.32,
           neutral: 0.22,
-          unknown: 0.11
-        }
-      }
+          unknown: 0.11,
+        },
+      },
     };
   }
 
@@ -330,7 +376,7 @@ class AnalyticsService {
       shareCount: Math.floor(Math.random() * 50) + 5,
       averageTimeSpent: Math.random() * 600 + 120, // seconds
       bounceRate: Math.random() * 0.4 + 0.1,
-      returnVisitorRate: Math.random() * 0.6 + 0.3
+      returnVisitorRate: Math.random() * 0.6 + 0.3,
     };
   }
 
@@ -346,7 +392,7 @@ class AnalyticsService {
         date: date.toISOString().split('T')[0],
         value: baseValue,
         change,
-        changePercentage
+        changePercentage,
       };
     });
   }
@@ -354,12 +400,12 @@ class AnalyticsService {
   private getDaysBetween(start: Date, end: Date): Date[] {
     const days: Date[] = [];
     const current = new Date(start);
-    
+
     while (current <= end) {
       days.push(new Date(current));
       current.setDate(current.getDate() + 1);
     }
-    
+
     return days;
   }
 
@@ -375,7 +421,7 @@ class AnalyticsService {
   getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys()),
     };
   }
 }

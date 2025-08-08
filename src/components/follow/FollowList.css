@@ -230,8 +230,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Load more */
@@ -263,29 +267,29 @@
   .follow-list__item {
     padding: 0.75rem;
   }
-  
+
   .follow-list__item-header {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
   }
-  
+
   .follow-list__item-avatar {
     width: 2.5rem;
     height: 2.5rem;
     align-self: flex-start;
   }
-  
+
   .follow-list__item-actions {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
-  
+
   .follow-list__item-stats {
     gap: 0.75rem;
   }
-  
+
   .follow-list__item-meta {
     flex-direction: column;
     align-items: flex-start;
@@ -299,12 +303,12 @@
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .follow-list__item-stats {
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .follow-list__item-categories {
     gap: 0.125rem;
   }
@@ -316,61 +320,61 @@
     background: var(--color-secondary-800);
     border-color: var(--color-secondary-700);
   }
-  
+
   .follow-list__item:hover {
     border-color: var(--color-secondary-600);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  
+
   .follow-list__item-display-name,
   .follow-list__item-title {
     color: var(--color-secondary-100);
   }
-  
+
   .follow-list__item-bio,
   .follow-list__item-description {
     color: var(--color-secondary-300);
   }
-  
+
   .follow-list__item-owner,
   .follow-list__item-stats {
     color: var(--color-secondary-400);
   }
-  
+
   .follow-list__item-role {
     background-color: var(--color-secondary-700);
     color: var(--color-secondary-300);
   }
-  
+
   .follow-list__item-category {
     background-color: var(--color-primary-900);
     color: var(--color-primary-300);
   }
-  
+
   .follow-list__item-meta {
     color: var(--color-secondary-500);
     border-color: var(--color-secondary-700);
   }
-  
+
   .follow-list__empty {
     background-color: var(--color-secondary-900);
     border-color: var(--color-secondary-600);
   }
-  
+
   .follow-list__empty-message {
     color: var(--color-secondary-400);
   }
-  
+
   .follow-list__loading {
     color: var(--color-secondary-400);
   }
-  
+
   .follow-list__load-more-button {
     background-color: var(--color-secondary-800);
     color: var(--color-secondary-300);
     border-color: var(--color-secondary-600);
   }
-  
+
   .follow-list__load-more-button:hover {
     background-color: var(--color-secondary-700);
     border-color: var(--color-secondary-500);
@@ -382,7 +386,7 @@
   .follow-list__item {
     border-width: 2px;
   }
-  
+
   .follow-list__item-display-name,
   .follow-list__item-title {
     font-weight: 700;
@@ -394,15 +398,15 @@
   .follow-list__item {
     transition: none;
   }
-  
+
   .follow-list__item-expand {
     transition: none;
   }
-  
+
   .follow-list__load-more-button {
     transition: none;
   }
-  
+
   .spinner {
     animation: none;
   }

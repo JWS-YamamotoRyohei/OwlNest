@@ -45,7 +45,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
     if (disabled) return;
 
     const isSelected = selectedCategories.includes(categoryId);
-    
+
     if (isSelected) {
       // Remove category
       onChange(selectedCategories.filter(id => id !== categoryId));
@@ -71,7 +71,9 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
   const hasError = required && selectedCategories.length === 0;
 
   return (
-    <div className={`category-selector ${compact ? 'category-selector--compact' : ''} ${disabled ? 'disabled' : ''} ${className}`}>
+    <div
+      className={`category-selector ${compact ? 'category-selector--compact' : ''} ${disabled ? 'disabled' : ''} ${className}`}
+    >
       <div className="category-selector__header">
         <h3 className="category-selector__title">カテゴリ選択</h3>
         <div className="category-selector__info">
@@ -97,7 +99,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
             type="text"
             placeholder="カテゴリを検索..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             disabled={disabled}
             className="category-selector__search-input"
           />
@@ -112,9 +114,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 
       {selectedCategories.length > 0 && (
         <div className="category-selector__selected">
-          <div className="category-selector__selected-header">
-            選択中のカテゴリ:
-          </div>
+          <div className="category-selector__selected-header">選択中のカテゴリ:</div>
           <div className="category-selector__selected-list">
             {selectedCategories.map(categoryId => {
               const categoryInfo = getCategoryInfo(categoryId);
@@ -122,12 +122,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 
               return (
                 <div key={categoryId} className="category-selector__selected-item">
-                  <span className="category-selector__selected-icon">
-                    {categoryInfo.icon}
-                  </span>
-                  <span className="category-selector__selected-name">
-                    {categoryInfo.name}
-                  </span>
+                  <span className="category-selector__selected-icon">{categoryInfo.icon}</span>
+                  <span className="category-selector__selected-name">{categoryInfo.name}</span>
                   <button
                     type="button"
                     className="category-selector__selected-remove"
@@ -156,13 +152,9 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
               onClick={() => handleCategoryToggle(categoryInfo.id)}
             >
               <div className="category-selector__category-content">
-                <span className="category-selector__category-icon">
-                  {categoryInfo.icon}
-                </span>
+                <span className="category-selector__category-icon">{categoryInfo.icon}</span>
                 <div className="category-selector__category-info">
-                  <span className="category-selector__category-name">
-                    {categoryInfo.name}
-                  </span>
+                  <span className="category-selector__category-name">{categoryInfo.name}</span>
                   <span className="category-selector__category-description">
                     {categoryInfo.description}
                   </span>

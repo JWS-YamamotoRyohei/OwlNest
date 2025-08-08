@@ -10,7 +10,7 @@ export const RegisterPage: React.FC = () => {
     password: '',
     confirmPassword: '',
     givenName: '',
-    familyName: ''
+    familyName: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -57,10 +57,10 @@ export const RegisterPage: React.FC = () => {
     try {
       const { confirmPassword, ...registerData } = formData;
       await register(registerData);
-      
+
       // Navigate to confirmation page
-      navigate('/confirm-signup', { 
-        state: { email: formData.email }
+      navigate('/confirm-signup', {
+        state: { email: formData.email },
       });
     } catch (error) {
       // Error is handled by AuthContext
@@ -72,14 +72,14 @@ export const RegisterPage: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     // Clear validation error for this field
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
       }));
     }
   };
@@ -139,9 +139,7 @@ export const RegisterPage: React.FC = () => {
               className={`form-input ${validationErrors.email ? 'form-input--error' : ''}`}
               placeholder="your@email.com"
             />
-            {validationErrors.email && (
-              <span className="form-error">{validationErrors.email}</span>
-            )}
+            {validationErrors.email && <span className="form-error">{validationErrors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -198,11 +196,7 @@ export const RegisterPage: React.FC = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="auth-button auth-button--primary"
-          >
+          <button type="submit" disabled={isLoading} className="auth-button auth-button--primary">
             {isLoading ? 'アカウント作成中...' : 'アカウント作成'}
           </button>
         </form>

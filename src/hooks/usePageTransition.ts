@@ -12,7 +12,7 @@ export const usePageTransition = (delay: number = 300) => {
   const [state, setState] = useState<PageTransitionState>({
     isLoading: false,
     previousPath: null,
-    currentPath: location.pathname
+    currentPath: location.pathname,
   });
 
   useEffect(() => {
@@ -21,14 +21,14 @@ export const usePageTransition = (delay: number = 300) => {
       setState(prev => ({
         isLoading: true,
         previousPath: prev.currentPath,
-        currentPath: location.pathname
+        currentPath: location.pathname,
       }));
 
       // End loading after delay
       const timer = setTimeout(() => {
         setState(prev => ({
           ...prev,
-          isLoading: false
+          isLoading: false,
         }));
       }, delay);
 
@@ -39,6 +39,6 @@ export const usePageTransition = (delay: number = 300) => {
   return {
     isLoading: state.isLoading,
     previousPath: state.previousPath,
-    currentPath: state.currentPath
+    currentPath: state.currentPath,
   };
 };

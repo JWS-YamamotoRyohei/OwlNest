@@ -35,10 +35,7 @@ export class WebSocketService {
   private missedMessages: WebSocketMessage[] = [];
   private connectionErrors: string[] = [];
 
-  constructor(
-    url: string,
-    options: WebSocketConnectionOptions = {}
-  ) {
+  constructor(url: string, options: WebSocketConnectionOptions = {}) {
     this.url = url;
     this.options = {
       autoReconnect: options.autoReconnect ?? true,
@@ -100,7 +97,6 @@ export class WebSocketService {
         this.ws?.addEventListener('open', onOpen);
         this.ws?.addEventListener('error', onError);
       });
-
     } catch (error) {
       console.error('WebSocket connection error:', error);
       this.isConnecting = false;
@@ -111,7 +107,7 @@ export class WebSocketService {
   disconnect(): void {
     this.isManuallyDisconnected = true;
     this.clearTimers();
-    
+
     if (this.ws) {
       this.ws.close(1000, 'Manual disconnect');
       this.ws = null;
@@ -181,7 +177,7 @@ export class WebSocketService {
   getConnectionState(): string {
     if (!this.isOnline) return 'OFFLINE';
     if (!this.ws) return 'DISCONNECTED';
-    
+
     switch (this.ws.readyState) {
       case WebSocket.CONNECTING:
         return 'CONNECTING';
@@ -222,7 +218,7 @@ export class WebSocketService {
     this.reconnectAttempts = 0;
     this.clearConnectionErrors();
     this.startHeartbeat();
-    
+
     // Rejoin current discussion if any
     if (this.currentDiscussionId) {
       this.joinDiscussion(this.currentDiscussionId);
@@ -236,7 +232,7 @@ export class WebSocketService {
       this.lastSyncTimestamp = new Date().toISOString();
     }
 
-    this.emit('connected', { 
+    this.emit('connected', {
       timestamp: new Date().toISOString(),
       isReconnection: this.lastSyncTimestamp !== null,
     });
@@ -246,7 +242,7 @@ export class WebSocketService {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
       console.log('WebSocket message received:', message);
-      
+
       // Handle system messages
       if (message.action === 'pong') {
         // Heartbeat response - no need to emit
@@ -305,22 +301,27 @@ export class WebSocketService {
         disconnectionReason = `code_${event.code}`;
     }
 
-    this.emit('disconnected', { 
-      code: event.code, 
+    this.emit('disconnected', {
+      code: event.code,
       reason: event.reason,
       disconnectionReason,
       timestamp: new Date().toISOString(),
     });
 
     // Auto-reconnect if not manually disconnected and conditions are met
-    if (!this.isManuallyDisconnected && this.options.autoReconnect && shouldReconnect && this.isOnline) {
+    if (
+      !this.isManuallyDisconnected &&
+      this.options.autoReconnect &&
+      shouldReconnect &&
+      this.isOnline
+    ) {
       this.scheduleReconnect();
     }
   }
 
   private handleError(event: Event): void {
     console.error('WebSocket error:', event);
-    
+
     let errorMessage = 'WebSocket error';
     let errorType = 'unknown';
 
@@ -338,7 +339,7 @@ export class WebSocketService {
 
     this.addConnectionError(errorMessage);
 
-    this.emit('error', { 
+    this.emit('error', {
       error: errorMessage,
       errorType,
       reconnectAttempts: this.reconnectAttempts,
@@ -356,7 +357,7 @@ export class WebSocketService {
 
     if (this.reconnectAttempts >= this.options.maxReconnectAttempts) {
       console.log('Max reconnect attempts reached');
-      this.emit('max_reconnect_attempts', { 
+      this.emit('max_reconnect_attempts', {
         attempts: this.reconnectAttempts,
         timestamp: new Date().toISOString(),
       });
@@ -368,15 +369,15 @@ export class WebSocketService {
     const baseDelay = this.options.reconnectInterval * Math.pow(1.5, this.reconnectAttempts - 1);
     const jitter = Math.random() * 1000; // Add up to 1 second of jitter
     const delay = Math.min(baseDelay + jitter, 30000); // Cap at 30 seconds
-    
+
     console.log(`Scheduling reconnect attempt ${this.reconnectAttempts} in ${Math.round(delay)}ms`);
-    
+
     this.emit('reconnect_scheduled', {
       attempt: this.reconnectAttempts,
       delay: Math.round(delay),
       timestamp: new Date().toISOString(),
     });
-    
+
     this.reconnectTimer = setTimeout(async () => {
       // Check if still online before attempting reconnect
       if (!this.isOnline) {
@@ -385,7 +386,9 @@ export class WebSocketService {
       }
 
       try {
-        console.log(`Attempting reconnect ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`);
+        console.log(
+          `Attempting reconnect ${this.reconnectAttempts}/${this.options.maxReconnectAttempts}`
+        );
         await this.connect();
       } catch (error) {
         console.error('Reconnect attempt failed:', error);
@@ -408,7 +411,7 @@ export class WebSocketService {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
-    
+
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = null;
@@ -433,7 +436,7 @@ export class WebSocketService {
       console.log('Network connection restored');
       this.isOnline = true;
       this.emit('online', { timestamp: new Date().toISOString() });
-      
+
       // Auto-reconnect if we were disconnected due to offline status
       if (this.options.autoReconnect && !this.isConnected() && !this.isManuallyDisconnected) {
         console.log('Attempting to reconnect after coming online');
@@ -447,7 +450,7 @@ export class WebSocketService {
       console.log('Network connection lost');
       this.isOnline = false;
       this.emit('offline', { timestamp: new Date().toISOString() });
-      
+
       // Clear timers when offline
       this.clearTimers();
     };
@@ -474,7 +477,7 @@ export class WebSocketService {
 
     try {
       console.log('Syncing missed data since:', this.lastSyncTimestamp);
-      
+
       // Request sync from server
       this.send({
         action: 'sync_request',
@@ -486,7 +489,6 @@ export class WebSocketService {
 
       // Update sync timestamp
       this.lastSyncTimestamp = new Date().toISOString();
-      
     } catch (error) {
       console.error('Failed to sync missed data:', error);
       this.addConnectionError('Failed to sync missed data');
@@ -496,7 +498,7 @@ export class WebSocketService {
   private handleSyncResponse(message: WebSocketMessage): void {
     if (message.data?.missedMessages) {
       console.log('Received sync data:', message.data.missedMessages.length, 'messages');
-      
+
       // Process missed messages
       message.data.missedMessages.forEach((missedMessage: WebSocketMessage) => {
         this.emit(missedMessage.action, missedMessage);

@@ -27,13 +27,10 @@ export interface CategoryValidation {
 }
 
 export const useCategories = (options: UseCategoriesOptions = {}) => {
-  const {
-    maxSelections = 5,
-    required = true,
-    initialCategories = [],
-  } = options;
+  const { maxSelections = 5, required = true, initialCategories = [] } = options;
 
-  const [selectedCategories, setSelectedCategories] = useState<DiscussionCategory[]>(initialCategories);
+  const [selectedCategories, setSelectedCategories] =
+    useState<DiscussionCategory[]>(initialCategories);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Search functionality
@@ -60,58 +57,70 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
   }, [selectedCategories]);
 
   // Category selection handlers
-  const addCategory = useCallback((categoryId: DiscussionCategory) => {
-    setSelectedCategories(prev => {
-      if (prev.includes(categoryId)) return prev;
-      if (prev.length >= maxSelections) return prev;
-      return [...prev, categoryId];
-    });
-  }, [maxSelections]);
+  const addCategory = useCallback(
+    (categoryId: DiscussionCategory) => {
+      setSelectedCategories(prev => {
+        if (prev.includes(categoryId)) return prev;
+        if (prev.length >= maxSelections) return prev;
+        return [...prev, categoryId];
+      });
+    },
+    [maxSelections]
+  );
 
   const removeCategory = useCallback((categoryId: DiscussionCategory) => {
     setSelectedCategories(prev => prev.filter(id => id !== categoryId));
   }, []);
 
-  const toggleCategory = useCallback((categoryId: DiscussionCategory) => {
-    setSelectedCategories(prev => {
-      const isSelected = prev.includes(categoryId);
-      if (isSelected) {
-        return prev.filter(id => id !== categoryId);
-      } else if (prev.length < maxSelections) {
-        return [...prev, categoryId];
-      }
-      return prev;
-    });
-  }, [maxSelections]);
+  const toggleCategory = useCallback(
+    (categoryId: DiscussionCategory) => {
+      setSelectedCategories(prev => {
+        const isSelected = prev.includes(categoryId);
+        if (isSelected) {
+          return prev.filter(id => id !== categoryId);
+        } else if (prev.length < maxSelections) {
+          return [...prev, categoryId];
+        }
+        return prev;
+      });
+    },
+    [maxSelections]
+  );
 
   const clearCategories = useCallback(() => {
     setSelectedCategories([]);
   }, []);
 
-  const setCategories = useCallback((categories: DiscussionCategory[]) => {
-    const validCategories = categories.slice(0, maxSelections);
-    setSelectedCategories(validCategories);
-  }, [maxSelections]);
+  const setCategories = useCallback(
+    (categories: DiscussionCategory[]) => {
+      const validCategories = categories.slice(0, maxSelections);
+      setSelectedCategories(validCategories);
+    },
+    [maxSelections]
+  );
 
   // Bulk operations
-  const selectAllInMainCategory = useCallback((mainCategory: string) => {
-    const subcategories = getCategoriesByParent(mainCategory);
-    const subcategoryIds = subcategories.map(sub => sub.id);
-    
-    setSelectedCategories(prev => {
-      const allSelected = subcategoryIds.every(id => prev.includes(id));
-      
-      if (allSelected) {
-        // Remove all subcategories
-        return prev.filter(id => !subcategoryIds.includes(id));
-      } else {
-        // Add all subcategories that fit within limit
-        const unselected = subcategoryIds.filter(id => !prev.includes(id));
-        const canAdd = Math.min(unselected.length, maxSelections - prev.length);
-        return [...prev, ...unselected.slice(0, canAdd)];
-      }
-    });
-  }, [maxSelections]);
+  const selectAllInMainCategory = useCallback(
+    (mainCategory: string) => {
+      const subcategories = getCategoriesByParent(mainCategory);
+      const subcategoryIds = subcategories.map(sub => sub.id);
+
+      setSelectedCategories(prev => {
+        const allSelected = subcategoryIds.every(id => prev.includes(id));
+
+        if (allSelected) {
+          // Remove all subcategories
+          return prev.filter(id => !subcategoryIds.includes(id));
+        } else {
+          // Add all subcategories that fit within limit
+          const unselected = subcategoryIds.filter(id => !prev.includes(id));
+          const canAdd = Math.min(unselected.length, maxSelections - prev.length);
+          return [...prev, ...unselected.slice(0, canAdd)];
+        }
+      });
+    },
+    [maxSelections]
+  );
 
   // Category information helpers
   const getCategoryInfoById = useCallback((categoryId: DiscussionCategory) => {
@@ -127,7 +136,7 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
 
   const getSelectedCategoriesByMainCategory = useMemo(() => {
     const grouped: Record<string, DiscussionCategory[]> = {};
-    
+
     selectedCategories.forEach(categoryId => {
       const category = getCategoryById(categoryId);
       if (category?.parentId) {
@@ -137,7 +146,7 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
         grouped[category.parentId].push(categoryId);
       }
     });
-    
+
     return grouped;
   }, [selectedCategories]);
 
@@ -163,7 +172,7 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
   const getMainCategoryFilter = useCallback((mainCategory: string) => {
     const subcategories = getCategoriesByParent(mainCategory);
     const subcategoryIds = subcategories.map(sub => sub.id);
-    
+
     return (discussionCategories: DiscussionCategory[]) => {
       return subcategoryIds.some(id => discussionCategories.includes(id));
     };
@@ -173,16 +182,16 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
     // State
     selectedCategories,
     searchQuery,
-    
+
     // Search
     searchResults,
     setSearchQuery,
-    
+
     // Validation
     validation,
     isValid: validation.isValid,
     errors: validation.errors,
-    
+
     // Selection handlers
     addCategory,
     removeCategory,
@@ -190,19 +199,19 @@ export const useCategories = (options: UseCategoriesOptions = {}) => {
     clearCategories,
     setCategories,
     selectAllInMainCategory,
-    
+
     // Information helpers
     getCategoryInfo,
     getSelectedCategoryNames,
     getSelectedCategoriesByMainCategory,
-    
+
     // Statistics
     selectionStats,
-    
+
     // Filter helpers
     createCategoryFilter,
     getMainCategoryFilter,
-    
+
     // Configuration
     maxSelections,
     required,

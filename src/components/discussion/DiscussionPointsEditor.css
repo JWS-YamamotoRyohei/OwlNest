@@ -310,7 +310,9 @@
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-input:focus,
@@ -396,23 +398,23 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .add-point-btn {
     align-self: flex-start;
   }
-  
+
   .point-header {
     padding: 10px 12px;
   }
-  
+
   .point-content {
     padding: 12px;
   }
-  
+
   .empty-points {
     padding: 32px 16px;
   }
-  
+
   .empty-points-icon {
     font-size: 36px;
   }
@@ -422,34 +424,34 @@
   .point-drag-handle {
     display: none;
   }
-  
+
   .point-number {
     font-size: 13px;
   }
-  
+
   .remove-point-btn {
     font-size: 16px;
   }
-  
+
   .hierarchical-point {
     margin-left: 0 !important;
   }
-  
+
   .point-children {
     margin-left: 12px;
     padding-left: 8px;
   }
-  
+
   .add-child-btn {
     font-size: 10px;
     padding: 3px 6px;
   }
-  
+
   .point-level {
     font-size: 10px;
     padding: 1px 4px;
   }
-  
+
   .point-actions {
     gap: 4px;
   }

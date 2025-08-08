@@ -11,11 +11,7 @@ interface RoleGateProps {
 }
 
 // Role-based gate component
-export const RoleGate: React.FC<RoleGateProps> = ({
-  allowedRoles,
-  children,
-  fallback = null,
-}) => {
+export const RoleGate: React.FC<RoleGateProps> = ({ allowedRoles, children, fallback = null }) => {
   const { user } = usePermissions();
 
   if (!user || !allowedRoles.includes(user.role)) {
@@ -92,8 +88,7 @@ export const ContentOwnershipGate: React.FC<ContentOwnershipGateProps> = ({
 }) => {
   const { canEditOwnContent, canModerateContent } = usePermissions();
 
-  const hasAccess = canEditOwnContent(contentOwnerId) || 
-    (allowModerators && canModerateContent());
+  const hasAccess = canEditOwnContent(contentOwnerId) || (allowModerators && canModerateContent());
 
   if (!hasAccess) {
     return <>{fallback}</>;
@@ -109,10 +104,7 @@ interface AuthGateProps {
 }
 
 // Authentication gate component
-export const AuthGate: React.FC<AuthGateProps> = ({
-  children,
-  fallback = null,
-}) => {
+export const AuthGate: React.FC<AuthGateProps> = ({ children, fallback = null }) => {
   const { user } = usePermissions();
 
   if (!user) {

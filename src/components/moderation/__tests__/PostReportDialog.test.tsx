@@ -53,8 +53,8 @@ const mockUser = {
   displayName: 'Test User',
   role: UserRole.VIEWER,
   email: 'test@example.com',
-  givenName: "givenName-mock",
-  familyName: "givenName-mock",
+  givenName: 'givenName-mock',
+  familyName: 'givenName-mock',
   avatarUrl: '',
   preferences: {
     notifications: {
@@ -171,7 +171,7 @@ describe('PostReportDialog', () => {
 
   it('validates required fields', async () => {
     const mockOnClose = jest.fn();
-    
+
     render(
       <PostReportDialog
         post={mockPost}
@@ -194,7 +194,7 @@ describe('PostReportDialog', () => {
   it('submits report with valid data', async () => {
     const mockOnClose = jest.fn();
     const mockOnReportSubmitted = jest.fn();
-    
+
     render(
       <PostReportDialog
         post={mockPost}
@@ -209,7 +209,9 @@ describe('PostReportDialog', () => {
     fireEvent.change(categorySelect, { target: { value: 'spam' } });
 
     const reasonTextarea = screen.getByLabelText(/報告理由/);
-    fireEvent.change(reasonTextarea, { target: { value: 'This is spam content that violates community guidelines' } });
+    fireEvent.change(reasonTextarea, {
+      target: { value: 'This is spam content that violates community guidelines' },
+    });
 
     const submitButton = screen.getByText('報告を送信');
     fireEvent.click(submitButton);
@@ -229,9 +231,9 @@ describe('PostReportDialog', () => {
   it('handles submission errors', async () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation();
-    
+
     mockReportService.reportPost.mockRejectedValue(new Error('Network error'));
-    
+
     render(
       <PostReportDialog
         post={mockPost}
@@ -261,7 +263,7 @@ describe('PostReportDialog', () => {
 
   it('closes dialog when cancel is clicked', () => {
     const mockOnClose = jest.fn();
-    
+
     render(
       <PostReportDialog
         post={mockPost}

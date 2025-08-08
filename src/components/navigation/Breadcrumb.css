@@ -71,28 +71,28 @@
   .breadcrumb {
     margin-bottom: 0.75rem;
   }
-  
+
   .breadcrumb__list {
     gap: 0.125rem;
   }
-  
+
   .breadcrumb__item {
     font-size: 0.8125rem;
   }
-  
+
   .breadcrumb__link,
   .breadcrumb__current {
     padding: 0.125rem 0.375rem;
   }
-  
+
   .breadcrumb__icon {
     font-size: 0.8125rem;
   }
-  
+
   .breadcrumb__separator {
     margin: 0 0.125rem;
   }
-  
+
   /* Hide icons on very small screens */
   @media (max-width: 480px) {
     .breadcrumb__icon {
@@ -106,16 +106,16 @@
   .breadcrumb__link {
     color: #94a3b8;
   }
-  
+
   .breadcrumb__link:hover {
     color: #60a5fa;
     background-color: #1e293b;
   }
-  
+
   .breadcrumb__current {
     color: #f1f5f9;
   }
-  
+
   .breadcrumb__separator {
     color: #64748b;
   }
@@ -127,13 +127,13 @@
     color: #000;
     border: 1px solid transparent;
   }
-  
+
   .breadcrumb__link:hover,
   .breadcrumb__link:focus {
     border-color: #000;
     background-color: #fff;
   }
-  
+
   .breadcrumb__current {
     color: #000;
     font-weight: 700;

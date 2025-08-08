@@ -112,7 +112,7 @@ export const FileAttachmentDisplay: React.FC<FileAttachmentDisplayProps> = ({
   return (
     <div className={`file-attachment-display ${className}`}>
       <div className="file-attachment-display__list">
-        {displayedAttachments.map((attachment) => {
+        {displayedAttachments.map(attachment => {
           const isLoading = loadingStates.has(attachment.id);
           const error = errors.get(attachment.id);
           const isImage = isImageFile(attachment.contentType);
@@ -128,11 +128,7 @@ export const FileAttachmentDisplay: React.FC<FileAttachmentDisplayProps> = ({
                     onError={() => handleImageError(attachment.id)}
                     loading="lazy"
                   />
-                  {error && (
-                    <div className="file-attachment-display__image-error">
-                      {error}
-                    </div>
-                  )}
+                  {error && <div className="file-attachment-display__image-error">{error}</div>}
                 </div>
               ) : (
                 <div className="file-attachment-display__file">
@@ -140,9 +136,7 @@ export const FileAttachmentDisplay: React.FC<FileAttachmentDisplayProps> = ({
                     {getFileIcon(attachment.contentType)}
                   </div>
                   <div className="file-attachment-display__file-info">
-                    <div className="file-attachment-display__filename">
-                      {attachment.filename}
-                    </div>
+                    <div className="file-attachment-display__filename">{attachment.filename}</div>
                     <div className="file-attachment-display__file-meta">
                       {formatFileSize(attachment.size)}
                     </div>
@@ -171,29 +165,19 @@ export const FileAttachmentDisplay: React.FC<FileAttachmentDisplayProps> = ({
                     title="削除"
                     disabled={isLoading}
                   >
-                    {isLoading ? (
-                      <div className="file-attachment-display__spinner" />
-                    ) : (
-                      '🗑️'
-                    )}
+                    {isLoading ? <div className="file-attachment-display__spinner" /> : '🗑️'}
                   </button>
                 )}
               </div>
 
-              {error && !isImage && (
-                <div className="file-attachment-display__error">
-                  {error}
-                </div>
-              )}
+              {error && !isImage && <div className="file-attachment-display__error">{error}</div>}
             </div>
           );
         })}
       </div>
 
       {hiddenCount > 0 && (
-        <div className="file-attachment-display__more">
-          他 {hiddenCount} 個のファイル
-        </div>
+        <div className="file-attachment-display__more">他 {hiddenCount} 個のファイル</div>
       )}
     </div>
   );

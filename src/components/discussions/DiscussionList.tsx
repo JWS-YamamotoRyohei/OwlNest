@@ -27,25 +27,28 @@ export const DiscussionList: React.FC<DiscussionListProps> = ({
   followedDiscussions = new Set(),
   emptyMessage = '議論が見つかりませんでした',
   loadingMessage = '議論を読み込み中...',
-  useInfiniteScroll = true
+  useInfiniteScroll = true,
 }) => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Intersection Observer for infinite scroll
-  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
-    const [target] = entries;
-    if (target.isIntersecting && hasMore && !isLoading && onLoadMore) {
-      onLoadMore();
-    }
-  }, [hasMore, isLoading, onLoadMore]);
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [target] = entries;
+      if (target.isIntersecting && hasMore && !isLoading && onLoadMore) {
+        onLoadMore();
+      }
+    },
+    [hasMore, isLoading, onLoadMore]
+  );
 
   useEffect(() => {
     if (!useInfiniteScroll || !loadMoreRef.current) return;
 
     observerRef.current = new IntersectionObserver(handleObserver, {
       threshold: 0.1,
-      rootMargin: '100px'
+      rootMargin: '100px',
     });
 
     if (loadMoreRef.current) {
@@ -84,7 +87,7 @@ export const DiscussionList: React.FC<DiscussionListProps> = ({
   return (
     <div className="discussion-list">
       <div className="discussion-list__grid">
-        {discussions.map((discussion) => (
+        {discussions.map(discussion => (
           <DiscussionCard
             key={discussion.discussionId}
             discussion={discussion}
@@ -98,11 +101,7 @@ export const DiscussionList: React.FC<DiscussionListProps> = ({
 
       {/* Infinite scroll trigger */}
       {useInfiniteScroll && hasMore && (
-        <div 
-          ref={loadMoreRef}
-          className="discussion-list__load-more-trigger"
-          aria-hidden="true"
-        />
+        <div ref={loadMoreRef} className="discussion-list__load-more-trigger" aria-hidden="true" />
       )}
 
       {/* Loading more indicator */}

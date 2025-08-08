@@ -2,7 +2,7 @@
  * Integration tests for discussion flow
  */
 
-import { screen,, waitFor,} from '@testing-library/react';
+import { screen, waitFor,} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { 
   renderWithProviders, 
@@ -13,7 +13,7 @@ import {
   cleanup
 } from '../../utils/testUtils';
 import { UserRole } from '../../types/auth';
-import * as discussionService from '../../services/discussionService';
+// import * as discussionService from '../../services/discussionService';
 import * as postService from '../../services/postService';
 
 // Setup test environment

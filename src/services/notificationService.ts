@@ -4,8 +4,6 @@ import {
   NotificationListItem,
   NotificationStatistics,
   NotificationPreferences,
-  NotificationFilters,
-  NotificationSortOptions,
   NotificationQueryOptions,
   NotificationBatchOperation,
   NotificationDigest,
@@ -24,9 +22,11 @@ class NotificationService {
   /**
    * Get user notifications
    */
-  async getNotifications(options?: NotificationQueryOptions): Promise<ApiResponse<PaginationResult<NotificationListItem>>> {
+  async getNotifications(
+    options?: NotificationQueryOptions
+  ): Promise<ApiResponse<PaginationResult<NotificationListItem>>> {
     const params = new URLSearchParams();
-    
+
     if (options?.filters) {
       const filters = options.filters;
       if (filters.types) {
@@ -39,23 +39,24 @@ class NotificationService {
         filters.priorities.forEach(priority => params.append('priority', priority));
       }
       if (filters.isRead !== undefined) params.append('isRead', filters.isRead.toString());
-      if (filters.isArchived !== undefined) params.append('isArchived', filters.isArchived.toString());
+      if (filters.isArchived !== undefined)
+        params.append('isArchived', filters.isArchived.toString());
       if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
       if (filters.dateTo) params.append('dateTo', filters.dateTo);
       if (filters.sourceType) params.append('sourceType', filters.sourceType);
       if (filters.relatedUserId) params.append('relatedUserId', filters.relatedUserId);
     }
-    
+
     if (options?.sort) {
       params.append('sortField', options.sort.field);
       params.append('sortDirection', options.sort.direction);
     }
-    
+
     if (options?.pagination) {
       if (options.pagination.limit) params.append('limit', options.pagination.limit.toString());
       if (options.pagination.nextToken) params.append('nextToken', options.pagination.nextToken);
     }
-    
+
     return apiService.get(`${this.baseUrl}?${params.toString()}`);
   }
 
@@ -76,7 +77,10 @@ class NotificationService {
   /**
    * Update notification
    */
-  async updateNotification(notificationId: string, data: UpdateNotificationData): Promise<ApiResponse<Notification>> {
+  async updateNotification(
+    notificationId: string,
+    data: UpdateNotificationData
+  ): Promise<ApiResponse<Notification>> {
     return apiService.put(`${this.baseUrl}/${notificationId}`, data);
   }
 
@@ -118,7 +122,9 @@ class NotificationService {
   /**
    * Batch operation on notifications
    */
-  async batchOperation(operation: NotificationBatchOperation): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
+  async batchOperation(
+    operation: NotificationBatchOperation
+  ): Promise<ApiResponse<{ successful: string[]; failed: string[] }>> {
     return apiService.post(`${this.baseUrl}/batch`, operation);
   }
 
@@ -160,7 +166,9 @@ class NotificationService {
   /**
    * Update notification preferences
    */
-  async updatePreferences(preferences: Partial<NotificationPreferences>): Promise<ApiResponse<NotificationPreferences>> {
+  async updatePreferences(
+    preferences: Partial<NotificationPreferences>
+  ): Promise<ApiResponse<NotificationPreferences>> {
     return apiService.put(`${this.baseUrl}/preferences`, preferences);
   }
 
@@ -182,13 +190,8 @@ class NotificationService {
    * Subscribe to push notifications
    */
   async subscribeToPush(subscription: PushSubscription): Promise<ApiResponse<void>> {
-    return apiService.post(`${this.baseUrl}/push/subscribe`, {
-      endpoint: subscription.endpoint,
-      keys: {
-        p256dh: subscription.keys.p256dh,
-        auth: subscription.keys.auth,
-      },
-    });
+    const json = subscription.toJSON();
+    return apiService.post(`${this.baseUrl}/push/subscribe`, json);
   }
 
   /**
@@ -208,11 +211,14 @@ class NotificationService {
   /**
    * Export notification data
    */
-  async exportData(dateFrom?: string, dateTo?: string): Promise<ApiResponse<NotificationExportData>> {
+  async exportData(
+    dateFrom?: string,
+    dateTo?: string
+  ): Promise<ApiResponse<NotificationExportData>> {
     const params = new URLSearchParams();
     if (dateFrom) params.append('dateFrom', dateFrom);
     if (dateTo) params.append('dateTo', dateTo);
-    
+
     return apiService.get(`${this.baseUrl}/export?${params.toString()}`);
   }
 

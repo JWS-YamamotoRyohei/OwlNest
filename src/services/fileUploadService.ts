@@ -35,10 +35,7 @@ export class FileUploadService {
   /**
    * Upload a single file to S3
    */
-  async uploadFile(
-    file: File,
-    options: FileUploadOptions = {}
-  ): Promise<FileAttachment> {
+  async uploadFile(file: File, options: FileUploadOptions = {}): Promise<FileAttachment> {
     const { discussionId, postId, onProgress, signal } = options;
 
     // Validate file
@@ -47,7 +44,7 @@ export class FileUploadService {
     // Create abort controller for this upload
     const abortController = new AbortController();
     const fileId = this.generateFileId();
-    
+
     this.activeUploads.set(fileId, abortController);
 
     // Listen for external abort signal
@@ -83,21 +80,17 @@ export class FileUploadService {
       });
 
       // Step 2: Upload to S3 using presigned URL
-      await this.uploadToS3(
-        presignedResponse.presignedUrl,
-        file,
-        {
-          onProgress: (progress) => {
-            onProgress?.({
-              fileId,
-              filename: file.name,
-              progress: 10 + (progress * 0.8), // 10-90%
-              status: 'uploading',
-            });
-          },
-          signal: abortController.signal,
-        }
-      );
+      await this.uploadToS3(presignedResponse.presignedUrl, file, {
+        onProgress: progress => {
+          onProgress?.({
+            fileId,
+            filename: file.name,
+            progress: 10 + progress * 0.8, // 10-90%
+            status: 'uploading',
+          });
+        },
+        signal: abortController.signal,
+      });
 
       onProgress?.({
         fileId,
@@ -118,7 +111,7 @@ export class FileUploadService {
 
       // Get the file info to get the actual URL
       const fileInfo = await this.getFileInfo(presignedResponse.fileId);
-      
+
       // Create FileAttachment object
       const fileAttachment: FileAttachment = {
         id: presignedResponse.fileId,
@@ -132,7 +125,7 @@ export class FileUploadService {
       return fileAttachment;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
-      
+
       onProgress?.({
         fileId,
         filename: file.name,
@@ -150,10 +143,7 @@ export class FileUploadService {
   /**
    * Upload multiple files
    */
-  async uploadFiles(
-    files: File[],
-    options: FileUploadOptions = {}
-  ): Promise<FileAttachment[]> {
+  async uploadFiles(files: File[], options: FileUploadOptions = {}): Promise<FileAttachment[]> {
     const uploadPromises = files.map(file => this.uploadFile(file, options));
     return Promise.all(uploadPromises);
   }
@@ -186,7 +176,9 @@ export class FileUploadService {
     try {
       await apiService.delete(`/files/file/${fileId}`);
     } catch (error) {
-      throw new Error(`Failed to delete file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete file: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -195,10 +187,12 @@ export class FileUploadService {
    */
   async getFileInfo(fileId: string): Promise<FileAttachment> {
     try {
-      const response = await apiService.get(`/files/file/${fileId}`);
+      const response = await apiService.get<FileAttachment>(`/files/file/${fileId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get file info: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get file info: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -210,10 +204,12 @@ export class FileUploadService {
     postId?: string;
   }): Promise<PresignedUrlResponse> {
     try {
-      const response = await apiService.post('/files/presigned-url', request);
+      const response = await apiService.post<PresignedUrlResponse>('/files/presigned-url', request);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get presigned URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get presigned URL: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -229,7 +225,7 @@ export class FileUploadService {
       const xhr = new XMLHttpRequest();
 
       // Handle progress
-      xhr.upload.addEventListener('progress', (event) => {
+      xhr.upload.addEventListener('progress', event => {
         if (event.lengthComputable) {
           const progress = (event.loaded / event.total) * 100;
           options.onProgress?.(progress);
@@ -273,7 +269,9 @@ export class FileUploadService {
     try {
       await apiService.post('/files/complete', { fileId });
     } catch (error) {
-      throw new Error(`Failed to complete upload: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to complete upload: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -281,20 +279,32 @@ export class FileUploadService {
     // File size validation (max 100MB)
     const maxSize = 100 * 1024 * 1024;
     if (file.size > maxSize) {
-      throw new Error(`File size ${this.formatFileSize(file.size)} exceeds maximum allowed size ${this.formatFileSize(maxSize)}`);
+      throw new Error(
+        `File size ${this.formatFileSize(file.size)} exceeds maximum allowed size ${this.formatFileSize(maxSize)}`
+      );
     }
 
     // File type validation
     const allowedTypes = [
       // Images
-      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/webp',
       // Documents
-      'application/pdf', 'text/plain', 'application/msword',
+      'application/pdf',
+      'text/plain',
+      'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       // Audio
-      'audio/mpeg', 'audio/wav', 'audio/ogg',
+      'audio/mpeg',
+      'audio/wav',
+      'audio/ogg',
       // Video
-      'video/mp4', 'video/webm', 'video/quicktime',
+      'video/mp4',
+      'video/webm',
+      'video/quicktime',
     ];
 
     if (!allowedTypes.includes(file.type)) {

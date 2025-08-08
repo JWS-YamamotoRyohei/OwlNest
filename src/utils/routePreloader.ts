@@ -20,7 +20,11 @@ interface PreloadOptions {
 
 class RoutePreloaderClass {
   private preloadedRoutes = new LRUCache<string, PreloadedRoute>(50);
-  private preloadQueue: Array<{ path: string; importFn: () => Promise<any>; options: PreloadOptions }> = [];
+  private preloadQueue: Array<{
+    path: string;
+    importFn: () => Promise<any>;
+    options: PreloadOptions;
+  }> = [];
   private isPreloading = false;
   private importFunctions = new Map<string, () => Promise<any>>();
   private routeMap = new Map<string, () => Promise<any>>();
@@ -38,8 +42,12 @@ class RoutePreloaderClass {
     this.routeMap.set('following', () => import('../pages/FollowingPage'));
     this.routeMap.set('settings', () => import('../pages/SettingsPage'));
     this.routeMap.set('home', () => import('../pages/Home'));
-    this.routeMap.set('search', () => import('../pages/SearchPage').then(module => ({ default: module.SearchPage })));
-    this.routeMap.set('moderation', () => import('../pages/ModerationPage').then(module => ({ default: module.ModerationPage })));
+    this.routeMap.set('search', () =>
+      import('../pages/SearchPage').then(module => ({ default: module.SearchPage }))
+    );
+    this.routeMap.set('moderation', () =>
+      import('../pages/ModerationPage').then(module => ({ default: module.ModerationPage }))
+    );
   }
 
   /**
@@ -65,16 +73,13 @@ class RoutePreloaderClass {
     try {
       performanceMonitor.startMeasure(`preload-${path}`);
 
-      const component = this.withTimeout(
-        this.withRetries(actualImportFn, retries),
-        timeout
-      );
+      const component = this.withTimeout(this.withRetries(actualImportFn, retries), timeout);
 
       this.preloadedRoutes.set(path, {
         path,
         component,
         timestamp: Date.now(),
-        priority
+        priority,
       });
 
       // Actually trigger the import
@@ -95,7 +100,7 @@ class RoutePreloaderClass {
       promise,
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('Preload timeout')), timeoutMs)
-      )
+      ),
     ]);
   }
 
@@ -127,11 +132,7 @@ class RoutePreloaderClass {
   /**
    * Add route to preload queue with intelligent scheduling
    */
-  queuePreload(
-    path: string,
-    importFn?: () => Promise<any>,
-    options: PreloadOptions = {}
-  ): void {
+  queuePreload(path: string, importFn?: () => Promise<any>, options: PreloadOptions = {}): void {
     if (this.preloadedRoutes.has(path)) {
       return;
     }
@@ -225,7 +226,7 @@ class RoutePreloaderClass {
   /**
    * Wait for idle time with fallback
    */
-  
+
   private waitForIdleTime(): Promise<void> {
     return new Promise(resolve => {
       if ('requestIdleCallback' in window) {
@@ -255,10 +256,7 @@ class RoutePreloaderClass {
   /**
    * Preload routes based on user permissions
    */
-  preloadRoutesForUser(userPermissions: {
-    canCreateDiscussion: boolean;
-    canModerate: boolean;
-  }) {
+  preloadRoutesForUser(userPermissions: { canCreateDiscussion: boolean; canModerate: boolean }) {
     if (userPermissions.canCreateDiscussion) {
       this.queuePreload('create-discussion', undefined, { priority: 3 });
       this.queuePreload('my-discussions', undefined, { priority: 3 });
@@ -305,7 +303,7 @@ class RoutePreloaderClass {
     return {
       preloadedCount: this.preloadedRoutes.size,
       queueLength: this.preloadQueue.length,
-      cacheSize: this.preloadedRoutes.size
+      cacheSize: this.preloadedRoutes.size,
     };
   }
 

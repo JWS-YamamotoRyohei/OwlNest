@@ -49,13 +49,15 @@ export class UserSanctionService {
    */
   async createSanction(sanctionData: CreateSanctionData): Promise<UserSanction> {
     try {
-      const response = await apiService.post('/moderation/sanctions', {
+      const response = await apiService.post<UserSanction>('/moderation/sanctions', {
         ...sanctionData,
         timestamp: new Date().toISOString(),
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to create sanction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to create sanction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -64,12 +66,14 @@ export class UserSanctionService {
    */
   async getAllSanctions(filters?: SanctionFilters): Promise<UserSanction[]> {
     try {
-      const response = await apiService.get('/moderation/sanctions', {
+      const response = await apiService.get<UserSanction[]>('/moderation/sanctions', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -78,12 +82,17 @@ export class UserSanctionService {
    */
   async getUserSanctions(userId: string, filters?: SanctionFilters): Promise<UserSanction[]> {
     try {
-      const response = await apiService.get(`/moderation/sanctions/user/${userId}`, {
-        params: filters,
-      });
+      const response = await apiService.get<UserSanction[]>(
+        `/moderation/sanctions/user/${userId}`,
+        {
+          params: filters,
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get user sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get user sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -92,10 +101,12 @@ export class UserSanctionService {
    */
   async getSanction(sanctionId: string): Promise<UserSanction> {
     try {
-      const response = await apiService.get(`/moderation/sanctions/${sanctionId}`);
+      const response = await apiService.get<UserSanction>(`/moderation/sanctions/${sanctionId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get sanction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get sanction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -109,7 +120,9 @@ export class UserSanctionService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to revoke sanction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to revoke sanction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -123,7 +136,9 @@ export class UserSanctionService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to appeal sanction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to appeal sanction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -138,7 +153,9 @@ export class UserSanctionService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to review appeal: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to review appeal: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -152,12 +169,14 @@ export class UserSanctionService {
     sanctionType?: SanctionType;
   }): Promise<SanctionStats> {
     try {
-      const response = await apiService.get('/moderation/sanctions/stats', {
+      const response = await apiService.get<SanctionStats>('/moderation/sanctions/stats', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get sanction stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get sanction stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -166,10 +185,14 @@ export class UserSanctionService {
    */
   async getUserSanctionHistory(userId: string): Promise<UserSanctionHistory> {
     try {
-      const response = await apiService.get(`/moderation/sanctions/user/${userId}/history`);
+      const response = await apiService.get<UserSanctionHistory>(
+        `/moderation/sanctions/user/${userId}/history`
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get user sanction history: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get user sanction history: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -185,10 +208,19 @@ export class UserSanctionService {
     restrictionEndDate?: string;
   }> {
     try {
-      const response = await apiService.get(`/moderation/sanctions/user/${userId}/status`);
+      const response = await apiService.get<{
+        isSanctioned: boolean;
+        activeSanctions: UserSanction[];
+        highestSanctionType?: SanctionType;
+        canPost: boolean;
+        canCreateDiscussion: boolean;
+        restrictionEndDate?: string;
+      }>(`/moderation/sanctions/user/${userId}/status`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to check user sanction status: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to check user sanction status: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -197,28 +229,39 @@ export class UserSanctionService {
    */
   async getExpiringSanctions(hoursAhead: number = 24): Promise<UserSanction[]> {
     try {
-      const response = await apiService.get('/moderation/sanctions/expiring', {
+      const response = await apiService.get<UserSanction[]>('/moderation/sanctions/expiring', {
         params: { hoursAhead },
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get expiring sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get expiring sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Extend a temporary sanction
    */
-  async extendSanction(sanctionId: string, additionalHours: number, reason: string): Promise<UserSanction> {
+  async extendSanction(
+    sanctionId: string,
+    additionalHours: number,
+    reason: string
+  ): Promise<UserSanction> {
     try {
-      const response = await apiService.post(`/moderation/sanctions/${sanctionId}/extend`, {
-        additionalHours,
-        reason,
-        timestamp: new Date().toISOString(),
-      });
+      const response = await apiService.post<UserSanction>(
+        `/moderation/sanctions/${sanctionId}/extend`,
+        {
+          additionalHours,
+          reason,
+          timestamp: new Date().toISOString(),
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to extend sanction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to extend sanction: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -227,27 +270,40 @@ export class UserSanctionService {
    */
   async convertToPermanent(sanctionId: string, reason: string): Promise<UserSanction> {
     try {
-      const response = await apiService.post(`/moderation/sanctions/${sanctionId}/convert-permanent`, {
-        reason,
-        timestamp: new Date().toISOString(),
-      });
+      const response = await apiService.post<UserSanction>(
+        `/moderation/sanctions/${sanctionId}/convert-permanent`,
+        {
+          reason,
+          timestamp: new Date().toISOString(),
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to convert sanction to permanent: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to convert sanction to permanent: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Get sanctions by moderator
    */
-  async getSanctionsByModerator(moderatorId: string, filters?: SanctionFilters): Promise<UserSanction[]> {
+  async getSanctionsByModerator(
+    moderatorId: string,
+    filters?: SanctionFilters
+  ): Promise<UserSanction[]> {
     try {
-      const response = await apiService.get(`/moderation/sanctions/moderator/${moderatorId}`, {
-        params: filters,
-      });
+      const response = await apiService.get<UserSanction[]>(
+        `/moderation/sanctions/moderator/${moderatorId}`,
+        {
+          params: filters,
+        }
+      );
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get sanctions by moderator: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get sanctions by moderator: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -262,27 +318,43 @@ export class UserSanctionService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to bulk revoke sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to bulk revoke sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Get sanction templates for common violations
    */
-  async getSanctionTemplates(): Promise<Array<{
-    id: string;
-    name: string;
-    sanctionType: SanctionType;
-    reason: string;
-    description: string;
-    duration?: number;
-    category: string;
-  }>> {
+  async getSanctionTemplates(): Promise<
+    Array<{
+      id: string;
+      name: string;
+      sanctionType: SanctionType;
+      reason: string;
+      description: string;
+      duration?: number;
+      category: string;
+    }>
+  > {
     try {
-      const response = await apiService.get('/moderation/sanctions/templates');
+      const response = await apiService.get<
+        {
+          id: string;
+          name: string;
+          sanctionType: SanctionType;
+          reason: string;
+          description: string;
+          duration?: number | undefined;
+          category: string;
+        }[]
+      >('/moderation/sanctions/templates');
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get sanction templates: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get sanction templates: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -300,7 +372,9 @@ export class UserSanctionService {
     try {
       await apiService.post('/moderation/sanctions/templates', template);
     } catch (error) {
-      throw new Error(`Failed to create sanction template: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to create sanction template: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -315,14 +389,17 @@ export class UserSanctionService {
     format?: 'csv' | 'json';
   }): Promise<Blob> {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_GATEWAY_URL}/moderation/sanctions/export`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('owlnest_auth_token')}`,
-        },
-        body: JSON.stringify(filters),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_GATEWAY_URL}/moderation/sanctions/export`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('owlnest_auth_token')}`,
+          },
+          body: JSON.stringify(filters),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Export failed: ${response.statusText}`);
@@ -330,35 +407,59 @@ export class UserSanctionService {
 
       return await response.blob();
     } catch (error) {
-      throw new Error(`Failed to export sanction data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export sanction data: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Get automated sanction rules
    */
-  async getAutomatedSanctionRules(): Promise<Array<{
-    id: string;
-    name: string;
-    description: string;
-    conditions: Array<{
-      type: 'report_count' | 'violation_type' | 'user_history' | 'time_period';
-      operator: 'equals' | 'greater_than' | 'less_than' | 'contains';
-      value: any;
-    }>;
-    action: {
-      sanctionType: SanctionType;
-      duration?: number;
-      reason: string;
-    };
-    isActive: boolean;
-    priority: number;
-  }>> {
+  async getAutomatedSanctionRules(): Promise<
+    Array<{
+      id: string;
+      name: string;
+      description: string;
+      conditions: Array<{
+        type: 'report_count' | 'violation_type' | 'user_history' | 'time_period';
+        operator: 'equals' | 'greater_than' | 'less_than' | 'contains';
+        value: any;
+      }>;
+      action: {
+        sanctionType: SanctionType;
+        duration?: number;
+        reason: string;
+      };
+      isActive: boolean;
+      priority: number;
+    }>
+  > {
     try {
-      const response = await apiService.get('/moderation/sanctions/automated-rules');
+      const response = await apiService.get<
+        {
+          id: string;
+          name: string;
+          description: string;
+          conditions: Array<{
+            type: 'report_count' | 'violation_type' | 'user_history' | 'time_period';
+            operator: 'equals' | 'greater_than' | 'less_than' | 'contains';
+            value: any;
+          }>;
+          action: {
+            sanctionType: SanctionType;
+            duration?: number;
+            reason: string;
+          };
+          isActive: boolean;
+          priority: number;
+        }[]
+      >('/moderation/sanctions/automated-rules');
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get automated sanction rules: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get automated sanction rules: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -383,63 +484,91 @@ export class UserSanctionService {
     try {
       await apiService.post('/moderation/sanctions/automated-rules', rule);
     } catch (error) {
-      throw new Error(`Failed to create automated sanction rule: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to create automated sanction rule: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Process automated sanctions for a user
    */
-  async processAutomatedSanctions(userId: string, context: {
-    reportCount?: number;
-    violationType?: string;
-    postId?: string;
-    discussionId?: string;
-  }): Promise<{
+  async processAutomatedSanctions(
+    userId: string,
+    context: {
+      reportCount?: number;
+      violationType?: string;
+      postId?: string;
+      discussionId?: string;
+    }
+  ): Promise<{
     sanctionsApplied: UserSanction[];
     rulesTriggered: string[];
   }> {
     try {
-      const response = await apiService.post(`/moderation/sanctions/user/${userId}/process-automated`, {
+      const response = await apiService.post<{
+        sanctionsApplied: UserSanction[];
+        rulesTriggered: string[];
+      }>(`/moderation/sanctions/user/${userId}/process-automated`, {
         context,
         timestamp: new Date().toISOString(),
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to process automated sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to process automated sanctions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Send notification to sanctioned user
    */
-  async notifyUser(sanctionId: string, method: 'email' | 'in_app' | 'both' = 'both'): Promise<void> {
+  async notifyUser(
+    sanctionId: string,
+    method: 'email' | 'in_app' | 'both' = 'both'
+  ): Promise<void> {
     try {
       await apiService.post(`/moderation/sanctions/${sanctionId}/notify`, {
         method,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to notify user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to notify user: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Get sanction notification templates
    */
-  async getNotificationTemplates(): Promise<Array<{
-    id: string;
-    sanctionType: SanctionType;
-    subject: string;
-    emailTemplate: string;
-    inAppTemplate: string;
-    language: string;
-  }>> {
+  async getNotificationTemplates(): Promise<
+    Array<{
+      id: string;
+      sanctionType: SanctionType;
+      subject: string;
+      emailTemplate: string;
+      inAppTemplate: string;
+      language: string;
+    }>
+  > {
     try {
-      const response = await apiService.get('/moderation/sanctions/notification-templates');
+      const response = await apiService.get<
+        {
+          id: string;
+          sanctionType: SanctionType;
+          subject: string;
+          emailTemplate: string;
+          inAppTemplate: string;
+          language: string;
+        }[]
+      >('/moderation/sanctions/notification-templates');
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get notification templates: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get notification templates: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

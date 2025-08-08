@@ -68,12 +68,12 @@ export const SanctionNotification: React.FC<SanctionNotificationProps> = ({
 
   const formatEndDate = (endDate?: string) => {
     if (!endDate) return null;
-    
+
     const date = new Date(endDate);
     const now = new Date();
     const diffMs = date.getTime() - now.getTime();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays <= 0) {
       return '期限切れ';
     } else if (diffDays === 1) {
@@ -94,11 +94,11 @@ export const SanctionNotification: React.FC<SanctionNotificationProps> = ({
   };
 
   return (
-    <div className={`sanction-notification-card ${getNotificationClass(notification.type)} ${!notification.isRead ? 'unread' : ''}`}>
+    <div
+      className={`sanction-notification-card ${getNotificationClass(notification.type)} ${!notification.isRead ? 'unread' : ''}`}
+    >
       <div className="notification-header">
-        <div className="notification-icon">
-          {getNotificationIcon(notification.type)}
-        </div>
+        <div className="notification-icon">{getNotificationIcon(notification.type)}</div>
         <div className="notification-title">
           <h4>{notification.title}</h4>
           <span className="notification-time">
@@ -132,7 +132,9 @@ export const SanctionNotification: React.FC<SanctionNotificationProps> = ({
           <div className="sanction-details">
             {notification.data.sanctionType && (
               <div className="sanction-info">
-                <span className={`sanction-type-badge ${getSanctionTypeClass(notification.data.sanctionType)}`}>
+                <span
+                  className={`sanction-type-badge ${getSanctionTypeClass(notification.data.sanctionType)}`}
+                >
                   {getSanctionTypeLabel(notification.data.sanctionType)}
                 </span>
               </div>
@@ -174,25 +176,27 @@ export const SanctionNotification: React.FC<SanctionNotificationProps> = ({
         )}
       </div>
 
-      {notification.type === 'USER_SANCTIONED' && notification.data?.sanctionType === SanctionType.TEMPORARY_SUSPENSION && (
-        <div className="notification-footer">
-          <div className="suspension-info">
-            <p className="info-text">
-              一時停止期間中は投稿や議論の作成ができません。期間終了後に自動的に制限が解除されます。
-            </p>
+      {notification.type === 'USER_SANCTIONED' &&
+        notification.data?.sanctionType === SanctionType.TEMPORARY_SUSPENSION && (
+          <div className="notification-footer">
+            <div className="suspension-info">
+              <p className="info-text">
+                一時停止期間中は投稿や議論の作成ができません。期間終了後に自動的に制限が解除されます。
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {notification.type === 'USER_SANCTIONED' && notification.data?.sanctionType === SanctionType.PERMANENT_BAN && (
-        <div className="notification-footer">
-          <div className="ban-info">
-            <p className="info-text">
-              永久停止により、今後投稿や議論の作成ができません。異議がある場合は管理者にお問い合わせください。
-            </p>
+      {notification.type === 'USER_SANCTIONED' &&
+        notification.data?.sanctionType === SanctionType.PERMANENT_BAN && (
+          <div className="notification-footer">
+            <div className="ban-info">
+              <p className="info-text">
+                永久停止により、今後投稿や議論の作成ができません。異議がある場合は管理者にお問い合わせください。
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {notification.type === 'SANCTION_REVOKED' && (
         <div className="notification-footer">

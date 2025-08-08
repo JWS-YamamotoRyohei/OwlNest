@@ -41,7 +41,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const handleBoldToggle = () => {
     if (!features.bold) return;
-    
+
     const newFormatting = {
       ...formatting,
       bold: !formatting.bold,
@@ -51,7 +51,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const handleFontSizeChange = (size: 'small' | 'medium' | 'large') => {
     if (!features.fontSize) return;
-    
+
     const newFormatting = {
       ...formatting,
       fontSize: size,
@@ -59,22 +59,25 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
     onChange(value, newFormatting);
   };
 
-  const insertTextAtCursor = useCallback((text: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  const insertTextAtCursor = useCallback(
+    (text: string) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newValue = value.substring(0, start) + text + value.substring(end);
-    
-    onChange(newValue, formatting);
-    
-    // Set cursor position after inserted text
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + text.length, start + text.length);
-    }, 0);
-  }, [value, formatting, onChange]);
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newValue = value.substring(0, start) + text + value.substring(end);
+
+      onChange(newValue, formatting);
+
+      // Set cursor position after inserted text
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + text.length, start + text.length);
+      }, 0);
+    },
+    [value, formatting, onChange]
+  );
 
   const handleLinkInsert = () => {
     if (!features.linkInsert) return;
@@ -99,10 +102,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const handleFileUpload = (files: FileAttachment[]) => {
     if (!features.imageUpload) return;
-    
+
     const newAttachments = [...attachments, ...files];
     onAttachmentsChange(newAttachments);
-    
+
     // Insert image references in text for images
     files.forEach(file => {
       if (file.contentType.startsWith('image/')) {
@@ -119,11 +122,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const getTextareaStyle = () => {
     const style: React.CSSProperties = {};
-    
+
     if (formatting.bold) {
       style.fontWeight = 'bold';
     }
-    
+
     if (formatting.fontSize) {
       switch (formatting.fontSize) {
         case 'small':
@@ -137,11 +140,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           break;
       }
     }
-    
+
     if (formatting.color) {
       style.color = formatting.color;
     }
-    
+
     return style;
   };
 
@@ -159,12 +162,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             <strong>B</strong>
           </button>
         )}
-        
+
         {features.fontSize && (
           <div className="rich-text-editor__font-size">
             <select
               value={formatting.fontSize || 'medium'}
-              onChange={(e) => handleFontSizeChange(e.target.value as 'small' | 'medium' | 'large')}
+              onChange={e => handleFontSizeChange(e.target.value as 'small' | 'medium' | 'large')}
               className="rich-text-editor__font-size-select"
             >
               <option value="small">小</option>
@@ -173,7 +176,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             </select>
           </div>
         )}
-        
+
         {features.linkInsert && (
           <button
             type="button"
@@ -184,7 +187,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             🔗
           </button>
         )}
-        
+
         {features.imageUpload && (
           <FileUploadButton
             onUpload={handleFileUpload}
@@ -216,9 +219,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           <div className="rich-text-editor__attachments-list">
             {attachments.map(attachment => (
               <div key={attachment.id} className="rich-text-editor__attachment">
-                <span className="rich-text-editor__attachment-name">
-                  {attachment.filename}
-                </span>
+                <span className="rich-text-editor__attachment-name">{attachment.filename}</span>
                 <button
                   type="button"
                   onClick={() => handleAttachmentRemove(attachment.id)}
@@ -243,7 +244,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
               <input
                 type="text"
                 value={linkText}
-                onChange={(e) => setLinkText(e.target.value)}
+                onChange={e => setLinkText(e.target.value)}
                 placeholder="表示するテキスト"
               />
             </div>
@@ -252,7 +253,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
               <input
                 type="url"
                 value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
+                onChange={e => setLinkUrl(e.target.value)}
                 placeholder="https://example.com"
               />
             </div>
@@ -260,11 +261,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
               <button type="button" onClick={handleLinkCancel}>
                 キャンセル
               </button>
-              <button 
-                type="button" 
-                onClick={handleLinkConfirm}
-                disabled={!linkUrl || !linkText}
-              >
+              <button type="button" onClick={handleLinkConfirm} disabled={!linkUrl || !linkText}>
                 挿入
               </button>
             </div>

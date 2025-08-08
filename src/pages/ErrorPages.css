@@ -108,24 +108,24 @@
   .error-page {
     padding: 0.5rem;
   }
-  
+
   .error-container {
     padding: 1.5rem;
   }
-  
+
   .error-title {
     font-size: 1.5rem;
   }
-  
+
   .error-message {
     font-size: 1rem;
   }
-  
+
   .error-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .error-button {
     width: 100%;
     max-width: 280px;
@@ -137,33 +137,33 @@
   .error-page {
     background-color: #0f172a;
   }
-  
+
   .error-title {
     color: #f1f5f9;
   }
-  
+
   .error-message {
     color: #94a3b8;
   }
-  
+
   .error-details {
     background-color: #1e293b;
   }
-  
+
   .error-details p {
     color: #cbd5e1;
   }
-  
+
   .error-details strong {
     color: #f1f5f9;
   }
-  
+
   .error-button--secondary {
     background-color: #1e293b;
     color: #e2e8f0;
     border-color: #475569;
   }
-  
+
   .error-button--secondary:hover {
     background-color: #334155;
     border-color: #64748b;

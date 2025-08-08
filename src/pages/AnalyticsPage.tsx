@@ -9,11 +9,14 @@ import './AnalyticsPage.css';
 
 const AnalyticsPage: React.FC = () => {
   const { user } = useAuth();
-  const [selectedTab, setSelectedTab] = useState<'platform' | 'discussions' | 'trends' | 'personal'>('platform');
-  
+  const [selectedTab, setSelectedTab] = useState<
+    'platform' | 'discussions' | 'trends' | 'personal'
+  >('platform');
+
   // Mock discussion IDs for demonstration
   const mockDiscussionIds = ['1', '2', '3', '4', '5'];
-  const { data: discussionStats, loading: discussionsLoading } = useMultipleDiscussionStatistics(mockDiscussionIds);
+  const { data: discussionStats, loading: discussionsLoading } =
+    useMultipleDiscussionStatistics(mockDiscussionIds);
 
   const handleViewDiscussionDetails = (discussionId: string) => {
     // Navigate to detailed analytics for specific discussion
@@ -78,7 +81,7 @@ const AnalyticsPage: React.FC = () => {
               <h2>議論別統計</h2>
               <p>各議論の参加状況とエンゲージメントを確認できます</p>
             </div>
-            
+
             {discussionsLoading ? (
               <div className="loading-grid">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -90,7 +93,7 @@ const AnalyticsPage: React.FC = () => {
               </div>
             ) : (
               <div className="discussions-grid">
-                {discussionStats?.map((stats) => (
+                {discussionStats?.map(stats => (
                   <DiscussionStatisticsCard
                     key={stats.discussionId}
                     discussionId={stats.discussionId}
@@ -115,7 +118,7 @@ const AnalyticsPage: React.FC = () => {
               <h2>個人統計</h2>
               <p>あなたの活動状況と貢献度を確認できます</p>
             </div>
-            
+
             <div className="personal-stats-grid">
               <div className="personal-stat-card">
                 <div className="stat-icon">👤</div>
@@ -124,7 +127,7 @@ const AnalyticsPage: React.FC = () => {
                   <div className="stat-label">作成した議論</div>
                 </div>
               </div>
-              
+
               <div className="personal-stat-card">
                 <div className="stat-icon">💬</div>
                 <div className="stat-content">
@@ -132,7 +135,7 @@ const AnalyticsPage: React.FC = () => {
                   <div className="stat-label">投稿数</div>
                 </div>
               </div>
-              
+
               <div className="personal-stat-card">
                 <div className="stat-icon">👍</div>
                 <div className="stat-content">
@@ -140,7 +143,7 @@ const AnalyticsPage: React.FC = () => {
                   <div className="stat-label">獲得いいね</div>
                 </div>
               </div>
-              
+
               <div className="personal-stat-card">
                 <div className="stat-icon">📈</div>
                 <div className="stat-content">

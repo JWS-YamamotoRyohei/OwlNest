@@ -7,7 +7,12 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: UserRole;
-  requiredPermission?: 'canView' | 'canPost' | 'canCreateDiscussion' | 'canModerate' | 'canManageUsers';
+  requiredPermission?:
+    | 'canView'
+    | 'canPost'
+    | 'canCreateDiscussion'
+    | 'canModerate'
+    | 'canManageUsers';
   redirectTo?: string;
 }
 
@@ -15,7 +20,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requiredRole,
   requiredPermission,
-  redirectTo = '/login'
+  redirectTo = '/login',
 }) => {
   const { isAuthenticated, isLoading, user, hasPermission } = useAuth();
   const location = useLocation();
@@ -36,13 +41,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     if (requiredRole === UserRole.ADMIN) {
       return <Navigate to="/unauthorized" replace />;
     }
-    
+
     // For other roles, check if user has sufficient permissions
     const roleHierarchy = {
       [UserRole.VIEWER]: 0,
       [UserRole.CONTRIBUTOR]: 1,
       [UserRole.CREATOR]: 2,
-      [UserRole.ADMIN]: 3
+      [UserRole.ADMIN]: 3,
     };
 
     const userLevel = roleHierarchy[user?.role || UserRole.VIEWER];

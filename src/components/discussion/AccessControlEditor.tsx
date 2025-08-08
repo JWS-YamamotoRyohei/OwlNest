@@ -16,13 +16,16 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
 }) => {
   const [userInput, setUserInput] = useState('');
 
-  const handleTypeChange = useCallback((type: AccessControlType) => {
-    onChange({
-      ...accessControl,
-      type,
-      userIds: type === AccessControlType.OPEN ? [] : (accessControl.userIds || []),
-    });
-  }, [accessControl, onChange]);
+  const handleTypeChange = useCallback(
+    (type: AccessControlType) => {
+      onChange({
+        ...accessControl,
+        type,
+        userIds: type === AccessControlType.OPEN ? [] : accessControl.userIds || [],
+      });
+    },
+    [accessControl, onChange]
+  );
 
   const addUser = useCallback(() => {
     const trimmedInput = userInput.trim();
@@ -41,13 +44,16 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
     setUserInput('');
   }, [userInput, accessControl, onChange]);
 
-  const removeUser = useCallback((userId: string) => {
-    const currentUserIds = accessControl.userIds || [];
-    onChange({
-      ...accessControl,
-      userIds: currentUserIds.filter(id => id !== userId),
-    });
-  }, [accessControl, onChange]);
+  const removeUser = useCallback(
+    (userId: string) => {
+      const currentUserIds = accessControl.userIds || [];
+      onChange({
+        ...accessControl,
+        userIds: currentUserIds.filter(id => id !== userId),
+      });
+    },
+    [accessControl, onChange]
+  );
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -123,7 +129,9 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
             />
             <div className="control-type-content">
               <div className="control-type-header">
-                <span className="control-type-icon">{getTypeIcon(AccessControlType.BLACKLIST)}</span>
+                <span className="control-type-icon">
+                  {getTypeIcon(AccessControlType.BLACKLIST)}
+                </span>
                 <span className="control-type-title">ブラックリスト方式</span>
               </div>
               <div className="control-type-description">
@@ -143,7 +151,9 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
             />
             <div className="control-type-content">
               <div className="control-type-header">
-                <span className="control-type-icon">{getTypeIcon(AccessControlType.WHITELIST)}</span>
+                <span className="control-type-icon">
+                  {getTypeIcon(AccessControlType.WHITELIST)}
+                </span>
                 <span className="control-type-title">ホワイトリスト方式</span>
               </div>
               <div className="control-type-description">
@@ -154,17 +164,19 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
         </div>
       </div>
 
-      {(accessControl.type === AccessControlType.BLACKLIST || accessControl.type === AccessControlType.WHITELIST) && (
+      {(accessControl.type === AccessControlType.BLACKLIST ||
+        accessControl.type === AccessControlType.WHITELIST) && (
         <div className="user-list-section">
           <div className="user-list-header">
             <h4>
-              {accessControl.type === AccessControlType.BLACKLIST ? '制限するユーザー' : '許可するユーザー'}
+              {accessControl.type === AccessControlType.BLACKLIST
+                ? '制限するユーザー'
+                : '許可するユーザー'}
             </h4>
             <p className="user-list-help">
-              {accessControl.type === AccessControlType.BLACKLIST 
+              {accessControl.type === AccessControlType.BLACKLIST
                 ? 'ここに追加されたユーザーは投稿できなくなります'
-                : 'ここに追加されたユーザーのみが投稿できます'
-              }
+                : 'ここに追加されたユーザーのみが投稿できます'}
             </p>
           </div>
 
@@ -172,7 +184,7 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
             <input
               type="text"
               value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
+              onChange={e => setUserInput(e.target.value)}
               onKeyPress={handleKeyPress}
               className="user-input"
               placeholder="ユーザーIDまたはメールアドレスを入力"
@@ -218,10 +230,9 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
             <div className="empty-user-list">
               <div className="empty-user-icon">👥</div>
               <div className="empty-user-text">
-                {accessControl.type === AccessControlType.BLACKLIST 
+                {accessControl.type === AccessControlType.BLACKLIST
                   ? '制限するユーザーが設定されていません'
-                  : '許可するユーザーが設定されていません'
-                }
+                  : '許可するユーザーが設定されていません'}
               </div>
             </div>
           )}
@@ -231,9 +242,17 @@ export const AccessControlEditor: React.FC<AccessControlEditorProps> = ({
       <div className="access-control-help">
         <h4>🔒 アクセス制御について</h4>
         <ul>
-          <li><strong>オープン:</strong> 健全な議論を促進するため、基本的にはオープンを推奨します</li>
-          <li><strong>ブラックリスト:</strong> 特定のユーザーからの荒らしや不適切な投稿を防ぎたい場合に使用</li>
-          <li><strong>ホワイトリスト:</strong> 専門的な議論や限定的な参加者での議論を行いたい場合に使用</li>
+          <li>
+            <strong>オープン:</strong> 健全な議論を促進するため、基本的にはオープンを推奨します
+          </li>
+          <li>
+            <strong>ブラックリスト:</strong>{' '}
+            特定のユーザーからの荒らしや不適切な投稿を防ぎたい場合に使用
+          </li>
+          <li>
+            <strong>ホワイトリスト:</strong>{' '}
+            専門的な議論や限定的な参加者での議論を行いたい場合に使用
+          </li>
           <li>設定は議論作成後も変更可能です</li>
         </ul>
       </div>

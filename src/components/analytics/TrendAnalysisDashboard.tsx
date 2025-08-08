@@ -1,5 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { useTrendData, useAnalyticsFilter, useMultipleDiscussionStatistics } from '../../hooks/useAnalytics';
+import {
+  useTrendData,
+  useAnalyticsFilter,
+  useMultipleDiscussionStatistics,
+} from '../../hooks/useAnalytics';
 import TrendChart from './TrendChart';
 import StanceDistributionChart from './StanceDistributionChart';
 import ExportButton from './ExportButton';
@@ -13,27 +17,48 @@ interface TrendAnalysisDashboardProps {
 
 const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
   discussionIds = [],
-  className
+  className,
 }) => {
   const { filter, updateTimeRange } = useAnalyticsFilter();
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'quarter'>('month');
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['posts', 'users', 'engagement']);
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([
+    'posts',
+    'users',
+    'engagement',
+  ]);
 
   // Get trend data for different metrics
-  const { data: postsTrend, loading: postsLoading } = useTrendData('posts', filter.timeRange, filter);
-  const { data: usersTrend, loading: usersLoading } = useTrendData('users', filter.timeRange, filter);
-  const { data: discussionsTrend, loading: discussionsLoading } = useTrendData('discussions', filter.timeRange, filter);
-  const { data: engagementTrend, loading: engagementLoading } = useTrendData('engagement', filter.timeRange, filter);
+  const { data: postsTrend, loading: postsLoading } = useTrendData(
+    'posts',
+    filter.timeRange,
+    filter
+  );
+  const { data: usersTrend, loading: usersLoading } = useTrendData(
+    'users',
+    filter.timeRange,
+    filter
+  );
+  const { data: discussionsTrend, loading: discussionsLoading } = useTrendData(
+    'discussions',
+    filter.timeRange,
+    filter
+  );
+  const { data: engagementTrend, loading: engagementLoading } = useTrendData(
+    'engagement',
+    filter.timeRange,
+    filter
+  );
 
   // Get discussion statistics for stance analysis
-  const { data: discussionStats, loading: discussionStatsLoading } = useMultipleDiscussionStatistics(discussionIds);
+  const { data: discussionStats, loading: discussionStatsLoading } =
+    useMultipleDiscussionStatistics(discussionIds);
 
   const handlePeriodChange = (period: 'week' | 'month' | 'quarter') => {
     setSelectedPeriod(period);
-    
+
     const now = new Date();
     let start: Date;
-    
+
     switch (period) {
       case 'week':
         start = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000); // 12 weeks
@@ -49,17 +74,15 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
     const timeRange: AnalyticsTimeRange = {
       start: start.toISOString(),
       end: now.toISOString(),
-      period: period === 'week' ? 'day' : period === 'month' ? 'week' : 'month'
+      period: period === 'week' ? 'day' : period === 'month' ? 'week' : 'month',
     };
 
     updateTimeRange(timeRange);
   };
 
   const handleMetricToggle = (metric: string) => {
-    setSelectedMetrics(prev => 
-      prev.includes(metric) 
-        ? prev.filter(m => m !== metric)
-        : [...prev, metric]
+    setSelectedMetrics(prev =>
+      prev.includes(metric) ? prev.filter(m => m !== metric) : [...prev, metric]
     );
   };
 
@@ -77,7 +100,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
             color="#3b82f6"
             height={180}
           />
-        )
+        ),
       });
     }
 
@@ -92,7 +115,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
             color="#22c55e"
             height={180}
           />
-        )
+        ),
       });
     }
 
@@ -107,7 +130,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
             color="#f59e0b"
             height={180}
           />
-        )
+        ),
       });
     }
 
@@ -122,14 +145,19 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
             color="#a855f7"
             height={180}
           />
-        )
+        ),
       });
     }
 
     return charts;
   }, [selectedMetrics, postsTrend, usersTrend, discussionsTrend, engagementTrend]);
 
-  const isLoading = postsLoading || usersLoading || discussionsLoading || engagementLoading || discussionStatsLoading;
+  const isLoading =
+    postsLoading ||
+    usersLoading ||
+    discussionsLoading ||
+    engagementLoading ||
+    discussionStatsLoading;
 
   const getInsights = () => {
     if (!postsTrend || !usersTrend || !engagementTrend) return [];
@@ -144,13 +172,13 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
       insights.push({
         type: 'positive',
         title: '投稿数が急増',
-        description: `前期比${latestPosts.changePercentage.toFixed(1)}%の増加を記録`
+        description: `前期比${latestPosts.changePercentage.toFixed(1)}%の増加を記録`,
       });
     } else if (latestPosts?.changePercentage < -10) {
       insights.push({
         type: 'negative',
         title: '投稿数が減少',
-        description: `前期比${Math.abs(latestPosts.changePercentage).toFixed(1)}%の減少`
+        description: `前期比${Math.abs(latestPosts.changePercentage).toFixed(1)}%の減少`,
       });
     }
 
@@ -159,7 +187,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
       insights.push({
         type: 'positive',
         title: 'ユーザー数が増加',
-        description: `新規ユーザーの獲得が順調に進んでいます`
+        description: `新規ユーザーの獲得が順調に進んでいます`,
       });
     }
 
@@ -168,13 +196,13 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
       insights.push({
         type: 'positive',
         title: '高いエンゲージメント',
-        description: 'ユーザーの参加度が非常に高い状態です'
+        description: 'ユーザーの参加度が非常に高い状態です',
       });
     } else if (latestEngagement?.value < 0.4) {
       insights.push({
         type: 'warning',
         title: 'エンゲージメント低下',
-        description: 'ユーザーの参加度向上が必要です'
+        description: 'ユーザーの参加度向上が必要です',
       });
     }
 
@@ -190,7 +218,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
           <h2>傾向分析ダッシュボード</h2>
           <p>プラットフォームの成長トレンドと議論パターンを分析します</p>
         </div>
-        
+
         <div className="dashboard-controls">
           <div className="period-selector">
             <label>期間:</label>
@@ -223,7 +251,7 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
                 { key: 'posts', label: '投稿数', color: '#3b82f6' },
                 { key: 'users', label: 'ユーザー数', color: '#22c55e' },
                 { key: 'discussions', label: '議論数', color: '#f59e0b' },
-                { key: 'engagement', label: 'エンゲージメント', color: '#a855f7' }
+                { key: 'engagement', label: 'エンゲージメント', color: '#a855f7' },
               ].map(metric => (
                 <label key={metric.key} className="metric-checkbox">
                   <input
@@ -231,9 +259,13 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
                     checked={selectedMetrics.includes(metric.key)}
                     onChange={() => handleMetricToggle(metric.key)}
                   />
-                  <span 
+                  <span
                     className="checkbox-indicator"
-                    style={{ backgroundColor: selectedMetrics.includes(metric.key) ? metric.color : '#e2e8f0' }}
+                    style={{
+                      backgroundColor: selectedMetrics.includes(metric.key)
+                        ? metric.color
+                        : '#e2e8f0',
+                    }}
                   />
                   {metric.label}
                 </label>
@@ -335,14 +367,15 @@ const TrendAnalysisDashboard: React.FC<TrendAnalysisDashboardProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               {latestPosts?.changePercentage && Math.abs(latestPosts.changePercentage) > 20 && (
                 <div className="alert-item warning">
                   <div className="alert-icon">🚨</div>
                   <div className="alert-content">
                     <div className="alert-title">投稿数の急激な変化を検出</div>
                     <div className="alert-description">
-                      前期比{latestPosts.changePercentage.toFixed(1)}%の変化が発生しています。要因の調査をお勧めします。
+                      前期比{latestPosts.changePercentage.toFixed(1)}
+                      %の変化が発生しています。要因の調査をお勧めします。
                     </div>
                   </div>
                 </div>

@@ -9,19 +9,18 @@ import './DiscussionListPage.css';
 import { DiscussionCategory } from '@/types/common';
 
 const DiscussionListPage: React.FC = () => {
-  
   // State management
   const [discussions, setDiscussions] = useState<DiscussionListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [followedDiscussions, setFollowedDiscussions] = useState<Set<string>>(new Set());
-  
+
   // Filter and sort state
   const [filters, setFilters] = useState<DiscussionSearchFilters>({});
   const [sortOptions, setSortOptions] = useState<DiscussionSortOptions>({
     field: 'lastActivityAt',
-    direction: 'desc'
+    direction: 'desc',
   });
 
   // Mock data generator (replace with actual API calls)
@@ -32,8 +31,8 @@ const DiscussionListPage: React.FC = () => {
     ownerId: `user_${Math.floor(Math.random() * 10) + 1}`,
     ownerDisplayName: `ユーザー${Math.floor(Math.random() * 10) + 1}`,
     ownerStance: ['pros', 'cons', 'neutral', 'unknown'][Math.floor(Math.random() * 4)] as any,
-    categories:  [
-      ['politics', 'economy', 'society'][Math.floor(Math.random() * 3)]
+    categories: [
+      ['politics', 'economy', 'society'][Math.floor(Math.random() * 3)],
     ] as DiscussionCategory[],
     tags: [`タグ${id}`, `関連${id}`],
     isActive: Math.random() > 0.2,
@@ -49,45 +48,47 @@ const DiscussionListPage: React.FC = () => {
       prosCount: Math.floor(Math.random() * 50),
       consCount: Math.floor(Math.random() * 50),
       neutralCount: Math.floor(Math.random() * 20),
-      followersCount: Math.floor(Math.random() * 30)
-    }
+      followersCount: Math.floor(Math.random() * 30),
+    },
   });
 
   // Load discussions (mock implementation)
-  const loadDiscussions = useCallback(async (reset = false) => {
-    if (isLoading) return;
-    
-    setIsLoading(true);
-    
-    try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const pageToLoad = reset ? 1 : currentPage;
-      const pageSize = 12;
-      const startId = (pageToLoad - 1) * pageSize + 1;
-      
-      const newDiscussions = Array.from({ length: pageSize }, (_, i) => 
-        generateMockDiscussion(startId + i)
-      );
-      console.log("newDiscussions!",newDiscussions)
-      if (reset) {
-        setDiscussions(newDiscussions);
-        setCurrentPage(2);
-      } else {
-        setDiscussions(prev => [...prev, ...newDiscussions]);
-        setCurrentPage(prev => prev + 1);
+  const loadDiscussions = useCallback(
+    async (reset = false) => {
+      if (isLoading) return;
+
+      setIsLoading(true);
+
+      try {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const pageToLoad = reset ? 1 : currentPage;
+        const pageSize = 12;
+        const startId = (pageToLoad - 1) * pageSize + 1;
+
+        const newDiscussions = Array.from({ length: pageSize }, (_, i) =>
+          generateMockDiscussion(startId + i)
+        );
+        console.log('newDiscussions!', newDiscussions);
+        if (reset) {
+          setDiscussions(newDiscussions);
+          setCurrentPage(2);
+        } else {
+          setDiscussions(prev => [...prev, ...newDiscussions]);
+          setCurrentPage(prev => prev + 1);
+        }
+
+        // Simulate end of data
+        setHasMore(pageToLoad < 5);
+      } catch (error) {
+        console.error('Failed to load discussions:', error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Simulate end of data
-      setHasMore(pageToLoad < 5);
-      
-    } catch (error) {
-      console.error('Failed to load discussions:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentPage, isLoading]);
+    },
+    [currentPage, isLoading]
+  );
 
   // Load more discussions for infinite scroll
   const handleLoadMore = useCallback(() => {
@@ -97,18 +98,24 @@ const DiscussionListPage: React.FC = () => {
   }, [loadDiscussions, isLoading, hasMore]);
 
   // Handle filter changes
-  const handleFiltersChange = useCallback((newFilters: DiscussionSearchFilters) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
-    loadDiscussions(true);
-  }, [loadDiscussions]);
+  const handleFiltersChange = useCallback(
+    (newFilters: DiscussionSearchFilters) => {
+      setFilters(newFilters);
+      setCurrentPage(1);
+      loadDiscussions(true);
+    },
+    [loadDiscussions]
+  );
 
   // Handle sort changes
-  const handleSortChange = useCallback((newSortOptions: DiscussionSortOptions) => {
-    setSortOptions(newSortOptions);
-    setCurrentPage(1);
-    loadDiscussions(true);
-  }, [loadDiscussions]);
+  const handleSortChange = useCallback(
+    (newSortOptions: DiscussionSortOptions) => {
+      setSortOptions(newSortOptions);
+      setCurrentPage(1);
+      loadDiscussions(true);
+    },
+    [loadDiscussions]
+  );
 
   // Clear filters
   const handleClearFilters = useCallback(() => {
@@ -154,15 +161,15 @@ const DiscussionListPage: React.FC = () => {
         description="進行中の議論を探して参加しましょう。様々なカテゴリの議論から興味のあるトピックを見つけて、建設的な対話に参加できます。"
         keywords={['議論一覧', '検索', 'カテゴリ', 'フィルター', 'ディスカッション']}
       />
-      
+
       <div className="discussion-list-page">
         <Breadcrumb />
-        
+
         <div className="discussion-list-page__header">
           <h1>議論一覧</h1>
           <p>進行中の議論を探して参加しましょう</p>
         </div>
-        
+
         <div className="discussion-list-page__controls">
           <DiscussionFilters
             filters={filters}
@@ -170,14 +177,14 @@ const DiscussionListPage: React.FC = () => {
             onClear={handleClearFilters}
             isLoading={isLoading}
           />
-          
+
           <DiscussionSort
             sortOptions={sortOptions}
             onSortChange={handleSortChange}
             isLoading={isLoading}
           />
         </div>
-        
+
         <div className="discussion-list-page__content">
           <DiscussionList
             discussions={discussions}

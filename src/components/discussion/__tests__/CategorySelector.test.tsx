@@ -12,12 +12,7 @@ describe('CategorySelector', () => {
   });
 
   it('renders category selector with main categories', () => {
-    render(
-      <CategorySelector
-        selectedCategories={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<CategorySelector selectedCategories={[]} onChange={mockOnChange} />);
 
     expect(screen.getByText('カテゴリ選択')).toBeInTheDocument();
     expect(screen.getByText('政治')).toBeInTheDocument();
@@ -53,12 +48,7 @@ describe('CategorySelector', () => {
   });
 
   it('calls onChange when category is selected', () => {
-    render(
-      <CategorySelector
-        selectedCategories={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<CategorySelector selectedCategories={[]} onChange={mockOnChange} />);
 
     // Click on politics category
     const politicsCategory = screen.getByText('政治').closest('.category-selector__category');
@@ -96,12 +86,7 @@ describe('CategorySelector', () => {
   });
 
   it('filters categories based on search query', () => {
-    render(
-      <CategorySelector
-        selectedCategories={[]}
-        onChange={mockOnChange}
-      />
-    );
+    render(<CategorySelector selectedCategories={[]} onChange={mockOnChange} />);
 
     const searchInput = screen.getByPlaceholderText('カテゴリを検索...');
     fireEvent.change(searchInput, { target: { value: '政治' } });
@@ -111,22 +96,13 @@ describe('CategorySelector', () => {
   });
 
   it('shows validation error when required but no categories selected', () => {
-    render(
-      <CategorySelector
-        selectedCategories={[]}
-        onChange={mockOnChange}
-        required={true}
-      />
-    );
+    render(<CategorySelector selectedCategories={[]} onChange={mockOnChange} required={true} />);
 
     expect(screen.getByText('少なくとも1つのカテゴリを選択してください')).toBeInTheDocument();
   });
 
   it('prevents selection when at max limit', () => {
-    const maxCategories = [
-      DiscussionCategory.POLITICS,
-      DiscussionCategory.ECONOMY,
-    ];
+    const maxCategories = [DiscussionCategory.POLITICS, DiscussionCategory.ECONOMY];
 
     render(
       <CategorySelector
@@ -137,7 +113,9 @@ describe('CategorySelector', () => {
     );
 
     // Try to select another category
-    const technologyCategory = screen.getByText('ネット・テクノロジー').closest('.category-selector__category');
+    const technologyCategory = screen
+      .getByText('ネット・テクノロジー')
+      .closest('.category-selector__category');
     fireEvent.click(technologyCategory!);
 
     // Should not call onChange since we're at the limit
@@ -145,13 +123,7 @@ describe('CategorySelector', () => {
   });
 
   it('disables component when disabled prop is true', () => {
-    render(
-      <CategorySelector
-        selectedCategories={[]}
-        onChange={mockOnChange}
-        disabled={true}
-      />
-    );
+    render(<CategorySelector selectedCategories={[]} onChange={mockOnChange} disabled={true} />);
 
     const searchInput = screen.getByPlaceholderText('カテゴリを検索...');
     expect(searchInput).toBeDisabled();

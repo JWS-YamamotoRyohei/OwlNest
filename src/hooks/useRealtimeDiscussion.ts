@@ -87,7 +87,18 @@ export const useRealtimeDiscussion = (
       onTypingStop,
       onDiscussionUpdated,
     };
-  }, [onNewPost, onPostUpdated, onPostDeleted, onPostReactionChanged, onPostVisibilityChanged, onUserJoined, onUserLeft, onTypingStart, onTypingStop, onDiscussionUpdated]);
+  }, [
+    onNewPost,
+    onPostUpdated,
+    onPostDeleted,
+    onPostReactionChanged,
+    onPostVisibilityChanged,
+    onUserJoined,
+    onUserLeft,
+    onTypingStart,
+    onTypingStop,
+    onDiscussionUpdated,
+  ]);
 
   // Join discussion
   const joinDiscussion = useCallback(() => {
@@ -104,23 +115,29 @@ export const useRealtimeDiscussion = (
   }, [isConnected, wsLeaveDiscussion, discussionId]);
 
   // Broadcast post
-  const broadcastPost = useCallback((postData: any) => {
-    if (isConnected) {
-      wsBroadcastPost(discussionId, postData);
-    }
-  }, [isConnected, wsBroadcastPost, discussionId]);
+  const broadcastPost = useCallback(
+    (postData: any) => {
+      if (isConnected) {
+        wsBroadcastPost(discussionId, postData);
+      }
+    },
+    [isConnected, wsBroadcastPost, discussionId]
+  );
 
   // Broadcast typing status
-  const broadcastTyping = useCallback((isTyping: boolean) => {
-    if (isConnected) {
-      const message = {
-        action: isTyping ? 'typing_start' : 'typing_stop',
-        discussionId,
-        timestamp: new Date().toISOString(),
-      };
-      send(message);
-    }
-  }, [isConnected, discussionId, send]);
+  const broadcastTyping = useCallback(
+    (isTyping: boolean) => {
+      if (isConnected) {
+        const message = {
+          action: isTyping ? 'typing_start' : 'typing_stop',
+          discussionId,
+          timestamp: new Date().toISOString(),
+        };
+        send(message);
+      }
+    },
+    [isConnected, discussionId, send]
+  );
 
   // Handle new post
   const handleNewPost = useCallback((message: WebSocketMessage) => {
@@ -145,7 +162,11 @@ export const useRealtimeDiscussion = (
 
   // Handle post reaction changed
   const handlePostReactionChanged = useCallback((message: WebSocketMessage) => {
-    if (message.data?.postId && message.data?.reactionData && handlersRef.current.onPostReactionChanged) {
+    if (
+      message.data?.postId &&
+      message.data?.reactionData &&
+      handlersRef.current.onPostReactionChanged
+    ) {
       handlersRef.current.onPostReactionChanged(message.data.postId, message.data.reactionData);
     }
   }, []);
@@ -154,8 +175,8 @@ export const useRealtimeDiscussion = (
   const handlePostVisibilityChanged = useCallback((message: WebSocketMessage) => {
     if (message.data?.postId && handlersRef.current.onPostVisibilityChanged) {
       handlersRef.current.onPostVisibilityChanged(
-        message.data.postId, 
-        message.data.isHidden, 
+        message.data.postId,
+        message.data.isHidden,
         message.data.reason
       );
     }
@@ -166,15 +187,15 @@ export const useRealtimeDiscussion = (
     if (message.data?.userId && message.data?.userName) {
       const userId = message.data.userId;
       const userName = message.data.userName;
-      
+
       setTypingUsers(prev => new Map(prev.set(userId, userName)));
-      
+
       // Clear existing timeout for this user
       const existingTimeout = typingTimeoutRef.current.get(userId);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
       }
-      
+
       // Set new timeout to remove typing indicator after 3 seconds
       const timeout = setTimeout(() => {
         setTypingUsers(prev => {
@@ -184,9 +205,9 @@ export const useRealtimeDiscussion = (
         });
         typingTimeoutRef.current.delete(userId);
       }, 3000);
-      
+
       typingTimeoutRef.current.set(userId, timeout);
-      
+
       if (handlersRef.current.onTypingStart) {
         handlersRef.current.onTypingStart(userId, userName);
       }
@@ -197,20 +218,20 @@ export const useRealtimeDiscussion = (
   const handleTypingStop = useCallback((message: WebSocketMessage) => {
     if (message.data?.userId) {
       const userId = message.data.userId;
-      
+
       setTypingUsers(prev => {
         const newMap = new Map(prev);
         newMap.delete(userId);
         return newMap;
       });
-      
+
       // Clear timeout for this user
       const existingTimeout = typingTimeoutRef.current.get(userId);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
         typingTimeoutRef.current.delete(userId);
       }
-      
+
       if (handlersRef.current.onTypingStop) {
         handlersRef.current.onTypingStop(userId);
       }
@@ -233,7 +254,7 @@ export const useRealtimeDiscussion = (
         }
         return prev;
       });
-      
+
       if (handlersRef.current.onUserJoined) {
         handlersRef.current.onUserJoined(message.data.userId);
       }
@@ -244,21 +265,21 @@ export const useRealtimeDiscussion = (
   const handleUserLeft = useCallback((message: WebSocketMessage) => {
     if (message.data?.userId) {
       setConnectedUsers(prev => prev.filter(id => id !== message.data.userId));
-      
+
       // Remove from typing users if present
       setTypingUsers(prev => {
         const newMap = new Map(prev);
         newMap.delete(message.data.userId);
         return newMap;
       });
-      
+
       // Clear typing timeout for this user
       const existingTimeout = typingTimeoutRef.current.get(message.data.userId);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
         typingTimeoutRef.current.delete(message.data.userId);
       }
-      
+
       if (handlersRef.current.onUserLeft) {
         handlersRef.current.onUserLeft(message.data.userId);
       }

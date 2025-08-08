@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  ModerationQueueItem, 
-  ReviewReportData, 
-  ReportStatus, 
+import {
+  ModerationQueueItem,
+  ReviewReportData,
+  ReportStatus,
   ModerationActionType,
-  SanctionType 
+  SanctionType,
 } from '../../types/moderation';
 import { reportService } from '../../services/reportService';
-import { moderationService } from '../../services/moderationService';
 import './PostReviewDialog.css';
 
 interface PostReviewDialogProps {
@@ -48,7 +47,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!resolution.trim()) {
       setError('解決内容を入力してください。');
       return;
@@ -88,14 +87,15 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
         reviewData.userSanction = {
           type: userSanction as SanctionType,
           reason: sanctionReason.trim(),
-          duration: userSanction === SanctionType.TEMPORARY_SUSPENSION ? sanctionDuration : undefined,
+          duration:
+            userSanction === SanctionType.TEMPORARY_SUSPENSION ? sanctionDuration : undefined,
         };
       }
 
       await reportService.reviewReport(reviewData);
-      
+
       onReviewed();
-      
+
       // Show success message
       alert('レビューが完了しました。');
     } catch (error) {
@@ -150,9 +150,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
             </div>
             <div className="post-review-dialog__content-preview">
               <strong>投稿内容:</strong>
-              <div className="post-review-dialog__content-text">
-                {queueItem.contentPreview}
-              </div>
+              <div className="post-review-dialog__content-text">{queueItem.contentPreview}</div>
             </div>
           </div>
 
@@ -167,11 +165,11 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                 id="status"
                 className="post-review-dialog__select"
                 value={reviewStatus}
-                onChange={(e) => setReviewStatus(e.target.value as ReportStatus)}
+                onChange={e => setReviewStatus(e.target.value as ReportStatus)}
                 disabled={isSubmitting}
                 required
               >
-                {statuses.map((status) => (
+                {statuses.map(status => (
                   <option key={status.value} value={status.value}>
                     {status.label}
                   </option>
@@ -188,16 +186,14 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                 id="resolution"
                 className="post-review-dialog__textarea"
                 value={resolution}
-                onChange={(e) => setResolution(e.target.value)}
+                onChange={e => setResolution(e.target.value)}
                 placeholder="この報告に対してどのような判断を下したかを説明してください"
                 rows={3}
                 maxLength={1000}
                 disabled={isSubmitting}
                 required
               />
-              <div className="post-review-dialog__char-count">
-                {resolution.length}/1000文字
-              </div>
+              <div className="post-review-dialog__char-count">{resolution.length}/1000文字</div>
             </div>
 
             {/* Notes */}
@@ -209,21 +205,19 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                 id="notes"
                 className="post-review-dialog__textarea"
                 value={notes}
-                onChange={(e) => setNotes(e.target.value)}
+                onChange={e => setNotes(e.target.value)}
                 placeholder="他のモデレーターへの参考情報があれば記入してください"
                 rows={2}
                 maxLength={500}
                 disabled={isSubmitting}
               />
-              <div className="post-review-dialog__char-count">
-                {notes.length}/500文字
-              </div>
+              <div className="post-review-dialog__char-count">{notes.length}/500文字</div>
             </div>
 
             {/* Moderation Action */}
             <div className="post-review-dialog__section">
               <h4 className="post-review-dialog__section-title">モデレーション操作（任意）</h4>
-              
+
               <div className="post-review-dialog__field">
                 <label className="post-review-dialog__label" htmlFor="moderation-action">
                   操作
@@ -232,11 +226,11 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                   id="moderation-action"
                   className="post-review-dialog__select"
                   value={moderationAction}
-                  onChange={(e) => setModerationAction(e.target.value as ModerationActionType)}
+                  onChange={e => setModerationAction(e.target.value as ModerationActionType)}
                   disabled={isSubmitting}
                 >
                   <option value="">操作なし</option>
-                  {moderationActions.map((action) => (
+                  {moderationActions.map(action => (
                     <option key={action.value} value={action.value}>
                       {action.label}
                     </option>
@@ -253,7 +247,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                     id="moderation-reason"
                     className="post-review-dialog__textarea"
                     value={moderationReason}
-                    onChange={(e) => setModerationReason(e.target.value)}
+                    onChange={e => setModerationReason(e.target.value)}
                     placeholder="この操作を行う理由を説明してください"
                     rows={2}
                     maxLength={500}
@@ -267,7 +261,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
             {/* User Sanction */}
             <div className="post-review-dialog__section">
               <h4 className="post-review-dialog__section-title">ユーザー制裁（任意）</h4>
-              
+
               <div className="post-review-dialog__field">
                 <label className="post-review-dialog__label" htmlFor="user-sanction">
                   制裁タイプ
@@ -276,11 +270,11 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                   id="user-sanction"
                   className="post-review-dialog__select"
                   value={userSanction}
-                  onChange={(e) => setUserSanction(e.target.value as SanctionType)}
+                  onChange={e => setUserSanction(e.target.value as SanctionType)}
                   disabled={isSubmitting}
                 >
                   <option value="">制裁なし</option>
-                  {sanctions.map((sanction) => (
+                  {sanctions.map(sanction => (
                     <option key={sanction.value} value={sanction.value}>
                       {sanction.label}
                     </option>
@@ -298,7 +292,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                       id="sanction-reason"
                       className="post-review-dialog__textarea"
                       value={sanctionReason}
-                      onChange={(e) => setSanctionReason(e.target.value)}
+                      onChange={e => setSanctionReason(e.target.value)}
                       placeholder="この制裁を課す理由を説明してください"
                       rows={2}
                       maxLength={500}
@@ -317,7 +311,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
                         id="sanction-duration"
                         className="post-review-dialog__input"
                         value={sanctionDuration}
-                        onChange={(e) => setSanctionDuration(parseInt(e.target.value) || 24)}
+                        onChange={e => setSanctionDuration(parseInt(e.target.value) || 24)}
                         min={1}
                         max={8760} // 1 year
                         disabled={isSubmitting}
@@ -332,11 +326,7 @@ export const PostReviewDialog: React.FC<PostReviewDialogProps> = ({
             </div>
 
             {/* Error Message */}
-            {error && (
-              <div className="post-review-dialog__error">
-                {error}
-              </div>
-            )}
+            {error && <div className="post-review-dialog__error">{error}</div>}
 
             {/* Actions */}
             <div className="post-review-dialog__actions">

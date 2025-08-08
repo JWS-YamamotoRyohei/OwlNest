@@ -182,7 +182,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'AUTH_START' });
     try {
       const result = await authService.login(credentials);
-      
+
       if ('challengeName' in result) {
         // Handle challenge (MFA, etc.)
         dispatch({ type: 'AUTH_CHALLENGE', payload: { challenge: result } });
@@ -197,7 +197,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Register function
-  const register = async (userData: RegisterData): Promise<{ userSub: string; codeDeliveryDetails: any }> => {
+  const register = async (
+    userData: RegisterData
+  ): Promise<{ userSub: string; codeDeliveryDetails: any }> => {
     dispatch({ type: 'AUTH_START' });
     try {
       const result = await authService.register(userData);
@@ -370,11 +372,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isViewer,
   };
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook to use auth context

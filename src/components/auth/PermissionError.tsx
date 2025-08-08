@@ -59,18 +59,12 @@ const PermissionError: React.FC<PermissionErrorProps> = ({
 
   return (
     <div className={`permission-error ${className}`}>
-      <div className="permission-error__icon">
-        🔒
-      </div>
+      <div className="permission-error__icon">🔒</div>
 
       <div className="permission-error__content">
-        <h3 className="permission-error__title">
-          {title}
-        </h3>
+        <h3 className="permission-error__title">{title}</h3>
 
-        <p className="permission-error__message">
-          {message || getDefaultMessage()}
-        </p>
+        <p className="permission-error__message">{message || getDefaultMessage()}</p>
 
         {showCurrentRole && user && (
           <div className="permission-error__current-role">
@@ -88,35 +82,24 @@ const PermissionError: React.FC<PermissionErrorProps> = ({
 
         {showUpgradeInfo && (
           <div className="permission-error__upgrade-info">
-            <p className="permission-error__upgrade-message">
-              {getUpgradeMessage()}
-            </p>
+            <p className="permission-error__upgrade-message">{getUpgradeMessage()}</p>
 
             {onRequestUpgrade && (
-              <button
-                className="permission-error__upgrade-button"
-                onClick={onRequestUpgrade}
-              >
+              <button className="permission-error__upgrade-button" onClick={onRequestUpgrade}>
                 権限申請
               </button>
             )}
           </div>
         )}
 
-        {children && (
-          <div className="permission-error__children">
-            {children}
-          </div>
-        )}
+        {children && <div className="permission-error__children">{children}</div>}
       </div>
     </div>
   );
 };
 
 // Specific error components for common scenarios
-export const LoginRequiredError: React.FC<{ onLogin?: () => void }> = ({
-  onLogin,
-}) => (
+export const LoginRequiredError: React.FC<{ onLogin?: () => void }> = ({ onLogin }) => (
   <PermissionError
     title="ログインが必要です"
     message="この機能を利用するにはログインしてください。"
@@ -125,10 +108,7 @@ export const LoginRequiredError: React.FC<{ onLogin?: () => void }> = ({
   >
     {onLogin && (
       <div className="permission-error__actions">
-        <button
-          className="permission-error__login-button"
-          onClick={onLogin}
-        >
+        <button className="permission-error__login-button" onClick={onLogin}>
           ログイン
         </button>
       </div>

@@ -1,7 +1,7 @@
 /**
  * Search performance monitoring and optimization utilities
  */
-import { useState} from 'react';
+import { useState } from 'react';
 
 interface PerformanceMetric {
   operation: string;
@@ -31,25 +31,24 @@ class SearchPerformanceMonitor {
    */
   startTiming(operation: string): (metadata?: Record<string, any>) => void {
     const startTime = performance.now();
-  
+
     return (metadata?: Record<string, any>) => {
       const duration = performance.now() - startTime;
       this.recordMetric({
         operation,
         duration,
         timestamp: Date.now(),
-        metadata
+        metadata,
       });
     };
   }
-  
 
   /**
    * Record a performance metric
    */
   private recordMetric(metric: PerformanceMetric): void {
     this.metrics.push(metric);
-    
+
     // Keep only recent metrics
     if (this.metrics.length > this.maxMetrics) {
       this.metrics = this.metrics.slice(-this.maxMetrics);
@@ -84,26 +83,21 @@ class SearchPerformanceMonitor {
     const totalSearches = this.metrics.length;
     const totalTime = this.metrics.reduce((sum, metric) => sum + metric.duration, 0);
     const averageResponseTime = totalSearches > 0 ? totalTime / totalSearches : 0;
-    
-    const slowQueries = this.metrics.filter(
-      metric => metric.duration > this.slowQueryThreshold
-    );
-    
+
+    const slowQueries = this.metrics.filter(metric => metric.duration > this.slowQueryThreshold);
+
     const totalCacheOperations = this.cacheHits + this.cacheMisses;
-    const cacheHitRate = totalCacheOperations > 0 
-      ? (this.cacheHits / totalCacheOperations) * 100 
-      : 0;
-    
-    const errorRate = totalSearches > 0 
-      ? (this.errors / totalSearches) * 100 
-      : 0;
+    const cacheHitRate =
+      totalCacheOperations > 0 ? (this.cacheHits / totalCacheOperations) * 100 : 0;
+
+    const errorRate = totalSearches > 0 ? (this.errors / totalSearches) * 100 : 0;
 
     return {
       totalSearches,
       averageResponseTime,
       cacheHitRate,
       slowQueries: slowQueries.slice(-10), // Last 10 slow queries
-      errorRate
+      errorRate,
     };
   }
 
@@ -154,7 +148,7 @@ class SearchPerformanceMonitor {
     return {
       metrics: [...this.metrics],
       summary: this.getMetrics(),
-      recommendations: this.getRecommendations()
+      recommendations: this.getRecommendations(),
     };
   }
 }
@@ -165,7 +159,7 @@ export function debounce<T extends (...args: any[]) => any>(
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -178,12 +172,12 @@ export function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -194,17 +188,17 @@ export function memoize<T extends (...args: any[]) => any>(
   getKey?: (...args: Parameters<T>) => string
 ): T {
   const cache = new Map<string, ReturnType<T>>();
-  
+
   return ((...args: Parameters<T>) => {
     const key = getKey ? getKey(...args) : JSON.stringify(args);
-    
+
     if (cache.has(key)) {
       return cache.get(key);
     }
-    
+
     const result = func(...args);
     cache.set(key, result);
-    
+
     return result;
   }) as T;
 }
@@ -246,21 +240,21 @@ export const QueryOptimizer = {
    */
   suggestImprovements(query: string): string[] {
     const suggestions: string[] = [];
-    
+
     if (query.length < 2) {
       suggestions.push('より具体的なキーワードを入力してください');
     }
-    
+
     if (this.isQueryTooBoard(query)) {
       suggestions.push('検索結果を絞り込むため、より詳細なキーワードを追加してください');
     }
-    
+
     if (query.length > 100) {
       suggestions.push('検索クエリが長すぎます。重要なキーワードに絞ってください');
     }
-    
+
     return suggestions;
-  }
+  },
 };
 
 // Create singleton instance
@@ -270,21 +264,24 @@ export const searchPerformanceMonitor = new SearchPerformanceMonitor();
 export function measurePerformance(operation: string) {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
-    
+
     descriptor.value = async function (...args: any[]) {
       const endTiming = searchPerformanceMonitor.startTiming(operation);
-      
+
       try {
         const result = await method.apply(this, args);
         endTiming({ success: true, args: args.length });
         return result;
       } catch (error) {
         searchPerformanceMonitor.recordError();
-        endTiming({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+        endTiming({
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
         throw error;
       }
     };
-    
+
     return descriptor;
   };
 }
@@ -292,20 +289,20 @@ export function measurePerformance(operation: string) {
 // React hook for performance monitoring
 export function useSearchPerformance() {
   const [metrics, setMetrics] = useState<SearchMetrics | null>(null);
-  
+
   React.useEffect(() => {
     const interval = setInterval(() => {
       setMetrics(searchPerformanceMonitor.getMetrics());
     }, 5000); // Update every 5 seconds
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return {
     metrics,
     recommendations: metrics ? searchPerformanceMonitor.getRecommendations() : [],
     exportMetrics: () => searchPerformanceMonitor.exportMetrics(),
-    clearMetrics: () => searchPerformanceMonitor.clear()
+    clearMetrics: () => searchPerformanceMonitor.clear(),
   };
 }
 

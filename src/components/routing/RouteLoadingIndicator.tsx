@@ -9,7 +9,7 @@ interface RouteLoadingIndicatorProps {
 
 export const RouteLoadingIndicator: React.FC<RouteLoadingIndicatorProps> = ({
   delay = 200,
-  duration = 300
+  duration = 300,
 }) => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -60,10 +60,7 @@ export const RouteLoadingIndicator: React.FC<RouteLoadingIndicatorProps> = ({
 
   return (
     <div className="route-loading-indicator">
-      <div 
-        className="route-loading-indicator__bar"
-        style={{ width: `${progress}%` }}
-      />
+      <div className="route-loading-indicator__bar" style={{ width: `${progress}%` }} />
     </div>
   );
 };

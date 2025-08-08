@@ -17,7 +17,9 @@
   color: inherit;
 }
 
-.file-upload-button__trigger:hover:not(.file-upload-button__trigger--disabled):not(.file-upload-button__trigger--uploading) {
+.file-upload-button__trigger:hover:not(.file-upload-button__trigger--disabled):not(
+    .file-upload-button__trigger--uploading
+  ) {
   opacity: 0.8;
 }
 
@@ -55,8 +57,12 @@
 }
 
 @keyframes file-upload-button-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .file-upload-button__error {

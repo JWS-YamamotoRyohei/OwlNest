@@ -249,39 +249,39 @@
   .create-discussion-demo {
     padding: 16px;
   }
-  
+
   .demo-header h1 {
     font-size: 24px;
   }
-  
+
   .demo-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .demo-btn {
     width: 200px;
   }
-  
+
   .result-header {
     flex-direction: column;
     gap: 12px;
     text-align: center;
   }
-  
+
   .result-content {
     padding: 16px;
   }
-  
+
   .result-item {
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .result-label {
     min-width: auto;
   }
-  
+
   .bg-item {
     flex-direction: column;
     gap: 8px;
@@ -292,19 +292,19 @@
   .demo-header h1 {
     font-size: 20px;
   }
-  
+
   .demo-header p {
     font-size: 14px;
   }
-  
+
   .result-section h3 {
     font-size: 15px;
   }
-  
+
   .category-list {
     gap: 4px;
   }
-  
+
   .category-badge {
     font-size: 11px;
     padding: 3px 6px;

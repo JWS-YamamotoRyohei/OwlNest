@@ -5,4 +5,9 @@ export { moderationService } from './moderationService';
 export { searchService } from './searchService';
 export type { UploadProgress } from './fileUploadService';
 export type { ModerationAction, ModerationLog, ModerationStats } from './moderationService';
-export type { SearchResult, SearchSuggestion, SearchHistoryItem, SavedSearch } from './searchService';
+export type {
+  SearchResult,
+  SearchSuggestion,
+  SearchHistoryItem,
+  SavedSearch,
+} from './searchService';

@@ -21,7 +21,7 @@ export interface UserProfile extends DynamoDBItem, BaseEntity {
   GSI1PK: `ROLE#${UserRole}`;
   GSI1SK: `USER#${string}`;
   EntityType: EntityType.USER_PROFILE;
-  
+
   // Core user information
   userId: string;
   email: string;
@@ -29,20 +29,20 @@ export interface UserProfile extends DynamoDBItem, BaseEntity {
   displayName: string;
   avatar?: string;
   bio?: string;
-  
+
   // User preferences and settings
   preferences: UserPreferences;
-  
+
   // User statistics
   statistics: UserStatistics;
-  
+
   // Account status
   isActive: boolean;
   isVerified: boolean;
   isSuspended: boolean;
   suspendedUntil?: string;
   suspensionReason?: string;
-  
+
   // Audit information
   lastLoginAt?: string;
   loginCount: number;
@@ -238,7 +238,7 @@ export interface UserNotificationPreferences {
   quietHours: {
     enabled: boolean;
     startTime: string; // HH:mm format
-    endTime: string;   // HH:mm format
+    endTime: string; // HH:mm format
     timezone: string;
   };
 }

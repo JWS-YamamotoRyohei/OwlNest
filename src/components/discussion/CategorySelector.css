@@ -297,13 +297,13 @@
   margin-left: 12px;
 }
 
-.category-selector__checkbox input[type="checkbox"] {
+.category-selector__checkbox input[type='checkbox'] {
   width: 16px;
   height: 16px;
   cursor: pointer;
 }
 
-.category-selector__checkbox input[type="checkbox"]:disabled {
+.category-selector__checkbox input[type='checkbox']:disabled {
   cursor: not-allowed;
 }
 
@@ -331,15 +331,15 @@
   .category-selector__main-category-header {
     padding: 10px 12px;
   }
-  
+
   .category-selector__subcategory {
     padding: 10px 16px;
   }
-  
+
   .category-selector__selected-list {
     gap: 4px;
   }
-  
+
   .category-selector__selected-item {
     font-size: 11px;
     padding: 3px 6px;

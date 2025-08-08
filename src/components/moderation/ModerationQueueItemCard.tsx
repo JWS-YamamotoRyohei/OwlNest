@@ -86,12 +86,12 @@ export const ModerationQueueItemCard: React.FC<ModerationQueueItemCardProps> = (
             <input
               type="checkbox"
               checked={isSelected}
-              onChange={(e) => onSelect(e.target.checked)}
+              onChange={e => onSelect(e.target.checked)}
             />
           </label>
 
           <div className="moderation-queue-item__priority">
-            <div 
+            <div
               className="moderation-queue-item__priority-indicator"
               style={{ backgroundColor: getPriorityColor(item.priority) }}
               title={`優先度: ${getPriorityLabel(item.priority)}`}
@@ -102,35 +102,27 @@ export const ModerationQueueItemCard: React.FC<ModerationQueueItemCardProps> = (
           </div>
 
           <div className="moderation-queue-item__status">
-            <span 
+            <span
               className="moderation-queue-item__status-badge"
-              style={{ 
+              style={{
                 backgroundColor: getStatusColor(item.status),
-                color: 'white'
+                color: 'white',
               }}
             >
               {getStatusLabel(item.status)}
             </span>
           </div>
 
-          {item.isUrgent && (
-            <span className="moderation-queue-item__urgent-badge">
-              🚨 緊急
-            </span>
-          )}
+          {item.isUrgent && <span className="moderation-queue-item__urgent-badge">🚨 緊急</span>}
 
           {item.isEscalated && (
-            <span className="moderation-queue-item__escalated-badge">
-              ⬆️ エスカレート
-            </span>
+            <span className="moderation-queue-item__escalated-badge">⬆️ エスカレート</span>
           )}
         </div>
 
         <div className="moderation-queue-item__header-right">
-          <span className="moderation-queue-item__time">
-            {formatDate(item.createdAt)}
-          </span>
-          
+          <span className="moderation-queue-item__time">{formatDate(item.createdAt)}</span>
+
           <button
             type="button"
             className="moderation-queue-item__expand"
@@ -154,12 +146,8 @@ export const ModerationQueueItemCard: React.FC<ModerationQueueItemCardProps> = (
         </div>
 
         <div className="moderation-queue-item__post-preview">
-          <div className="moderation-queue-item__post-author">
-            投稿者: {item.authorDisplayName}
-          </div>
-          <div className="moderation-queue-item__post-content">
-            {item.contentPreview}
-          </div>
+          <div className="moderation-queue-item__post-author">投稿者: {item.authorDisplayName}</div>
+          <div className="moderation-queue-item__post-content">{item.contentPreview}</div>
         </div>
 
         {item.reporterCount > 1 && (
@@ -180,10 +168,10 @@ export const ModerationQueueItemCard: React.FC<ModerationQueueItemCardProps> = (
               <strong>議論ID:</strong> {item.discussionId}
             </div>
             <div className="moderation-queue-item__metadata-item">
-              <strong>報告者履歴:</strong> 
-              {item.metadata.reporterHistory.totalReports}件の報告
-              （正確: {item.metadata.reporterHistory.accurateReports}件、
-              誤報: {item.metadata.reporterHistory.falseReports}件）
+              <strong>報告者履歴:</strong>
+              {item.metadata.reporterHistory.totalReports}件の報告 （正確:{' '}
+              {item.metadata.reporterHistory.accurateReports}件、 誤報:{' '}
+              {item.metadata.reporterHistory.falseReports}件）
             </div>
             {item.metadata.autoDetected && (
               <div className="moderation-queue-item__metadata-item">

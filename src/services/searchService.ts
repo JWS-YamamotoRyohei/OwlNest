@@ -82,14 +82,16 @@ class SearchService {
     options: SearchOptions
   ): Promise<ApiResponse<SearchResult<DiscussionListItem>>> {
     const endTiming = searchPerformanceMonitor.startTiming('searchDiscussions');
-    
+
     try {
       const startTime = Date.now();
-      
+
       // Normalize query for better caching
-      const normalizedQuery = options.query ? QueryOptimizer.normalizeQuery(options.query) : undefined;
+      const normalizedQuery = options.query
+        ? QueryOptimizer.normalizeQuery(options.query)
+        : undefined;
       const optimizedOptions = { ...options, query: normalizedQuery };
-      
+
       // Check cache first (only for first page)
       if (!options.pagination?.nextToken) {
         const cached = searchCache.get<SearchResult<DiscussionListItem>>(
@@ -98,7 +100,7 @@ class SearchService {
           options.filters,
           options.sort
         );
-        
+
         if (cached) {
           searchPerformanceMonitor.recordCacheHit();
           console.log('Cache hit for discussions search');
@@ -107,18 +109,21 @@ class SearchService {
             success: true,
             data: {
               ...cached,
-              searchTime: Date.now() - startTime
-            }
+              searchTime: Date.now() - startTime,
+            },
           };
         } else {
           searchPerformanceMonitor.recordCacheMiss();
         }
       }
-      
-      const response = await apiService.post<SearchResult<DiscussionListItem>>('/search/discussions', {
-        ...optimizedOptions,
-        timestamp: startTime
-      });
+
+      const response = await apiService.post<SearchResult<DiscussionListItem>>(
+        '/search/discussions',
+        {
+          ...optimizedOptions,
+          timestamp: startTime,
+        }
+      );
 
       if (response.success && response.data) {
         // Cache the results (only first page)
@@ -137,34 +142,37 @@ class SearchService {
           this.addToSearchHistory({
             query: options.query,
             filters: options.filters,
-            resultCount: response.data.totalCount
+            resultCount: response.data.totalCount,
           });
         }
 
         // Calculate search time
         response.data.searchTime = Date.now() - startTime;
-        
-        endTiming({ 
-          cached: false, 
+
+        endTiming({
+          cached: false,
           resultCount: response.data.totalCount,
-          hasFilters: Object.keys(options.filters || {}).length > 0
+          hasFilters: Object.keys(options.filters || {}).length > 0,
         });
       } else {
         searchPerformanceMonitor.recordError();
-        endTiming({ success: false, error: response.error?.message });
+        endTiming({ success: false, error: response.message });
       }
 
       return response;
     } catch (error) {
       searchPerformanceMonitor.recordError();
       console.error('Error searching discussions:', error);
-      endTiming({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+      endTiming({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       return {
         success: false,
         error: {
           code: 'SEARCH_ERROR',
-          message: 'Failed to search discussions'
-        }
+          message: 'Failed to search discussions',
+        },
       };
     }
   }
@@ -172,12 +180,10 @@ class SearchService {
   /**
    * Search posts with full-text search and filtering
    */
-  async searchPosts(
-    options: SearchOptions
-  ): Promise<ApiResponse<SearchResult<PostListItem>>> {
+  async searchPosts(options: SearchOptions): Promise<ApiResponse<SearchResult<PostListItem>>> {
     try {
       const startTime = Date.now();
-      
+
       // Check cache first (only for first page)
       if (!options.pagination?.nextToken) {
         const cached = searchCache.get<SearchResult<PostListItem>>(
@@ -186,34 +192,28 @@ class SearchService {
           options.filters,
           options.sort
         );
-        
+
         if (cached) {
           console.log('Cache hit for posts search');
           return {
             success: true,
             data: {
               ...cached,
-              searchTime: Date.now() - startTime
-            }
+              searchTime: Date.now() - startTime,
+            },
           };
         }
       }
-      
+
       const response = await apiService.post<SearchResult<PostListItem>>('/search/posts', {
         ...options,
-        timestamp: startTime
+        timestamp: startTime,
       });
 
       if (response.success && response.data) {
         // Cache the results (only first page)
         if (!options.pagination?.nextToken) {
-          searchCache.set(
-            'posts',
-            response.data,
-            options.query,
-            options.filters,
-            options.sort
-          );
+          searchCache.set('posts', response.data, options.query, options.filters, options.sort);
         }
 
         // Add to search history if there's a query
@@ -221,7 +221,7 @@ class SearchService {
           this.addToSearchHistory({
             query: options.query,
             filters: options.filters,
-            resultCount: response.data.totalCount
+            resultCount: response.data.totalCount,
           });
         }
 
@@ -236,8 +236,8 @@ class SearchService {
         success: false,
         error: {
           code: 'SEARCH_ERROR',
-          message: 'Failed to search posts'
-        }
+          message: 'Failed to search posts',
+        },
       };
     }
   }
@@ -256,12 +256,12 @@ class SearchService {
         console.log('Cache hit for suggestions');
         return {
           success: true,
-          data: cached
+          data: cached,
         };
       }
 
       const response = await apiService.get<SearchSuggestion[]>('/search/suggestions', {
-        params: { query, type }
+        params: { query, type },
       });
 
       if (response.success && response.data) {
@@ -276,8 +276,8 @@ class SearchService {
         success: false,
         error: {
           code: 'SUGGESTIONS_ERROR',
-          message: 'Failed to get search suggestions'
-        }
+          message: 'Failed to get search suggestions',
+        },
       };
     }
   }
@@ -296,13 +296,16 @@ class SearchService {
         console.log('Cache hit for popular searches');
         return {
           success: true,
-          data: cached.slice(0, limit)
+          data: cached.slice(0, limit),
         };
       }
 
-      const response = await apiService.get<Array<{ query: string; count: number }>>('/search/popular', {
-        params: { type, limit }
-      });
+      const response = await apiService.get<Array<{ query: string; count: number }>>(
+        '/search/popular',
+        {
+          params: { type, limit },
+        }
+      );
 
       if (response.success && response.data) {
         // Cache the popular searches
@@ -316,8 +319,8 @@ class SearchService {
         success: false,
         error: {
           code: 'POPULAR_SEARCHES_ERROR',
-          message: 'Failed to get popular searches'
-        }
+          message: 'Failed to get popular searches',
+        },
       };
     }
   }
@@ -333,12 +336,12 @@ class SearchService {
     const historyItem: SearchHistoryItem = {
       id: `search_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date().toISOString(),
-      ...item
+      ...item,
     };
 
     // Remove duplicate queries
     this.searchHistory = this.searchHistory.filter(h => h.query !== item.query);
-    
+
     // Add new item
     this.searchHistory.push(historyItem);
 
@@ -367,7 +370,7 @@ class SearchService {
   async getSavedSearches(): Promise<ApiResponse<SavedSearch[]>> {
     try {
       const response = await apiService.get<SavedSearch[]>('/search/saved');
-      
+
       if (response.success && response.data) {
         this.savedSearches = response.data;
       }
@@ -379,16 +382,18 @@ class SearchService {
         success: false,
         error: {
           code: 'SAVED_SEARCHES_ERROR',
-          message: 'Failed to get saved searches'
-        }
+          message: 'Failed to get saved searches',
+        },
       };
     }
   }
 
-  async saveSearch(search: Omit<SavedSearch, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<SavedSearch>> {
+  async saveSearch(
+    search: Omit<SavedSearch, 'id' | 'createdAt' | 'updatedAt'>
+  ): Promise<ApiResponse<SavedSearch>> {
     try {
       const response = await apiService.post<SavedSearch>('/search/saved', search);
-      
+
       if (response.success && response.data) {
         this.savedSearches.push(response.data);
       }
@@ -400,16 +405,19 @@ class SearchService {
         success: false,
         error: {
           code: 'SAVE_SEARCH_ERROR',
-          message: 'Failed to save search'
-        }
+          message: 'Failed to save search',
+        },
       };
     }
   }
 
-  async updateSavedSearch(id: string, updates: Partial<SavedSearch>): Promise<ApiResponse<SavedSearch>> {
+  async updateSavedSearch(
+    id: string,
+    updates: Partial<SavedSearch>
+  ): Promise<ApiResponse<SavedSearch>> {
     try {
       const response = await apiService.put<SavedSearch>(`/search/saved/${id}`, updates);
-      
+
       if (response.success && response.data) {
         const index = this.savedSearches.findIndex(s => s.id === id);
         if (index !== -1) {
@@ -424,8 +432,8 @@ class SearchService {
         success: false,
         error: {
           code: 'UPDATE_SAVED_SEARCH_ERROR',
-          message: 'Failed to update saved search'
-        }
+          message: 'Failed to update saved search',
+        },
       };
     }
   }
@@ -433,7 +441,7 @@ class SearchService {
   async deleteSavedSearch(id: string): Promise<ApiResponse<void>> {
     try {
       const response = await apiService.delete<void>(`/search/saved/${id}`);
-      
+
       if (response.success) {
         this.savedSearches = this.savedSearches.filter(s => s.id !== id);
       }
@@ -445,8 +453,8 @@ class SearchService {
         success: false,
         error: {
           code: 'DELETE_SAVED_SEARCH_ERROR',
-          message: 'Failed to delete saved search'
-        }
+          message: 'Failed to delete saved search',
+        },
       };
     }
   }
@@ -497,7 +505,7 @@ class SearchService {
     return {
       searchCache: searchCache.getStats(),
       suggestionCacheSize: suggestionCache['cache'].size,
-      popularSearchCached: !!popularSearchCache['cache']
+      popularSearchCached: !!popularSearchCache['cache'],
     };
   }
 

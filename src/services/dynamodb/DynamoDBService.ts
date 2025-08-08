@@ -103,14 +103,14 @@ export class DynamoDBService {
     });
 
     this.tableName = config.tableName;
-    
+
     const retryConfig: RetryConfig = {
       maxRetries: config.maxRetries || 3,
       baseDelay: config.retryDelayBase || 100,
       maxDelay: 5000,
       backoffMultiplier: 2,
     };
-    
+
     this.retryService = new RetryService(retryConfig);
   }
 
@@ -127,7 +127,7 @@ export class DynamoDBService {
         });
 
         const result = await this.client.send(command);
-        return result.Item as DynamoDBItem || null;
+        return (result.Item as DynamoDBItem) || null;
       });
     } catch (error) {
       throw this.handleError(error, 'getItem', { PK, SK });
@@ -159,11 +159,7 @@ export class DynamoDBService {
   /**
    * Update an item in the table
    */
-  async updateItem(
-    PK: string,
-    SK: string,
-    options: UpdateOptions
-  ): Promise<DynamoDBItem | null> {
+  async updateItem(PK: string, SK: string, options: UpdateOptions): Promise<DynamoDBItem | null> {
     try {
       return await this.retryService.executeWithRetry(async () => {
         const command = new UpdateCommand({
@@ -180,7 +176,7 @@ export class DynamoDBService {
         });
 
         const result = await this.client.send(command);
-        return result.Attributes as DynamoDBItem || null;
+        return (result.Attributes as DynamoDBItem) || null;
       });
     } catch (error) {
       throw this.handleError(error, 'updateItem', { PK, SK, options });
@@ -205,7 +201,7 @@ export class DynamoDBService {
         });
 
         const result = await this.client.send(command);
-        return result.Attributes as DynamoDBItem || null;
+        return (result.Attributes as DynamoDBItem) || null;
       });
     } catch (error) {
       throw this.handleError(error, 'deleteItem', { PK, SK });
@@ -244,7 +240,7 @@ export class DynamoDBService {
 
         const result = await this.client.send(command);
         return {
-          items: result.Items as DynamoDBItem[] || [],
+          items: (result.Items as DynamoDBItem[]) || [],
           lastEvaluatedKey: result.LastEvaluatedKey,
         };
       });
@@ -276,7 +272,7 @@ export class DynamoDBService {
 
         const result = await this.client.send(command);
         return {
-          items: result.Items as DynamoDBItem[] || [],
+          items: (result.Items as DynamoDBItem[]) || [],
           lastEvaluatedKey: result.LastEvaluatedKey,
         };
       });
@@ -306,7 +302,7 @@ export class DynamoDBService {
         });
 
         const result = await this.client.send(command);
-        return result.Responses?.[this.tableName] as DynamoDBItem[] || [];
+        return (result.Responses?.[this.tableName] as DynamoDBItem[]) || [];
       });
     } catch (error) {
       throw this.handleError(error, 'batchGetItems', { keys, options });
@@ -368,7 +364,7 @@ export class DynamoDBService {
   async transactWrite(items: TransactionItem[]): Promise<void> {
     try {
       await this.retryService.executeWithRetry(async () => {
-        const transactItems = items.map((item) => {
+        const transactItems = items.map(item => {
           const baseItem = {
             TableName: this.tableName,
             ConditionExpression: item.conditionExpression,
@@ -435,7 +431,7 @@ export class DynamoDBService {
   async transactGet(keys: Array<{ PK: string; SK: string }>): Promise<DynamoDBItem[]> {
     try {
       return await this.retryService.executeWithRetry(async () => {
-        const transactItems = keys.map((key) => ({
+        const transactItems = keys.map(key => ({
           Get: {
             TableName: this.tableName,
             Key: key,
@@ -447,7 +443,9 @@ export class DynamoDBService {
         });
 
         const result = await this.client.send(command);
-        return result.Responses?.map((response) => response.Item as DynamoDBItem).filter(Boolean) || [];
+        return (
+          result.Responses?.map(response => response.Item as DynamoDBItem).filter(Boolean) || []
+        );
       });
     } catch (error) {
       throw this.handleError(error, 'transactGet', { keys });

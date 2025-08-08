@@ -21,7 +21,7 @@ export const SearchPage: React.FC = () => {
     items: [],
     totalCount: 0,
     searchTime: 0,
-    hasMore: false
+    hasMore: false,
   });
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,12 +35,12 @@ export const SearchPage: React.FC = () => {
   // Initialize from URL params
   useEffect(() => {
     const urlQuery = searchParams.get('q') || '';
-    const urlType = searchParams.get('type') as 'discussions' | 'posts' || 'discussions';
+    const urlType = (searchParams.get('type') as 'discussions' | 'posts') || 'discussions';
     const urlFilters = searchParams.get('filters');
 
     setQuery(urlQuery);
     setSearchType(urlType);
-    
+
     if (urlFilters) {
       try {
         setFilters(JSON.parse(decodeURIComponent(urlFilters)));
@@ -51,7 +51,11 @@ export const SearchPage: React.FC = () => {
 
     // Perform search if query exists
     if (urlQuery) {
-      performSearch(urlQuery, urlType, urlFilters ? JSON.parse(decodeURIComponent(urlFilters)) : {});
+      performSearch(
+        urlQuery,
+        urlType,
+        urlFilters ? JSON.parse(decodeURIComponent(urlFilters)) : {}
+      );
     }
   }, []);
 
@@ -60,15 +64,18 @@ export const SearchPage: React.FC = () => {
     loadSavedSearches();
   }, []);
 
-  const updateURL = useCallback((newQuery: string, newType: string, newFilters: any) => {
-    const params = new URLSearchParams();
-    if (newQuery) params.set('q', newQuery);
-    if (newType !== 'discussions') params.set('type', newType);
-    if (Object.keys(newFilters).length > 0) {
-      params.set('filters', encodeURIComponent(JSON.stringify(newFilters)));
-    }
-    setSearchParams(params);
-  }, [setSearchParams]);
+  const updateURL = useCallback(
+    (newQuery: string, newType: string, newFilters: any) => {
+      const params = new URLSearchParams();
+      if (newQuery) params.set('q', newQuery);
+      if (newType !== 'discussions') params.set('type', newType);
+      if (Object.keys(newFilters).length > 0) {
+        params.set('filters', encodeURIComponent(JSON.stringify(newFilters)));
+      }
+      setSearchParams(params);
+    },
+    [setSearchParams]
+  );
 
   const performSearch = async (
     searchQuery: string,
@@ -90,21 +97,22 @@ export const SearchPage: React.FC = () => {
         filters: searchFilters,
         pagination: {
           limit: 20,
-          nextToken: isLoadingMoreData ? results.nextToken : undefined
+          nextToken: isLoadingMoreData ? results.nextToken : undefined,
         },
         facets: true,
-        highlight: true
+        highlight: true,
       };
 
-      const response = type === 'discussions'
-        ? await searchService.searchDiscussions(searchOptions)
-        : await searchService.searchPosts(searchOptions);
+      const response =
+        type === 'discussions'
+          ? await searchService.searchDiscussions(searchOptions)
+          : await searchService.searchPosts(searchOptions);
 
       if (response.success && response.data) {
         if (isLoadingMoreData) {
           setResults(prev => ({
             ...response.data!,
-            items: [...prev.items, ...response.data!.items]
+            items: [...prev.items, ...response.data!.items],
           }));
         } else {
           setResults(response.data);
@@ -115,7 +123,7 @@ export const SearchPage: React.FC = () => {
           items: [],
           totalCount: 0,
           searchTime: 0,
-          hasMore: false
+          hasMore: false,
         });
       }
     } catch (error) {
@@ -124,7 +132,7 @@ export const SearchPage: React.FC = () => {
         items: [],
         totalCount: 0,
         searchTime: 0,
-        hasMore: false
+        hasMore: false,
       });
     } finally {
       setIsLoading(false);
@@ -203,7 +211,7 @@ export const SearchPage: React.FC = () => {
     if (suggestion.type === 'category') {
       const newFilters = {
         ...filters,
-        categories: [...((filters as any).categories || []), suggestion.value]
+        categories: [...((filters as any).categories || []), suggestion.value],
       };
       setFilters(newFilters);
       updateURL(query, searchType, newFilters);
@@ -211,7 +219,7 @@ export const SearchPage: React.FC = () => {
     } else if (suggestion.type === 'user') {
       const newFilters = {
         ...filters,
-        [searchType === 'discussions' ? 'ownerId' : 'authorId']: suggestion.value
+        [searchType === 'discussions' ? 'ownerId' : 'authorId']: suggestion.value,
       };
       setFilters(newFilters);
       updateURL(query, searchType, newFilters);
@@ -247,9 +255,9 @@ export const SearchPage: React.FC = () => {
         name,
         query: query || undefined,
         filters: Object.keys(filters).length > 0 ? filters : undefined,
-        isActive: true
+        isActive: true,
       });
-      
+
       if (response.success) {
         loadSavedSearches();
       }
@@ -302,27 +310,27 @@ export const SearchPage: React.FC = () => {
 
   const handleFacetClick = (facetType: string, facetValue: string) => {
     let newFilters = { ...filters };
-    
+
     if (facetType === 'category') {
       const categories = (newFilters as any).categories || [];
       if (!categories.includes(facetValue)) {
         newFilters = {
           ...newFilters,
-          categories: [...categories, facetValue]
+          categories: [...categories, facetValue],
         };
       }
     } else if (facetType === 'stance') {
       newFilters = {
         ...newFilters,
-        [searchType === 'discussions' ? 'ownerStance' : 'stance']: facetValue
+        [searchType === 'discussions' ? 'ownerStance' : 'stance']: facetValue,
       };
     } else if (facetType === 'author') {
       newFilters = {
         ...newFilters,
-        [searchType === 'discussions' ? 'ownerId' : 'authorId']: facetValue
+        [searchType === 'discussions' ? 'ownerId' : 'authorId']: facetValue,
       };
     }
-    
+
     setFilters(newFilters);
     updateURL(query, searchType, newFilters);
     performSearch(query, searchType, newFilters);
@@ -332,7 +340,7 @@ export const SearchPage: React.FC = () => {
     <div className="search-page">
       <div className="search-page__header">
         <h1 className="search-page__title">検索</h1>
-        
+
         {/* Search Type Toggle */}
         <div className="search-page__type-toggle">
           <button
@@ -364,10 +372,10 @@ export const SearchPage: React.FC = () => {
           isLoading={isLoading}
           searchHistory={searchHistory}
           onSuggestionSelect={handleSuggestionSelect}
-          onHistorySelect={(q) => handleHistorySelect({ query: q, filters: {} })}
+          onHistorySelect={q => handleHistorySelect({ query: q, filters: {} })}
           placeholder={`${searchType === 'discussions' ? '議論' : '投稿'}を検索...`}
         />
-        
+
         <button
           className="search-page__history-toggle"
           onClick={() => setShowHistory(!showHistory)}

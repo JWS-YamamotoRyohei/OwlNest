@@ -56,7 +56,7 @@ export const PostThread: React.FC<PostThreadProps> = ({
     // Build tree structure
     const buildNode = (post: PostListItem, level: number): ThreadNode => {
       const children: ThreadNode[] = [];
-      
+
       // Find direct replies to this post
       replies
         .filter(reply => reply.parentId === post.postId)
@@ -84,7 +84,7 @@ export const PostThread: React.FC<PostThreadProps> = ({
     const flatten = (node: ThreadNode, parentExpanded = true) => {
       const hasChildren = node.children.length > 0;
       const isExpanded = expandedReplies.has(node.post.postId) || showAllLevels;
-      
+
       flattened.push({
         post: node.post,
         level: node.level,
@@ -150,24 +150,14 @@ export const PostThread: React.FC<PostThreadProps> = ({
       {totalReplies > 0 && (
         <div className="post-thread__controls">
           <div className="post-thread__stats">
-            <span className="post-thread__reply-count">
-              {totalReplies}件の返信
-            </span>
+            <span className="post-thread__reply-count">{totalReplies}件の返信</span>
           </div>
-          
+
           <div className="post-thread__actions">
-            <button
-              type="button"
-              className="post-thread__control-button"
-              onClick={expandAll}
-            >
+            <button type="button" className="post-thread__control-button" onClick={expandAll}>
               すべて展開
             </button>
-            <button
-              type="button"
-              className="post-thread__control-button"
-              onClick={collapseAll}
-            >
+            <button type="button" className="post-thread__control-button" onClick={collapseAll}>
               すべて折りたたみ
             </button>
           </div>
@@ -208,9 +198,7 @@ export const PostThread: React.FC<PostThreadProps> = ({
                     }`}
                     onClick={() => toggleReplies(post.postId)}
                   >
-                    <span className="post-thread__toggle-icon">
-                      {isExpanded ? '▼' : '▶'}
-                    </span>
+                    <span className="post-thread__toggle-icon">{isExpanded ? '▼' : '▶'}</span>
                     <span className="post-thread__toggle-text">
                       {isExpanded ? '返信を隠す' : `${post.replyCount}件の返信を表示`}
                     </span>
@@ -242,12 +230,8 @@ export const PostThread: React.FC<PostThreadProps> = ({
       {totalReplies === 0 && (
         <div className="post-thread__empty">
           <div className="post-thread__empty-icon">💬</div>
-          <div className="post-thread__empty-message">
-            まだ返信がありません
-          </div>
-          <div className="post-thread__empty-description">
-            この投稿に最初の返信をしてみましょう
-          </div>
+          <div className="post-thread__empty-message">まだ返信がありません</div>
+          <div className="post-thread__empty-description">この投稿に最初の返信をしてみましょう</div>
         </div>
       )}
     </div>

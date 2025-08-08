@@ -3,15 +3,15 @@
  */
 
 import React from 'react';
-import { 
-  renderWithProviders, 
-  createMockUser, 
+import {
+  renderWithProviders,
+  createMockUser,
   createMockDiscussion,
   measureRenderTime,
   measureAsyncOperation,
   detectMemoryLeaks,
   setupTestEnvironment,
-  cleanup
+  cleanup,
 } from '../../utils/testUtils';
 import { DiscussionCard } from '../../components/discussions/DiscussionCard';
 import { OptimizedList } from '../../components/common/OptimizedComponent';
@@ -33,12 +33,11 @@ describe('Component Performance Tests', () => {
   describe('DiscussionCard Performance', () => {
     it('should render within performance budget', async () => {
       const mockDiscussion = createMockDiscussion();
-      
+
       const renderTime = await measureRenderTime(() => {
-        renderWithProviders(
-          <DiscussionCard discussion={mockDiscussion} />,
-          { initialUser: mockUser }
-        );
+        renderWithProviders(<DiscussionCard discussion={mockDiscussion} />, {
+          initialUser: mockUser,
+        });
       });
 
       // Should render within 50ms
@@ -47,7 +46,7 @@ describe('Component Performance Tests', () => {
 
     it('should handle re-renders efficiently', async () => {
       const mockDiscussion = createMockDiscussion();
-      
+
       const { rerender } = renderWithProviders(
         <DiscussionCard discussion={mockDiscussion} isFollowing={false} />,
         { initialUser: mockUser }
@@ -64,12 +63,11 @@ describe('Component Performance Tests', () => {
 
     it('should not cause memory leaks', () => {
       const mockDiscussion = createMockDiscussion();
-      
+
       const testRender = () => {
-        const { unmount } = renderWithProviders(
-          <DiscussionCard discussion={mockDiscussion} />,
-          { initialUser: mockUser }
-        );
+        const { unmount } = renderWithProviders(<DiscussionCard discussion={mockDiscussion} />, {
+          initialUser: mockUser,
+        });
         unmount();
       };
 
@@ -82,14 +80,13 @@ describe('Component Performance Tests', () => {
     it('should handle large datasets efficiently', async () => {
       const largeDiscussion = createMockDiscussion({
         categories: Array.from({ length: 50 }, (_, i) => `Category ${i + 1}`),
-        tags: Array.from({ length: 30 }, (_, i) => `tag${i + 1}`)
+        tags: Array.from({ length: 30 }, (_, i) => `tag${i + 1}`),
       });
 
       const renderTime = await measureRenderTime(() => {
-        renderWithProviders(
-          <DiscussionCard discussion={largeDiscussion} />,
-          { initialUser: mockUser }
-        );
+        renderWithProviders(<DiscussionCard discussion={largeDiscussion} />, {
+          initialUser: mockUser,
+        });
       });
 
       // Should still render quickly even with large datasets
@@ -99,10 +96,10 @@ describe('Component Performance Tests', () => {
 
   describe('List Performance', () => {
     it('should render large lists efficiently', async () => {
-      const largeDataset = Array.from({ length: 1000 }, (_, i) => 
-        createMockDiscussion({ 
+      const largeDataset = Array.from({ length: 1000 }, (_, i) =>
+        createMockDiscussion({
           discussionId: `discussion-${i}`,
-          title: `Discussion ${i + 1}` 
+          title: `Discussion ${i + 1}`,
         })
       );
 
@@ -110,8 +107,8 @@ describe('Component Performance Tests', () => {
         renderWithProviders(
           <OptimizedList
             items={largeDataset}
-            renderItem={(item) => <div key={item.discussionId}>{item.title}</div>}
-            keyExtractor={(item) => item.discussionId}
+            renderItem={item => <div key={item.discussionId}>{item.title}</div>}
+            keyExtractor={item => item.discussionId}
             virtualized={true}
             itemHeight={100}
             containerHeight={500}
@@ -127,14 +124,14 @@ describe('Component Performance Tests', () => {
     it('should handle scrolling performance', async () => {
       const largeDataset = Array.from({ length: 10000 }, (_, i) => ({
         id: i,
-        content: `Item ${i + 1}`
+        content: `Item ${i + 1}`,
       }));
 
       const { container } = renderWithProviders(
         <OptimizedList
           items={largeDataset}
-          renderItem={(item) => <div key={item.id}>{item.content}</div>}
-          keyExtractor={(item) => item.id.toString()}
+          renderItem={item => <div key={item.id}>{item.content}</div>}
+          keyExtractor={item => item.id.toString()}
           virtualized={true}
           itemHeight={50}
           containerHeight={400}
@@ -143,7 +140,7 @@ describe('Component Performance Tests', () => {
       );
 
       const scrollContainer = container.querySelector('[style*="overflow"]');
-      
+
       if (scrollContainer) {
         // Measure scroll performance
         const scrollTime = await measureAsyncOperation(async () => {
@@ -171,7 +168,7 @@ describe('Component Performance Tests', () => {
               <span key={i}>Item {i}</span>
             ))}
           </div>
-        )
+        ),
       ];
 
       for (const Component of components) {
@@ -185,11 +182,10 @@ describe('Component Performance Tests', () => {
 
     it('should unmount components cleanly', async () => {
       const mockDiscussion = createMockDiscussion();
-      
-      const { unmount } = renderWithProviders(
-        <DiscussionCard discussion={mockDiscussion} />,
-        { initialUser: mockUser }
-      );
+
+      const { unmount } = renderWithProviders(<DiscussionCard discussion={mockDiscussion} />, {
+        initialUser: mockUser,
+      });
 
       const unmountTime = await measureAsyncOperation(async () => {
         unmount();
@@ -205,22 +201,19 @@ describe('Component Performance Tests', () => {
     it('should handle frequent state updates efficiently', async () => {
       const TestComponent = () => {
         const [count, setCount] = React.useState(0);
-        
+
         React.useEffect(() => {
           const interval = setInterval(() => {
             setCount(c => c + 1);
           }, 10);
-          
+
           return () => clearInterval(interval);
         }, []);
 
         return <div data-testid="counter">{count}</div>;
       };
 
-      const { getByTestId } = renderWithProviders(
-        <TestComponent />,
-        { initialUser: mockUser }
-      );
+      const { getByTestId } = renderWithProviders(<TestComponent />, { initialUser: mockUser });
 
       // Let it update for a short time
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -244,8 +237,8 @@ describe('Component Performance Tests', () => {
       // This is a conceptual test - in reality you'd use webpack-bundle-analyzer
       const componentSizeEstimate = {
         DiscussionCard: 15000, // ~15KB estimated
-        OptimizedList: 8000,   // ~8KB estimated
-        TestUtils: 12000       // ~12KB estimated
+        OptimizedList: 8000, // ~8KB estimated
+        TestUtils: 12000, // ~12KB estimated
       };
 
       Object.entries(componentSizeEstimate).forEach(([component, size]) => {
@@ -259,7 +252,7 @@ describe('Component Performance Tests', () => {
     it('should handle concurrent renders without blocking', async () => {
       const ConcurrentTest = () => {
         const [items, setItems] = React.useState<any[]>([]);
-        
+
         React.useEffect(() => {
           // Simulate loading data in chunks
           const loadData = async () => {
@@ -268,7 +261,7 @@ describe('Component Performance Tests', () => {
               setItems(prev => [...prev, createMockDiscussion({ discussionId: `item-${i}` })]);
             }
           };
-          
+
           loadData();
         }, []);
 
@@ -301,7 +294,7 @@ describe('Component Performance Tests', () => {
 
       const ErrorBoundary = ({ children }: { children: React.ReactNode }) => {
         const [hasError, setHasError] = React.useState(false);
-        
+
         React.useEffect(() => {
           const handleError = () => setHasError(true);
           window.addEventListener('error', handleError);
@@ -348,7 +341,7 @@ describe('Component Performance Tests', () => {
 // Performance benchmarking utility
 export const runPerformanceBenchmarks = async () => {
   console.log('Running performance benchmarks...');
-  
+
   const benchmarks = {
     componentRender: await measureAsyncOperation(async () => {
       for (let i = 0; i < 100; i++) {
@@ -359,25 +352,25 @@ export const runPerformanceBenchmarks = async () => {
         unmount();
       }
     }),
-    
+
     listRendering: await measureAsyncOperation(async () => {
       const largeList = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: `Item ${i}` }));
       const { unmount } = renderWithProviders(
         <OptimizedList
           items={largeList}
-          renderItem={(item) => <div key={item.id}>{item.name}</div>}
-          keyExtractor={(item) => item.id.toString()}
+          renderItem={item => <div key={item.id}>{item.name}</div>}
+          keyExtractor={item => item.id.toString()}
           virtualized={true}
         />,
         { initialUser: createMockUser() }
       );
       unmount();
-    })
+    }),
   };
 
   console.log('Performance Benchmark Results:', {
     componentRender: `${benchmarks.componentRender.duration.toFixed(2)}ms`,
-    listRendering: `${benchmarks.listRendering.duration.toFixed(2)}ms`
+    listRendering: `${benchmarks.listRendering.duration.toFixed(2)}ms`,
   });
 
   return benchmarks;

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ModerationQueueItem, 
-  ModerationQueueFilters, 
-  ReportPriority, 
-  ReportStatus, 
-  ReportCategory 
+import {
+  ModerationQueueItem,
+  ModerationQueueFilters,
+  ReportPriority,
+  ReportStatus,
+  ReportCategory,
 } from '../../types/moderation';
 import { reportService } from '../../services/reportService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,9 +16,7 @@ interface ModerationQueueProps {
   className?: string;
 }
 
-export const ModerationQueue: React.FC<ModerationQueueProps> = ({
-  className = '',
-}) => {
+export const ModerationQueue: React.FC<ModerationQueueProps> = ({ className = '' }) => {
   const { user, hasPermission } = useAuth();
   const [queueItems, setQueueItems] = useState<ModerationQueueItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,9 +41,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
       setLoading(true);
       setError(null);
 
-      const currentFilters = loadMore && nextToken 
-        ? { ...filters, nextToken } 
-        : filters;
+      const currentFilters = loadMore && nextToken ? { ...filters, nextToken } : filters;
 
       const response = await reportService.getModerationQueue(currentFilters);
 
@@ -150,13 +146,9 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
         <div className="moderation-queue__title-section">
           <h1 className="moderation-queue__title">モデレーションキュー</h1>
           <div className="moderation-queue__stats">
-            <span className="moderation-queue__stat">
-              総件数: {totalCount}
-            </span>
+            <span className="moderation-queue__stat">総件数: {totalCount}</span>
             {selectedItems.size > 0 && (
-              <span className="moderation-queue__stat">
-                選択中: {selectedItems.size}
-              </span>
+              <span className="moderation-queue__stat">選択中: {selectedItems.size}</span>
             )}
           </div>
         </div>
@@ -169,7 +161,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
           >
             🔍 フィルター
           </button>
-          
+
           {selectedItems.size > 0 && (
             <button
               type="button"
@@ -179,7 +171,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
               選択項目を自分にアサイン
             </button>
           )}
-          
+
           <button
             type="button"
             className="moderation-queue__refresh"
@@ -232,7 +224,7 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
               <input
                 type="checkbox"
                 checked={selectedItems.size === queueItems.length && queueItems.length > 0}
-                onChange={(e) => handleSelectAll(e.target.checked)}
+                onChange={e => handleSelectAll(e.target.checked)}
               />
               すべて選択
             </label>
@@ -240,12 +232,12 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
 
           {/* Items List */}
           <div className="moderation-queue__items">
-            {queueItems.map((item) => (
+            {queueItems.map(item => (
               <ModerationQueueItemCard
                 key={item.queueItemId}
                 item={item}
                 isSelected={selectedItems.has(item.queueItemId)}
-                onSelect={(selected) => handleSelectItem(item.queueItemId, selected)}
+                onSelect={selected => handleSelectItem(item.queueItemId, selected)}
                 onAssignToSelf={() => handleAssignToSelf(item.queueItemId)}
                 onUnassign={() => handleUnassign(item.queueItemId)}
                 onProcessed={handleItemProcessed}
@@ -274,9 +266,9 @@ export const ModerationQueue: React.FC<ModerationQueueProps> = ({
       <div className="moderation-queue__legend">
         <h4 className="moderation-queue__legend-title">優先度の説明</h4>
         <div className="moderation-queue__legend-items">
-          {reportService.getPriorityLevels().map((priority) => (
+          {reportService.getPriorityLevels().map(priority => (
             <div key={priority.value} className="moderation-queue__legend-item">
-              <div 
+              <div
                 className="moderation-queue__legend-color"
                 style={{ backgroundColor: priority.color }}
               />

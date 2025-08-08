@@ -28,11 +28,11 @@ class SearchCache {
    */
   private generateKey(type: string, query?: string, filters?: any, sort?: any): string {
     const keyParts = [type];
-    
+
     if (query) {
       keyParts.push(`q:${query}`);
     }
-    
+
     if (filters && Object.keys(filters).length > 0) {
       const filterStr = Object.entries(filters)
         .sort(([a], [b]) => a.localeCompare(b))
@@ -40,11 +40,11 @@ class SearchCache {
         .join('|');
       keyParts.push(`f:${filterStr}`);
     }
-    
+
     if (sort) {
       keyParts.push(`s:${sort.field}:${sort.direction}`);
     }
-    
+
     return keyParts.join('::');
   }
 
@@ -75,7 +75,7 @@ class SearchCache {
       // Remove oldest entries (simple LRU)
       const entries = Array.from(this.cache.entries());
       entries.sort(([, a], [, b]) => a.timestamp - b.timestamp);
-      
+
       const toRemove = Math.ceil(this.maxSize * 0.2); // Remove 20% of entries
       for (let i = 0; i < toRemove; i++) {
         this.cache.delete(entries[i][0]);
@@ -89,14 +89,14 @@ class SearchCache {
   get<T>(type: string, query?: string, filters?: any, sort?: any): T | null {
     const key = this.generateKey(type, query, filters, sort);
     const entry = this.cache.get(key);
-    
+
     if (!entry || this.isExpired(entry)) {
       if (entry) {
         this.cache.delete(key);
       }
       return null;
     }
-    
+
     // Update timestamp for LRU
     entry.timestamp = Date.now();
     return entry.data;
@@ -107,13 +107,13 @@ class SearchCache {
    */
   set<T>(type: string, data: T, query?: string, filters?: any, sort?: any, ttl?: number): void {
     const key = this.generateKey(type, query, filters, sort);
-    
+
     this.evictIfNeeded();
-    
+
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl: ttl || this.defaultTTL
+      ttl: ttl || this.defaultTTL,
     });
   }
 
@@ -145,16 +145,15 @@ class SearchCache {
     memoryUsage: number;
   } {
     // Simple memory estimation
-    const memoryUsage = Array.from(this.cache.values())
-      .reduce((total, entry) => {
-        return total + JSON.stringify(entry.data).length * 2; // Rough estimate
-      }, 0);
+    const memoryUsage = Array.from(this.cache.values()).reduce((total, entry) => {
+      return total + JSON.stringify(entry.data).length * 2; // Rough estimate
+    }, 0);
 
     return {
       size: this.cache.size,
       maxSize: this.maxSize,
       hitRate: 0, // Would need to track hits/misses for accurate calculation
-      memoryUsage
+      memoryUsage,
     };
   }
 
@@ -181,31 +180,32 @@ class SuggestionCache {
   get(query: string, type?: string): any[] | null {
     const key = this.generateKey(query, type);
     const entry = this.cache.get(key);
-    
+
     if (!entry || Date.now() - entry.timestamp > entry.ttl) {
       if (entry) {
         this.cache.delete(key);
       }
       return null;
     }
-    
+
     return entry.data;
   }
 
   set(query: string, suggestions: any[], type?: string): void {
     const key = this.generateKey(query, type);
-    
+
     if (this.cache.size >= this.maxSize) {
       // Remove oldest entry
-      const oldestKey = Array.from(this.cache.entries())
-        .sort(([, a], [, b]) => a.timestamp - b.timestamp)[0][0];
+      const oldestKey = Array.from(this.cache.entries()).sort(
+        ([, a], [, b]) => a.timestamp - b.timestamp
+      )[0][0];
       this.cache.delete(oldestKey);
     }
-    
+
     this.cache.set(key, {
       data: suggestions,
       timestamp: Date.now(),
-      ttl: this.defaultTTL
+      ttl: this.defaultTTL,
     });
   }
 
@@ -230,7 +230,7 @@ class PopularSearchCache {
     this.cache = {
       data: searches,
       timestamp: Date.now(),
-      ttl: this.ttl
+      ttl: this.ttl,
     };
   }
 
@@ -242,7 +242,7 @@ class PopularSearchCache {
 // Create singleton instances
 export const searchCache = new SearchCache({
   maxSize: 100,
-  defaultTTL: 5 * 60 * 1000 // 5 minutes
+  defaultTTL: 5 * 60 * 1000, // 5 minutes
 });
 
 export const suggestionCache = new SuggestionCache();

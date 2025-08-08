@@ -116,45 +116,45 @@
   .discussion-list-page {
     padding: 1rem;
   }
-  
+
   .discussion-list-page__header {
     margin-bottom: 1.5rem;
   }
-  
+
   .discussion-list-page__header h1 {
     font-size: 1.75rem;
   }
-  
+
   .discussion-list-page__header p {
     font-size: 1rem;
   }
-  
+
   .discussion-list-page__controls {
     margin-bottom: 1.5rem;
   }
-  
+
   .discussion-list-page__stats {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .discussion-list-page__stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-align: left;
   }
-  
+
   .discussion-list-page__stat-value {
     font-size: 1.25rem;
     margin-bottom: 0;
   }
-  
+
   .discussion-list-page__quick-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .discussion-list-page__quick-action {
     justify-content: center;
   }
@@ -164,15 +164,15 @@
   .discussion-list-page {
     padding: 0.75rem;
   }
-  
+
   .discussion-list-page__header h1 {
     font-size: 1.5rem;
   }
-  
+
   .discussion-list-page__header p {
     font-size: 0.9375rem;
   }
-  
+
   .discussion-list-page__quick-action {
     padding: 0.625rem 1.25rem;
     font-size: 0.9375rem;
@@ -220,12 +220,12 @@
   .discussion-list-page__quick-actions {
     display: none;
   }
-  
+
   .discussion-list-page {
     padding: 0;
     max-width: none;
   }
-  
+
   .discussion-list-page__header {
     margin-bottom: 1rem;
   }
@@ -236,11 +236,11 @@
   .discussion-list-page__stats {
     border-width: 2px;
   }
-  
+
   .discussion-list-page__quick-action {
     border: 2px solid transparent;
   }
-  
+
   .discussion-list-page__quick-action--secondary {
     border-width: 2px;
   }

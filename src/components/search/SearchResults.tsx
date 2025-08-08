@@ -25,7 +25,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   onLoadMore,
   onItemClick,
   onFacetClick,
-  highlightQuery = true
+  highlightQuery = true,
 }) => {
   const [showFacets, setShowFacets] = useState(false);
 
@@ -37,7 +37,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     const parts = text.split(regex);
 
-    return parts.map((part, index) => 
+    return parts.map((part, index) =>
       regex.test(part) ? (
         <mark key={index} className="search-results__highlight">
           {part}
@@ -80,12 +80,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                     className="search-results__facet-item"
                     onClick={() => onFacetClick?.('category', facet.category)}
                   >
-                    <span className="search-results__facet-label">
-                      {facet.category}
-                    </span>
-                    <span className="search-results__facet-count">
-                      ({facet.count})
-                    </span>
+                    <span className="search-results__facet-label">{facet.category}</span>
+                    <span className="search-results__facet-count">({facet.count})</span>
                   </button>
                 ))}
               </div>
@@ -101,12 +97,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                     className="search-results__facet-item"
                     onClick={() => onFacetClick?.('stance', facet.stance)}
                   >
-                    <span className="search-results__facet-label">
-                      {facet.stance}
-                    </span>
-                    <span className="search-results__facet-count">
-                      ({facet.count})
-                    </span>
+                    <span className="search-results__facet-label">{facet.stance}</span>
+                    <span className="search-results__facet-count">({facet.count})</span>
                   </button>
                 ))}
               </div>
@@ -122,12 +114,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                     className="search-results__facet-item"
                     onClick={() => onFacetClick?.('author', facet.authorId)}
                   >
-                    <span className="search-results__facet-label">
-                      {facet.authorName}
-                    </span>
-                    <span className="search-results__facet-count">
-                      ({facet.count})
-                    </span>
+                    <span className="search-results__facet-label">{facet.authorName}</span>
+                    <span className="search-results__facet-count">({facet.count})</span>
                   </button>
                 ))}
               </div>
@@ -139,11 +127,13 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   };
 
   const renderDiscussionItem = (item: DiscussionListItem) => {
-    const highlightedItem = highlightQuery ? {
-      ...item,
-      title: highlightText(item.title, query) as string,
-      description: highlightText(item.description, query) as string
-    } : item;
+    const highlightedItem = highlightQuery
+      ? {
+          ...item,
+          title: highlightText(item.title, query) as string,
+          description: highlightText(item.description, query) as string,
+        }
+      : item;
 
     return (
       <div
@@ -163,21 +153,19 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   };
 
   const renderPostItem = (item: PostListItem) => {
-    const highlightedItem = highlightQuery ? {
-      ...item,
-      content: {
-        ...item.content,
-        text: highlightText(item.content.text, query) as string,
-        preview: highlightText(item.content.preview, query) as string
-      }
-    } : item;
+    const highlightedItem = highlightQuery
+      ? {
+          ...item,
+          content: {
+            ...item.content,
+            text: highlightText(item.content.text, query) as string,
+            preview: highlightText(item.content.preview, query) as string,
+          },
+        }
+      : item;
 
     return (
-      <div
-        key={item.postId}
-        className="search-results__item"
-        onClick={() => onItemClick?.(item)}
-      >
+      <div key={item.postId} className="search-results__item" onClick={() => onItemClick?.(item)}>
         <PostCard
           post={highlightedItem}
           onReact={async () => {}}
@@ -205,14 +193,17 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       <div className="search-results search-results--empty">
         <div className="search-results__empty">
           <div className="search-results__empty-icon">🔍</div>
-          <div className="search-results__empty-title">
-            検索結果が見つかりません
-          </div>
+          <div className="search-results__empty-title">検索結果が見つかりません</div>
           <div className="search-results__empty-description">
             {query ? (
-              <>「{query}」に一致する{type === 'discussions' ? '議論' : '投稿'}が見つかりませんでした。</>
+              <>
+                「{query}」に一致する{type === 'discussions' ? '議論' : '投稿'}
+                が見つかりませんでした。
+              </>
             ) : (
-              <>検索条件に一致する{type === 'discussions' ? '議論' : '投稿'}が見つかりませんでした。</>
+              <>
+                検索条件に一致する{type === 'discussions' ? '議論' : '投稿'}が見つかりませんでした。
+              </>
             )}
           </div>
           <div className="search-results__empty-suggestions">
@@ -235,12 +226,9 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       <div className="search-results__header">
         <div className="search-results__info">
           <div className="search-results__count">
-            {results.totalCount.toLocaleString()}件の{type === 'discussions' ? '議論' : '投稿'}が見つかりました
-            {query && (
-              <span className="search-results__query">
-                「{query}」の検索結果
-              </span>
-            )}
+            {results.totalCount.toLocaleString()}件の{type === 'discussions' ? '議論' : '投稿'}
+            が見つかりました
+            {query && <span className="search-results__query">「{query}」の検索結果</span>}
           </div>
           <div className="search-results__time">
             検索時間: {formatSearchTime(results.searchTime)}
@@ -260,15 +248,13 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       <div className="search-results__content">
         {/* Facets Sidebar */}
         {results.facets && showFacets && (
-          <div className="search-results__sidebar">
-            {renderFacets(results.facets)}
-          </div>
+          <div className="search-results__sidebar">{renderFacets(results.facets)}</div>
         )}
 
         {/* Results List */}
         <div className="search-results__list">
-          {results.items.map((item) => 
-            type === 'discussions' 
+          {results.items.map(item =>
+            type === 'discussions'
               ? renderDiscussionItem(item as DiscussionListItem)
               : renderPostItem(item as PostListItem)
           )}
@@ -295,9 +281,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
 
           {/* End of Results */}
           {!results.hasMore && results.items.length > 0 && (
-            <div className="search-results__end">
-              すべての結果を表示しました
-            </div>
+            <div className="search-results__end">すべての結果を表示しました</div>
           )}
         </div>
       </div>

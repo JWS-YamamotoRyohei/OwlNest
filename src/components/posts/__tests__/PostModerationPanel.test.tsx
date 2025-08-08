@@ -92,23 +92,13 @@ describe('PostModerationPanel', () => {
   });
 
   it('renders moderation toggle button', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     expect(screen.getByText('モデレーション')).toBeInTheDocument();
   });
 
   it('expands panel when toggle is clicked', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -136,12 +126,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('shows post information', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -154,12 +139,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('opens reason dialog when hide button is clicked', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -172,12 +152,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('shows predefined reason options', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -192,12 +167,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('calls onHidePost when hide action is confirmed', async () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -219,12 +189,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('calls onShowPost when show button is clicked', async () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -238,12 +203,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('allows custom reason input', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -258,12 +218,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('disables confirm button when no reason is provided', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -276,12 +231,7 @@ describe('PostModerationPanel', () => {
   });
 
   it('closes dialog when cancel is clicked', () => {
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        {...mockHandlers}
-      />
-    );
+    render(<PostModerationPanel post={mockPost} {...mockHandlers} />);
 
     const toggleButton = screen.getByText('モデレーション');
     fireEvent.click(toggleButton);
@@ -327,14 +277,8 @@ describe('PostModerationPanel', () => {
 
   it('handles action errors gracefully', async () => {
     const mockOnHidePost = jest.fn().mockRejectedValue(new Error('Network error'));
-    
-    render(
-      <PostModerationPanel
-        post={mockPost}
-        onHidePost={mockOnHidePost}
-        {...mockHandlers}
-      />
-    );
+
+    render(<PostModerationPanel post={mockPost} onHidePost={mockOnHidePost} {...mockHandlers} />);
 
     // Mock alert
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});

@@ -9,13 +9,13 @@ const CreateDiscussionPage: React.FC = () => {
         <title>議論を作成 - OwlNest</title>
         <meta name="description" content="新しい議論トピックを作成しましょう" />
       </Helmet>
-      
+
       <div className="create-discussion-page">
         <div className="create-discussion-page__header">
           <h1>議論を作成</h1>
           <p>新しい議論トピックを作成しましょう</p>
         </div>
-        
+
         <div className="create-discussion-page__content">
           {/* This will be implemented in task 4.2 */}
           <div className="create-discussion-page__placeholder">

@@ -94,7 +94,7 @@ export const DiscussionPointSelector: React.FC<DiscussionPointSelectorProps> = (
               ▶
             </button>
           )}
-          
+
           <div
             className="discussion-point-selector__point-content"
             onClick={() => handlePointSelect(point.pointId)}
@@ -109,14 +109,12 @@ export const DiscussionPointSelector: React.FC<DiscussionPointSelectorProps> = (
                 disabled={disabled}
                 className="discussion-point-selector__radio"
               />
-              <div className="discussion-point-selector__point-title">
-                {point.title}
-              </div>
+              <div className="discussion-point-selector__point-title">{point.title}</div>
               <div className="discussion-point-selector__point-stats">
                 {point.postCount}件の投稿
               </div>
             </div>
-            
+
             {point.description && (
               <div className="discussion-point-selector__point-description">
                 {point.description}
@@ -147,9 +145,7 @@ export const DiscussionPointSelector: React.FC<DiscussionPointSelectorProps> = (
   return (
     <div className={`discussion-point-selector ${error ? 'discussion-point-selector--error' : ''}`}>
       <div className="discussion-point-selector__header">
-        <div className="discussion-point-selector__title">
-          投稿する論点を選択してください
-        </div>
+        <div className="discussion-point-selector__title">投稿する論点を選択してください</div>
         <div className="discussion-point-selector__subtitle">
           あなたの意見がどの論点に関するものかを選択してください
         </div>
@@ -161,9 +157,7 @@ export const DiscussionPointSelector: React.FC<DiscussionPointSelectorProps> = (
 
       {selectedPointId && (
         <div className="discussion-point-selector__selected-info">
-          <div className="discussion-point-selector__selected-label">
-            選択中の論点:
-          </div>
+          <div className="discussion-point-selector__selected-label">選択中の論点:</div>
           <div className="discussion-point-selector__selected-title">
             {points.find(p => p.pointId === selectedPointId)?.title}
           </div>

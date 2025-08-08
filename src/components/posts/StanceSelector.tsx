@@ -64,20 +64,20 @@ export const StanceSelector: React.FC<StanceSelectorProps> = ({
   return (
     <div className={`stance-selector ${error ? 'stance-selector--error' : ''}`}>
       <div className="stance-selector__options">
-        {STANCE_OPTIONS.map((option) => (
+        {STANCE_OPTIONS.map(option => (
           <div
             key={option.value}
             className={`stance-selector__option ${
               value === option.value ? 'stance-selector__option--selected' : ''
             } ${disabled ? 'stance-selector__option--disabled' : ''}`}
             onClick={() => handleStanceChange(option.value)}
-            style={{
-              '--stance-color': option.color,
-            } as React.CSSProperties}
+            style={
+              {
+                '--stance-color': option.color,
+              } as React.CSSProperties
+            }
           >
-            <div className="stance-selector__option-icon">
-              {option.icon}
-            </div>
+            <div className="stance-selector__option-icon">{option.icon}</div>
             <div className="stance-selector__option-content">
               <div className="stance-selector__option-label">
                 {option.label}
@@ -85,9 +85,7 @@ export const StanceSelector: React.FC<StanceSelectorProps> = ({
                   <span className="stance-selector__default-badge">デフォルト</span>
                 )}
               </div>
-              <div className="stance-selector__option-description">
-                {option.description}
-              </div>
+              <div className="stance-selector__option-description">{option.description}</div>
             </div>
             <div className="stance-selector__option-radio">
               <input

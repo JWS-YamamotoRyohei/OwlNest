@@ -56,7 +56,9 @@ const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
     `user-role-badge--${size}`,
     `user-role-badge--${config.color}`,
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <span
@@ -69,11 +71,7 @@ const UserRoleBadge: React.FC<UserRoleBadgeProps> = ({
           {config.icon}
         </span>
       )}
-      {showText && (
-        <span className="user-role-badge__text">
-          {config.label}
-        </span>
-      )}
+      {showText && <span className="user-role-badge__text">{config.label}</span>}
     </span>
   );
 };
@@ -99,11 +97,7 @@ export const UserRoleDisplay: React.FC<UserRoleDisplayProps> = ({
   return (
     <div className={`user-role-display ${className}`}>
       <UserRoleBadge role={role} />
-      {showDescription && (
-        <p className="user-role-display__description">
-          {config.description}
-        </p>
-      )}
+      {showDescription && <p className="user-role-display__description">{config.description}</p>}
     </div>
   );
 };
@@ -144,9 +138,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({
           </option>
         ))}
       </select>
-      <p className="role-selector__description">
-        {ROLE_CONFIG[currentRole].description}
-      </p>
+      <p className="role-selector__description">{ROLE_CONFIG[currentRole].description}</p>
     </div>
   );
 };

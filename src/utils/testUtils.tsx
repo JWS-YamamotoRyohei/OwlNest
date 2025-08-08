@@ -9,7 +9,8 @@ import { User, UserRole } from '@/types/auth';
 
 // Mock providers for testing
 const MockAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
-const MockNotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
+const MockNotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
+  children;
 const MockWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
 const MockFollowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => children;
 
@@ -30,9 +31,7 @@ const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({ children }) 
         <MockAuthProvider>
           <MockWebSocketProvider>
             <MockNotificationProvider>
-              <MockFollowProvider>
-                {children}
-              </MockFollowProvider>
+              <MockFollowProvider>{children}</MockFollowProvider>
             </MockNotificationProvider>
           </MockWebSocketProvider>
         </MockAuthProvider>
@@ -50,12 +49,12 @@ export const renderWithProviders = (
 };
 
 // Mock data factories
-export const createMockUser = (overrides = {}) :User=> ({
+export const createMockUser = (overrides = {}): User => ({
   userId: 'user-1',
   email: 'test@example.com',
   displayName: 'Test User',
-  givenName: "givenName-mock",
-  familyName: "givenName-mock",
+  givenName: 'givenName-mock',
+  familyName: 'givenName-mock',
   role: UserRole.VIEWER,
   bio: 'Test user bio',
   avatarUrl: '',
@@ -77,13 +76,13 @@ export const createMockUser = (overrides = {}) :User=> ({
   ...overrides,
 });
 
-export const createMockDiscussion = (overrides = {}):DiscussionListItem => ({
+export const createMockDiscussion = (overrides = {}): DiscussionListItem => ({
   discussionId: 'discussion-1',
   title: 'Test Discussion',
   description: 'This is a test discussion',
-  ownerId:"user-1",
-  ownerDisplayName:"",
-  ownerStance:Stance.NEUTRAL,
+  ownerId: 'user-1',
+  ownerDisplayName: '',
+  ownerStance: Stance.NEUTRAL,
   categories: [DiscussionCategory.POLITICS],
   tags: ['test'],
   isActive: true,
@@ -92,13 +91,13 @@ export const createMockDiscussion = (overrides = {}):DiscussionListItem => ({
   isFeatured: false,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-  lastActivityAt: "",
+  lastActivityAt: '',
   statistics: {
     participantCount: 1,
     postCount: 9,
     prosCount: 0,
     consCount: 0,
-    neutralCount:0,
+    neutralCount: 0,
     followersCount: 0,
   },
 
@@ -135,7 +134,7 @@ export const createMockNotification = (overrides = {}) => ({
 
 // Mock API responses
 export const mockApiResponse = <T,>(data: T, delay = 0) => {
-  return new Promise<T>((resolve) => {
+  return new Promise<T>(resolve => {
     setTimeout(() => resolve(data), delay);
   });
 };
@@ -162,7 +161,7 @@ export const flushPromises = () => {
 // Mock localStorage
 export const mockLocalStorage = () => {
   const store: { [key: string]: string } = {};
-  
+
   return {
     getItem: vi.fn((key: string) => store[key] || null),
     setItem: vi.fn((key: string, value: string) => {
@@ -180,7 +179,7 @@ export const mockLocalStorage = () => {
 // Mock sessionStorage
 export const mockSessionStorage = () => {
   const store: { [key: string]: string } = {};
-  
+
   return {
     getItem: vi.fn((key: string) => store[key] || null),
     setItem: vi.fn((key: string, value: string) => {
@@ -198,7 +197,7 @@ export const mockSessionStorage = () => {
 // Mock fetch
 export const mockFetch = (response: any, options: { status?: number; ok?: boolean } = {}) => {
   const { status = 200, ok = true } = options;
-  
+
   return vi.fn().mockResolvedValue({
     ok,
     status,
@@ -240,7 +239,8 @@ export const detectMemoryLeaks = (testFn: () => void, iterations: number = 100):
   const finalMemory = (performance as any).memory?.usedJSHeapSize || 0;
   const memoryIncrease = finalMemory - initialMemory;
 
-  if (memoryIncrease > 1024 * 1024) { // 1MB threshold
+  if (memoryIncrease > 1024 * 1024) {
+    // 1MB threshold
     console.warn(`Potential memory leak detected: ${memoryIncrease} bytes increase`);
   }
 };
@@ -264,7 +264,11 @@ export const checkAccessibility = async (container: HTMLElement): Promise<void> 
 
   const inputs = container.querySelectorAll('input');
   inputs.forEach(input => {
-    if (!input.labels?.length && !input.getAttribute('aria-label') && !input.getAttribute('aria-labelledby')) {
+    if (
+      !input.labels?.length &&
+      !input.getAttribute('aria-label') &&
+      !input.getAttribute('aria-labelledby')
+    ) {
       throw new Error(`Input without label found: ${input.name || input.id}`);
     }
   });
@@ -305,8 +309,8 @@ export const setupCustomMatchers = () => {
       const pass = renderTime <= maxTime;
 
       return {
-        message: () => 
-          pass 
+        message: () =>
+          pass
             ? `Render time ${renderTime}ms is within acceptable limit of ${maxTime}ms`
             : `Render time ${renderTime}ms exceeds acceptable limit of ${maxTime}ms`,
         pass,
@@ -347,7 +351,9 @@ export const setupTestEnvironment = () => {
   }));
 
   // Mock requestIdleCallback
-  (global as any).requestIdleCallback = vi.fn().mockImplementation((cb: Function) => setTimeout(cb, 0));
+  (global as any).requestIdleCallback = vi
+    .fn()
+    .mockImplementation((cb: Function) => setTimeout(cb, 0));
   (global as any).cancelIdleCallback = vi.fn();
 
   // Setup custom matchers

@@ -46,17 +46,19 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
     initialQuery = '',
     initialFilters = {},
     autoSearch = false,
-    debounceMs = 300
+    debounceMs = 300,
   } = options;
 
   // State
   const [query, setQueryState] = useState(initialQuery);
-  const [filters, setFiltersState] = useState<DiscussionSearchFilters | PostSearchFilters>(initialFilters);
+  const [filters, setFiltersState] = useState<DiscussionSearchFilters | PostSearchFilters>(
+    initialFilters
+  );
   const [results, setResults] = useState<SearchResult<DiscussionListItem | PostListItem>>({
     items: [],
     totalCount: 0,
     searchTime: 0,
-    hasMore: false
+    hasMore: false,
   });
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,80 +71,84 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Search function
-  const search = useCallback(async (
-    searchQuery?: string,
-    searchFilters?: DiscussionSearchFilters | PostSearchFilters,
-    loadMore: boolean = false
-  ) => {
-    const finalQuery = searchQuery ?? query;
-    const finalFilters = searchFilters ?? filters;
+  const search = useCallback(
+    async (
+      searchQuery?: string,
+      searchFilters?: DiscussionSearchFilters | PostSearchFilters,
+      loadMore: boolean = false
+    ) => {
+      const finalQuery = searchQuery ?? query;
+      const finalFilters = searchFilters ?? filters;
 
-    if (!finalQuery.trim() && Object.keys(finalFilters).length === 0) {
-      setResults({
-        items: [],
-        totalCount: 0,
-        searchTime: 0,
-        hasMore: false
-      });
-      return;
-    }
-
-    const isLoadingMoreData = loadMore && results.nextToken;
-    setIsLoading(!isLoadingMoreData);
-    setIsLoadingMore(isLoadingMoreData);
-    setError(null);
-
-    try {
-      const searchOptions = {
-        query: finalQuery.trim() || undefined,
-        filters: finalFilters,
-        pagination: {
-          limit: 20,
-          nextToken: isLoadingMoreData ? results.nextToken : undefined
-        },
-        facets: true,
-        highlight: true
-      };
-
-      const response = type === 'discussions'
-        ? await searchService.searchDiscussions(searchOptions)
-        : await searchService.searchPosts(searchOptions);
-
-      if (response.success && response.data) {
-        if (isLoadingMoreData) {
-          setResults(prev => ({
-            ...response.data!,
-            items: [...prev.items, ...response.data!.items]
-          }));
-        } else {
-          setResults(response.data);
-        }
-        
-        // Update search history
-        setSearchHistory(searchService.getSearchHistory());
-      } else {
-        setError(response.error?.message || 'Search failed');
+      if (!finalQuery.trim() && Object.keys(finalFilters).length === 0) {
         setResults({
           items: [],
           totalCount: 0,
           searchTime: 0,
-          hasMore: false
+          hasMore: false,
         });
+        return;
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred during search';
-      setError(errorMessage);
-      setResults({
-        items: [],
-        totalCount: 0,
-        searchTime: 0,
-        hasMore: false
-      });
-    } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
-    }
-  }, [query, filters, results.nextToken, type]);
+
+      const isLoadingMoreData = loadMore && results.nextToken;
+      setIsLoading(!isLoadingMoreData);
+      setIsLoadingMore(isLoadingMoreData);
+      setError(null);
+
+      try {
+        const searchOptions = {
+          query: finalQuery.trim() || undefined,
+          filters: finalFilters,
+          pagination: {
+            limit: 20,
+            nextToken: isLoadingMoreData ? results.nextToken : undefined,
+          },
+          facets: true,
+          highlight: true,
+        };
+
+        const response =
+          type === 'discussions'
+            ? await searchService.searchDiscussions(searchOptions)
+            : await searchService.searchPosts(searchOptions);
+
+        if (response.success && response.data) {
+          if (isLoadingMoreData) {
+            setResults(prev => ({
+              ...response.data!,
+              items: [...prev.items, ...response.data!.items],
+            }));
+          } else {
+            setResults(response.data);
+          }
+
+          // Update search history
+          setSearchHistory(searchService.getSearchHistory());
+        } else {
+          setError(response.error?.message || 'Search failed');
+          setResults({
+            items: [],
+            totalCount: 0,
+            searchTime: 0,
+            hasMore: false,
+          });
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred during search';
+        setError(errorMessage);
+        setResults({
+          items: [],
+          totalCount: 0,
+          searchTime: 0,
+          hasMore: false,
+        });
+      } finally {
+        setIsLoading(false);
+        setIsLoadingMore(false);
+      }
+    },
+    [query, filters, results.nextToken, type]
+  );
 
   // Load more results
   const loadMore = useCallback(async () => {
@@ -152,21 +158,24 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
   }, [search, results.hasMore, isLoadingMore]);
 
   // Load suggestions
-  const loadSuggestions = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setSuggestions([]);
-      return;
-    }
-
-    try {
-      const response = await searchService.getSearchSuggestions(searchQuery, type);
-      if (response.success && response.data) {
-        setSuggestions(response.data);
+  const loadSuggestions = useCallback(
+    async (searchQuery: string) => {
+      if (!searchQuery.trim()) {
+        setSuggestions([]);
+        return;
       }
-    } catch (err) {
-      console.error('Failed to load suggestions:', err);
-    }
-  }, [type]);
+
+      try {
+        const response = await searchService.getSearchSuggestions(searchQuery, type);
+        if (response.success && response.data) {
+          setSuggestions(response.data);
+        }
+      } catch (err) {
+        console.error('Failed to load suggestions:', err);
+      }
+    },
+    [type]
+  );
 
   // Load saved searches
   const loadSavedSearches = useCallback(async () => {
@@ -181,53 +190,62 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
   }, []);
 
   // Save current search
-  const saveCurrentSearch = useCallback(async (name: string) => {
-    try {
-      const response = await searchService.saveSearch({
-        name,
-        query: query || undefined,
-        filters: Object.keys(filters).length > 0 ? filters : undefined,
-        isActive: true
-      });
-      
-      if (response.success) {
-        await loadSavedSearches();
+  const saveCurrentSearch = useCallback(
+    async (name: string) => {
+      try {
+        const response = await searchService.saveSearch({
+          name,
+          query: query || undefined,
+          filters: Object.keys(filters).length > 0 ? filters : undefined,
+          isActive: true,
+        });
+
+        if (response.success) {
+          await loadSavedSearches();
+        }
+      } catch (err) {
+        console.error('Failed to save search:', err);
       }
-    } catch (err) {
-      console.error('Failed to save search:', err);
-    }
-  }, [query, filters, loadSavedSearches]);
+    },
+    [query, filters, loadSavedSearches]
+  );
 
   // Set query with debouncing
-  const setQuery = useCallback((newQuery: string) => {
-    setQueryState(newQuery);
-    
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-    }
+  const setQuery = useCallback(
+    (newQuery: string) => {
+      setQueryState(newQuery);
 
-    if (autoSearch) {
-      const timer = setTimeout(() => {
-        if (newQuery.trim() || Object.keys(filters).length > 0) {
-          search(newQuery, filters);
-        }
-      }, debounceMs);
-      
-      setDebounceTimer(timer);
-    }
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
 
-    // Load suggestions immediately
-    loadSuggestions(newQuery);
-  }, [autoSearch, debounceMs, filters, search, loadSuggestions, debounceTimer]);
+      if (autoSearch) {
+        const timer = setTimeout(() => {
+          if (newQuery.trim() || Object.keys(filters).length > 0) {
+            search(newQuery, filters);
+          }
+        }, debounceMs);
+
+        setDebounceTimer(timer);
+      }
+
+      // Load suggestions immediately
+      loadSuggestions(newQuery);
+    },
+    [autoSearch, debounceMs, filters, search, loadSuggestions, debounceTimer]
+  );
 
   // Set filters
-  const setFilters = useCallback((newFilters: DiscussionSearchFilters | PostSearchFilters) => {
-    setFiltersState(newFilters);
-    
-    if (autoSearch) {
-      search(query, newFilters);
-    }
-  }, [autoSearch, query, search]);
+  const setFilters = useCallback(
+    (newFilters: DiscussionSearchFilters | PostSearchFilters) => {
+      setFiltersState(newFilters);
+
+      if (autoSearch) {
+        search(query, newFilters);
+      }
+    },
+    [autoSearch, query, search]
+  );
 
   // Clear functions
   const clearResults = useCallback(() => {
@@ -235,7 +253,7 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
       items: [],
       totalCount: 0,
       searchTime: 0,
-      hasMore: false
+      hasMore: false,
     });
     setError(null);
   }, []);
@@ -298,6 +316,6 @@ export const useSearch = (options: UseSearchOptions): UseSearchReturn => {
     searchHistory,
     savedSearches,
     saveCurrentSearch,
-    loadSavedSearches
+    loadSavedSearches,
   };
 };

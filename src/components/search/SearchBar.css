@@ -69,8 +69,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Dropdown */
@@ -203,11 +207,11 @@
   .search-bar__input {
     font-size: 16px; /* Prevent zoom on iOS */
   }
-  
+
   .search-bar__dropdown {
     max-height: 300px;
   }
-  
+
   .search-bar__suggestion,
   .search-bar__history-item {
     padding: 14px 16px;
@@ -228,7 +232,7 @@
   .search-bar__input-container {
     border-width: 3px;
   }
-  
+
   .search-bar__suggestion:hover,
   .search-bar__history-item:hover {
     background: var(--color-primary-alpha-20);

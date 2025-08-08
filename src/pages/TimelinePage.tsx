@@ -8,7 +8,8 @@ import './TimelinePage.css';
 
 export const TimelinePage: React.FC = () => {
   const { user } = useAuth();
-  const { state, loadTimeline, loadMoreTimeline, markTimelineItemsAsRead, clearTimeline } = useFollow();
+  const { state, loadTimeline, loadMoreTimeline, markTimelineItemsAsRead, clearTimeline } =
+    useFollow();
   const [currentFilters, setCurrentFilters] = useState<TimelineFilters>({});
   const [currentSort, setCurrentSort] = useState<TimelineSortOptions>({
     field: 'createdAt',
@@ -18,32 +19,41 @@ export const TimelinePage: React.FC = () => {
   // Load initial timeline data
   useEffect(() => {
     if (user) {
-      loadTimeline({
-        filters: currentFilters,
-        sort: currentSort,
-        pagination: { limit: 20 },
-      }, true);
+      loadTimeline(
+        {
+          filters: currentFilters,
+          sort: currentSort,
+          pagination: { limit: 20 },
+        },
+        true
+      );
     }
   }, [user, loadTimeline, currentFilters, currentSort]);
 
   const handleFiltersChange = (filters: TimelineFilters) => {
     setCurrentFilters(filters);
     // Reload timeline with new filters
-    loadTimeline({
-      filters,
-      sort: currentSort,
-      pagination: { limit: 20 },
-    }, true);
+    loadTimeline(
+      {
+        filters,
+        sort: currentSort,
+        pagination: { limit: 20 },
+      },
+      true
+    );
   };
 
   const handleSortChange = (sort: TimelineSortOptions) => {
     setCurrentSort(sort);
     // Reload timeline with new sort
-    loadTimeline({
-      filters: currentFilters,
-      sort,
-      pagination: { limit: 20 },
-    }, true);
+    loadTimeline(
+      {
+        filters: currentFilters,
+        sort,
+        pagination: { limit: 20 },
+      },
+      true
+    );
   };
 
   const handleMarkAsRead = (itemId: string) => {
@@ -72,7 +82,7 @@ export const TimelinePage: React.FC = () => {
           title="タイムライン"
           description="フォローしているユーザーや議論の最新活動をチェック"
         />
-        
+
         <div className="timeline-page__auth-required">
           <div className="timeline-page__auth-message">
             <h1>タイムラインを表示するにはログインが必要です</h1>
@@ -88,10 +98,7 @@ export const TimelinePage: React.FC = () => {
 
   return (
     <div className="timeline-page">
-      <SEO
-        title="タイムライン"
-        description="フォローしているユーザーや議論の最新活動"
-      />
+      <SEO title="タイムライン" description="フォローしているユーザーや議論の最新活動" />
 
       <div className="timeline-page__container">
         <div className="timeline-page__header">
@@ -109,32 +116,27 @@ export const TimelinePage: React.FC = () => {
               </span>
               <span className="timeline-page__stat-label">フォロー中のユーザー</span>
             </div>
-            
+
             <div className="timeline-page__stat">
               <span className="timeline-page__stat-value">
                 {state.statistics?.followingDiscussions || 0}
               </span>
               <span className="timeline-page__stat-label">フォロー中の議論</span>
             </div>
-            
+
             <div className="timeline-page__stat">
-              <span className="timeline-page__stat-value">
-                {state.unreadTimelineCount}
-              </span>
+              <span className="timeline-page__stat-value">{state.unreadTimelineCount}</span>
               <span className="timeline-page__stat-label">未読</span>
             </div>
           </div>
         </div>
 
         <div className="timeline-page__content">
-          {state.statistics?.followingUsers === 0 && state.statistics?.followingDiscussions === 0 ? (
+          {state.statistics?.followingUsers === 0 &&
+          state.statistics?.followingDiscussions === 0 ? (
             <div className="timeline-page__empty-state">
-              <div className="timeline-page__empty-icon">
-                👥
-              </div>
-              <h2 className="timeline-page__empty-title">
-                まだ誰もフォローしていません
-              </h2>
+              <div className="timeline-page__empty-icon">👥</div>
+              <h2 className="timeline-page__empty-title">まだ誰もフォローしていません</h2>
               <p className="timeline-page__empty-description">
                 興味のあるユーザーや議論をフォローして、タイムラインを充実させましょう。
               </p>
@@ -142,7 +144,10 @@ export const TimelinePage: React.FC = () => {
                 <a href="/discussions" className="timeline-page__empty-button">
                   議論を探す
                 </a>
-                <a href="/users" className="timeline-page__empty-button timeline-page__empty-button--secondary">
+                <a
+                  href="/users"
+                  className="timeline-page__empty-button timeline-page__empty-button--secondary"
+                >
                   ユーザーを探す
                 </a>
               </div>
@@ -165,16 +170,19 @@ export const TimelinePage: React.FC = () => {
 
         {state.error && (
           <div className="timeline-page__error">
-            <div className="timeline-page__error-message">
-              {state.error}
-            </div>
+            <div className="timeline-page__error-message">{state.error}</div>
             <button
               className="timeline-page__error-retry"
-              onClick={() => loadTimeline({
-                filters: currentFilters,
-                sort: currentSort,
-                pagination: { limit: 20 },
-              }, true)}
+              onClick={() =>
+                loadTimeline(
+                  {
+                    filters: currentFilters,
+                    sort: currentSort,
+                    pagination: { limit: 20 },
+                  },
+                  true
+                )
+              }
             >
               再試行
             </button>

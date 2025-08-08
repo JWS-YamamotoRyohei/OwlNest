@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { UserSanction, SanctionType, CreateSanctionData, SanctionFilters } from '../../types/moderation';
+import {
+  UserSanction,
+  SanctionType,
+  CreateSanctionData,
+  SanctionFilters,
+} from '../../types/moderation';
 import { userSanctionService } from '../../services/userSanctionService';
 import './UserSanctionManager.css';
 
@@ -28,7 +33,7 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
   const loadSanctions = async () => {
     try {
       setLoading(true);
-      const sanctionsData = userId 
+      const sanctionsData = userId
         ? await userSanctionService.getUserSanctions(userId, filters)
         : await userSanctionService.getAllSanctions(filters);
       setSanctions(sanctionsData);
@@ -42,7 +47,7 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
   const handleCreateSanction = async (sanctionData: CreateSanctionData) => {
     try {
       const newSanction = await userSanctionService.createSanction(sanctionData);
-      
+
       // Automatically send notification to the user
       try {
         await userSanctionService.notifyUser(newSanction.sanctionId, 'both');
@@ -50,7 +55,7 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
         console.warn('Failed to send automatic notification:', notificationError);
         // Don't fail the entire operation if notification fails
       }
-      
+
       await loadSanctions();
       setShowCreateForm(false);
       onSanctionUpdate?.();
@@ -78,7 +83,11 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
     }
   };
 
-  const handleReviewAppeal = async (sanctionId: string, approved: boolean, reviewNotes?: string) => {
+  const handleReviewAppeal = async (
+    sanctionId: string,
+    approved: boolean,
+    reviewNotes?: string
+  ) => {
     try {
       await userSanctionService.reviewAppeal(sanctionId, approved, reviewNotes);
       await loadSanctions();
@@ -107,10 +116,7 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
       <div className="sanction-manager-header">
         <h2>{userId ? 'ユーザー制裁履歴' : '制裁管理'}</h2>
         {!userId && (
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowCreateForm(true)}
-          >
+          <button className="btn btn-primary" onClick={() => setShowCreateForm(true)}>
             新しい制裁を作成
           </button>
         )}
@@ -130,7 +136,9 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
             <input
               type="checkbox"
               checked={filters.isActive}
-              onChange={(e) => setFilters({ ...filters, isActive: e.target.checked ? true : undefined })}
+              onChange={e =>
+                setFilters({ ...filters, isActive: e.target.checked ? true : undefined })
+              }
             />
             アクティブな制裁のみ
           </label>
@@ -140,7 +148,12 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
             制裁タイプ:
             <select
               value={filters.sanctionType || ''}
-              onChange={(e) => setFilters({ ...filters, sanctionType: e.target.value as SanctionType || undefined })}
+              onChange={e =>
+                setFilters({
+                  ...filters,
+                  sanctionType: (e.target.value as SanctionType) || undefined,
+                })
+              }
             >
               <option value="">すべて</option>
               <option value={SanctionType.WARNING}>警告</option>
@@ -153,11 +166,15 @@ export const UserSanctionManager: React.FC<UserSanctionManagerProps> = ({
           <label>
             異議申し立て:
             <select
-              value={filters.isAppealed !== undefined ? (filters.isAppealed ? 'true' : 'false') : ''}
-              onChange={(e) => setFilters({ 
-                ...filters, 
-                isAppealed: e.target.value === '' ? undefined : e.target.value === 'true'
-              })}
+              value={
+                filters.isAppealed !== undefined ? (filters.isAppealed ? 'true' : 'false') : ''
+              }
+              onChange={e =>
+                setFilters({
+                  ...filters,
+                  isAppealed: e.target.value === '' ? undefined : e.target.value === 'true',
+                })
+              }
             >
               <option value="">すべて</option>
               <option value="true">異議申し立てあり</option>
@@ -259,8 +276,10 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
   };
 
   const isExpired = sanction.endDate && new Date(sanction.endDate) < new Date();
-  const daysRemaining = sanction.endDate 
-    ? Math.ceil((new Date(sanction.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+  const daysRemaining = sanction.endDate
+    ? Math.ceil(
+        (new Date(sanction.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+      )
     : null;
 
   const handleRevoke = () => {
@@ -272,7 +291,9 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
   };
 
   return (
-    <div className={`sanction-card ${getSanctionTypeClass(sanction.sanctionType)} ${!sanction.isActive ? 'inactive' : ''}`}>
+    <div
+      className={`sanction-card ${getSanctionTypeClass(sanction.sanctionType)} ${!sanction.isActive ? 'inactive' : ''}`}
+    >
       <div className="sanction-header">
         <div className="sanction-type">
           <span className={`type-badge ${getSanctionTypeClass(sanction.sanctionType)}`}>
@@ -282,10 +303,7 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
           {isExpired && <span className="expired-badge">期限切れ</span>}
         </div>
         <div className="sanction-actions">
-          <button
-            className="btn btn-small"
-            onClick={() => onViewDetails(sanction)}
-          >
+          <button className="btn btn-small" onClick={() => onViewDetails(sanction)}>
             詳細
           </button>
         </div>
@@ -306,7 +324,7 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
             <strong>詳細:</strong> {sanction.description}
           </div>
         )}
-        
+
         <div className="sanction-dates">
           <div>
             <strong>開始日:</strong> {new Date(sanction.startDate).toLocaleString()}
@@ -326,8 +344,11 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
             <div className="appeal-status">
               <strong>異議申し立て:</strong>
               <span className={`appeal-badge ${sanction.appealStatus}`}>
-                {sanction.appealStatus === 'pending' ? '審査中' :
-                 sanction.appealStatus === 'approved' ? '承認' : '却下'}
+                {sanction.appealStatus === 'pending'
+                  ? '審査中'
+                  : sanction.appealStatus === 'approved'
+                    ? '承認'
+                    : '却下'}
               </span>
             </div>
             {sanction.appealReason && (
@@ -347,10 +368,7 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
 
       <div className="sanction-footer">
         {sanction.isActive && !showRevokeForm && (
-          <button
-            className="btn btn-small btn-secondary"
-            onClick={() => setShowRevokeForm(true)}
-          >
+          <button className="btn btn-small btn-secondary" onClick={() => setShowRevokeForm(true)}>
             制裁を取り消す
           </button>
         )}
@@ -359,7 +377,7 @@ const SanctionCard: React.FC<SanctionCardProps> = ({
           <div className="revoke-form">
             <textarea
               value={revokeReason}
-              onChange={(e) => setRevokeReason(e.target.value)}
+              onChange={e => setRevokeReason(e.target.value)}
               placeholder="取り消し理由を入力してください..."
               rows={2}
             />
@@ -422,10 +440,7 @@ interface CreateSanctionModalProps {
   onCancel: () => void;
 }
 
-const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
-  onSave,
-  onCancel,
-}) => {
+const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({ onSave, onCancel }) => {
   const [formData, setFormData] = useState<CreateSanctionData>({
     userId: '',
     sanctionType: SanctionType.WARNING,
@@ -444,7 +459,9 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
       <div className="modal-content">
         <div className="modal-header">
           <h3>新しい制裁を作成</h3>
-          <button className="close-btn" onClick={onCancel}>×</button>
+          <button className="close-btn" onClick={onCancel}>
+            ×
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="sanction-form">
@@ -453,7 +470,7 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
             <input
               type="text"
               value={formData.userId}
-              onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+              onChange={e => setFormData({ ...formData, userId: e.target.value })}
               required
               placeholder="ユーザーIDを入力してください"
             />
@@ -463,7 +480,9 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
             <label>制裁タイプ *</label>
             <select
               value={formData.sanctionType}
-              onChange={(e) => setFormData({ ...formData, sanctionType: e.target.value as SanctionType })}
+              onChange={e =>
+                setFormData({ ...formData, sanctionType: e.target.value as SanctionType })
+              }
               required
             >
               <option value={SanctionType.WARNING}>警告</option>
@@ -479,7 +498,9 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
                 type="number"
                 min="1"
                 value={formData.duration || ''}
-                onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || undefined })}
+                onChange={e =>
+                  setFormData({ ...formData, duration: parseInt(e.target.value) || undefined })
+                }
                 required
                 placeholder="例: 24 (24時間)"
               />
@@ -492,7 +513,7 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
             <input
               type="text"
               value={formData.reason}
-              onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+              onChange={e => setFormData({ ...formData, reason: e.target.value })}
               required
               placeholder="制裁の理由を入力してください"
             />
@@ -502,7 +523,7 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
             <label>詳細説明</label>
             <textarea
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               rows={4}
               placeholder="制裁の詳細な説明を入力してください（任意）"
             />
@@ -513,7 +534,9 @@ const CreateSanctionModal: React.FC<CreateSanctionModalProps> = ({
             <input
               type="text"
               value={formData.relatedPostId || ''}
-              onChange={(e) => setFormData({ ...formData, relatedPostId: e.target.value || undefined })}
+              onChange={e =>
+                setFormData({ ...formData, relatedPostId: e.target.value || undefined })
+              }
               placeholder="制裁の原因となった投稿のID（任意）"
             />
           </div>
@@ -573,53 +596,86 @@ const SanctionDetailsModal: React.FC<SanctionDetailsModalProps> = ({
       <div className="modal-content">
         <div className="modal-header">
           <h3>制裁詳細</h3>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>
+            ×
+          </button>
         </div>
 
         <div className="sanction-details-content">
           <div className="detail-section">
             <h4>基本情報</h4>
             <div className="detail-grid">
-              <div><strong>制裁ID:</strong> {sanction.sanctionId}</div>
-              <div><strong>対象ユーザー:</strong> {sanction.userDisplayName}</div>
-              <div><strong>実行者:</strong> {sanction.moderatorDisplayName}</div>
-              <div><strong>制裁タイプ:</strong> {sanction.sanctionType}</div>
-              <div><strong>状態:</strong> {sanction.isActive ? 'アクティブ' : '無効'}</div>
+              <div>
+                <strong>制裁ID:</strong> {sanction.sanctionId}
+              </div>
+              <div>
+                <strong>対象ユーザー:</strong> {sanction.userDisplayName}
+              </div>
+              <div>
+                <strong>実行者:</strong> {sanction.moderatorDisplayName}
+              </div>
+              <div>
+                <strong>制裁タイプ:</strong> {sanction.sanctionType}
+              </div>
+              <div>
+                <strong>状態:</strong> {sanction.isActive ? 'アクティブ' : '無効'}
+              </div>
             </div>
           </div>
 
           <div className="detail-section">
             <h4>制裁内容</h4>
-            <div><strong>理由:</strong> {sanction.reason}</div>
+            <div>
+              <strong>理由:</strong> {sanction.reason}
+            </div>
             {sanction.description && (
-              <div><strong>詳細:</strong> {sanction.description}</div>
+              <div>
+                <strong>詳細:</strong> {sanction.description}
+              </div>
             )}
           </div>
 
           <div className="detail-section">
             <h4>期間</h4>
-            <div><strong>開始日:</strong> {new Date(sanction.startDate).toLocaleString()}</div>
+            <div>
+              <strong>開始日:</strong> {new Date(sanction.startDate).toLocaleString()}
+            </div>
             {sanction.endDate && (
-              <div><strong>終了日:</strong> {new Date(sanction.endDate).toLocaleString()}</div>
+              <div>
+                <strong>終了日:</strong> {new Date(sanction.endDate).toLocaleString()}
+              </div>
             )}
             {sanction.duration && (
-              <div><strong>期間:</strong> {sanction.duration}時間</div>
+              <div>
+                <strong>期間:</strong> {sanction.duration}時間
+              </div>
             )}
           </div>
 
           {sanction.isAppealed && (
             <div className="detail-section">
               <h4>異議申し立て</h4>
-              <div><strong>申し立て日:</strong> {sanction.appealedAt ? new Date(sanction.appealedAt).toLocaleString() : '-'}</div>
-              <div><strong>状態:</strong> {sanction.appealStatus}</div>
+              <div>
+                <strong>申し立て日:</strong>{' '}
+                {sanction.appealedAt ? new Date(sanction.appealedAt).toLocaleString() : '-'}
+              </div>
+              <div>
+                <strong>状態:</strong> {sanction.appealStatus}
+              </div>
               {sanction.appealReason && (
-                <div><strong>申し立て理由:</strong> {sanction.appealReason}</div>
+                <div>
+                  <strong>申し立て理由:</strong> {sanction.appealReason}
+                </div>
               )}
               {sanction.appealReviewedBy && (
-                <div><strong>審査者:</strong> {sanction.appealReviewedBy}</div>
+                <div>
+                  <strong>審査者:</strong> {sanction.appealReviewedBy}
+                </div>
               )}
               {sanction.appealReviewedAt && (
-                <div><strong>審査日:</strong> {new Date(sanction.appealReviewedAt).toLocaleString()}</div>
+                <div>
+                  <strong>審査日:</strong> {new Date(sanction.appealReviewedAt).toLocaleString()}
+                </div>
               )}
             </div>
           )}
@@ -627,44 +683,48 @@ const SanctionDetailsModal: React.FC<SanctionDetailsModalProps> = ({
           {sanction.relatedPostId && (
             <div className="detail-section">
               <h4>関連情報</h4>
-              <div><strong>関連投稿:</strong> {sanction.relatedPostId}</div>
+              <div>
+                <strong>関連投稿:</strong> {sanction.relatedPostId}
+              </div>
             </div>
           )}
 
           {sanction.previousSanctions.length > 0 && (
             <div className="detail-section">
               <h4>過去の制裁</h4>
-              <div><strong>過去の制裁数:</strong> {sanction.previousSanctions.length}件</div>
+              <div>
+                <strong>過去の制裁数:</strong> {sanction.previousSanctions.length}件
+              </div>
             </div>
           )}
 
           <div className="detail-section">
             <h4>通知情報</h4>
-            <div><strong>ユーザー通知:</strong> {sanction.userNotified ? '済み' : '未通知'}</div>
+            <div>
+              <strong>ユーザー通知:</strong> {sanction.userNotified ? '済み' : '未通知'}
+            </div>
             {sanction.notifiedAt && (
-              <div><strong>通知日時:</strong> {new Date(sanction.notifiedAt).toLocaleString()}</div>
+              <div>
+                <strong>通知日時:</strong> {new Date(sanction.notifiedAt).toLocaleString()}
+              </div>
             )}
             {sanction.notificationMethod && (
-              <div><strong>通知方法:</strong> {sanction.notificationMethod}</div>
+              <div>
+                <strong>通知方法:</strong> {sanction.notificationMethod}
+              </div>
             )}
           </div>
         </div>
 
         <div className="modal-actions">
           {sanction.isActive && !showRevokeForm && (
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowRevokeForm(true)}
-            >
+            <button className="btn btn-secondary" onClick={() => setShowRevokeForm(true)}>
               制裁を取り消す
             </button>
           )}
 
           {!sanction.isAppealed && !showAppealForm && (
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowAppealForm(true)}
-            >
+            <button className="btn btn-secondary" onClick={() => setShowAppealForm(true)}>
               異議申し立て
             </button>
           )}
@@ -696,7 +756,7 @@ const SanctionDetailsModal: React.FC<SanctionDetailsModalProps> = ({
             <h4>異議申し立て</h4>
             <textarea
               value={appealReason}
-              onChange={(e) => setAppealReason(e.target.value)}
+              onChange={e => setAppealReason(e.target.value)}
               placeholder="異議申し立ての理由を入力してください..."
               rows={4}
             />
@@ -726,7 +786,7 @@ const SanctionDetailsModal: React.FC<SanctionDetailsModalProps> = ({
             <h4>制裁の取り消し</h4>
             <textarea
               value={revokeReason}
-              onChange={(e) => setRevokeReason(e.target.value)}
+              onChange={e => setRevokeReason(e.target.value)}
               placeholder="取り消し理由を入力してください..."
               rows={4}
             />

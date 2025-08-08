@@ -30,107 +30,125 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
   const [expandedPoints, setExpandedPoints] = useState<Set<string>>(new Set());
 
   // Convert flat points to hierarchical structure
-  const buildHierarchy = useCallback((flatPoints: CreateDiscussionPointData[]): HierarchicalPoint[] => {
-    const pointMap = new Map<string, HierarchicalPoint>();
-    const rootPoints: HierarchicalPoint[] = [];
+  const buildHierarchy = useCallback(
+    (flatPoints: CreateDiscussionPointData[]): HierarchicalPoint[] => {
+      const pointMap = new Map<string, HierarchicalPoint>();
+      const rootPoints: HierarchicalPoint[] = [];
 
-    // Create hierarchical points with IDs
-    flatPoints.forEach((point, index) => {
-      const id = point.parentId ? `${point.parentId}-${index}` : `root-${index}`;
-      const hierarchicalPoint: HierarchicalPoint = {
-        ...point,
-        id,
-        level: point.parentId ? 1 : 0, // Calculate level based on parent
-        children: [],
-        isExpanded: expandedPoints.has(id),
-      };
-      pointMap.set(id, hierarchicalPoint);
-    });
+      // Create hierarchical points with IDs
+      flatPoints.forEach((point, index) => {
+        const id = point.parentId ? `${point.parentId}-${index}` : `root-${index}`;
+        const hierarchicalPoint: HierarchicalPoint = {
+          ...point,
+          id,
+          level: point.parentId ? 1 : 0, // Calculate level based on parent
+          children: [],
+          isExpanded: expandedPoints.has(id),
+        };
+        pointMap.set(id, hierarchicalPoint);
+      });
 
-    // Build parent-child relationships
-    pointMap.forEach((point) => {
-      if (point.parentId) {
-        const parent = Array.from(pointMap.values()).find(p => p.id.startsWith(point.parentId!));
-        if (parent) {
-          parent.children.push(point);
-          point.level = parent.level + 1;
+      // Build parent-child relationships
+      pointMap.forEach(point => {
+        if (point.parentId) {
+          const parent = Array.from(pointMap.values()).find(p => p.id.startsWith(point.parentId!));
+          if (parent) {
+            parent.children.push(point);
+            point.level = parent.level + 1;
+          } else {
+            rootPoints.push(point);
+          }
         } else {
           rootPoints.push(point);
         }
-      } else {
-        rootPoints.push(point);
-      }
-    });
-
-    return rootPoints;
-  }, [expandedPoints]);
-
-  const flattenHierarchy = useCallback((hierarchicalPoints: HierarchicalPoint[]): CreateDiscussionPointData[] => {
-    const result: CreateDiscussionPointData[] = [];
-    
-    const traverse = (points: HierarchicalPoint[]) => {
-      points.forEach((point) => {
-        result.push({
-          title: point.title,
-          description: point.description,
-          parentId: point.parentId,
-          order: point.order,
-        });
-        if (point.children.length > 0) {
-          traverse(point.children);
-        }
       });
-    };
-    
-    traverse(hierarchicalPoints);
-    return result;
-  }, []);
 
-  const addPoint = useCallback((parentId?: string) => {
-    if (points.length >= maxPoints) return;
-    
-    const newPoint: CreateDiscussionPointData = {
-      title: '',
-      description: '',
-      parentId,
-      order: points.length,
-    };
-    
-    onChange([...points, newPoint]);
-  }, [points, onChange, maxPoints]);
+      return rootPoints;
+    },
+    [expandedPoints]
+  );
 
-  const removePoint = useCallback((index: number) => {
-    const newPoints = points.filter((_, i) => i !== index);
-    // Reorder remaining points
-    const reorderedPoints = newPoints.map((point, i) => ({
-      ...point,
-      order: i,
-    }));
-    onChange(reorderedPoints);
-  }, [points, onChange]);
+  const flattenHierarchy = useCallback(
+    (hierarchicalPoints: HierarchicalPoint[]): CreateDiscussionPointData[] => {
+      const result: CreateDiscussionPointData[] = [];
 
-  const updatePoint = useCallback((index: number, field: keyof CreateDiscussionPointData, value: string | number) => {
-    const newPoints = points.map((point, i) => 
-      i === index ? { ...point, [field]: value } : point
-    );
-    onChange(newPoints);
-  }, [points, onChange]);
+      const traverse = (points: HierarchicalPoint[]) => {
+        points.forEach(point => {
+          result.push({
+            title: point.title,
+            description: point.description,
+            parentId: point.parentId,
+            order: point.order,
+          });
+          if (point.children.length > 0) {
+            traverse(point.children);
+          }
+        });
+      };
 
-  const movePoint = useCallback((fromIndex: number, toIndex: number) => {
-    if (fromIndex === toIndex) return;
-    
-    const newPoints = [...points];
-    const [movedPoint] = newPoints.splice(fromIndex, 1);
-    newPoints.splice(toIndex, 0, movedPoint);
-    
-    // Reorder all points
-    const reorderedPoints = newPoints.map((point, i) => ({
-      ...point,
-      order: i,
-    }));
-    
-    onChange(reorderedPoints);
-  }, [points, onChange]);
+      traverse(hierarchicalPoints);
+      return result;
+    },
+    []
+  );
+
+  const addPoint = useCallback(
+    (parentId?: string) => {
+      if (points.length >= maxPoints) return;
+
+      const newPoint: CreateDiscussionPointData = {
+        title: '',
+        description: '',
+        parentId,
+        order: points.length,
+      };
+
+      onChange([...points, newPoint]);
+    },
+    [points, onChange, maxPoints]
+  );
+
+  const removePoint = useCallback(
+    (index: number) => {
+      const newPoints = points.filter((_, i) => i !== index);
+      // Reorder remaining points
+      const reorderedPoints = newPoints.map((point, i) => ({
+        ...point,
+        order: i,
+      }));
+      onChange(reorderedPoints);
+    },
+    [points, onChange]
+  );
+
+  const updatePoint = useCallback(
+    (index: number, field: keyof CreateDiscussionPointData, value: string | number) => {
+      const newPoints = points.map((point, i) =>
+        i === index ? { ...point, [field]: value } : point
+      );
+      onChange(newPoints);
+    },
+    [points, onChange]
+  );
+
+  const movePoint = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      if (fromIndex === toIndex) return;
+
+      const newPoints = [...points];
+      const [movedPoint] = newPoints.splice(fromIndex, 1);
+      newPoints.splice(toIndex, 0, movedPoint);
+
+      // Reorder all points
+      const reorderedPoints = newPoints.map((point, i) => ({
+        ...point,
+        order: i,
+      }));
+
+      onChange(reorderedPoints);
+    },
+    [points, onChange]
+  );
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
@@ -166,125 +184,134 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
     });
   }, []);
 
-  const canAddChild = useCallback((point: HierarchicalPoint) => {
-    return point.level < maxDepth - 1 && points.length < maxPoints;
-  }, [maxDepth, points.length, maxPoints]);
+  const canAddChild = useCallback(
+    (point: HierarchicalPoint) => {
+      return point.level < maxDepth - 1 && points.length < maxPoints;
+    },
+    [maxDepth, points.length, maxPoints]
+  );
 
-  const renderHierarchicalPoint = useCallback((point: HierarchicalPoint, index: number, parentIndex?: number) => {
-    const hasChildren = point.children.length > 0;
-    const canHaveChildren = canAddChild(point);
-    const indentLevel = point.level;
+  const renderHierarchicalPoint = useCallback(
+    (point: HierarchicalPoint, index: number, parentIndex?: number) => {
+      const hasChildren = point.children.length > 0;
+      const canHaveChildren = canAddChild(point);
+      const indentLevel = point.level;
 
-    return (
-      <div key={point.id} className="hierarchical-point-container">
-        <div
-          className={`point-item hierarchical-point level-${indentLevel} ${draggedIndex === index ? 'dragging' : ''}`}
-          draggable={!disabled}
-          onDragStart={(e) => handleDragStart(e, index)}
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, index)}
-          onDragEnd={handleDragEnd}
-          style={{ marginLeft: `${indentLevel * 20}px` }}
-        >
-          <div className="point-header">
-            <div className="point-controls">
-              <div className="point-drag-handle" title="ドラッグして並び替え">
-                ⋮⋮
+      return (
+        <div key={point.id} className="hierarchical-point-container">
+          <div
+            className={`point-item hierarchical-point level-${indentLevel} ${draggedIndex === index ? 'dragging' : ''}`}
+            draggable={!disabled}
+            onDragStart={e => handleDragStart(e, index)}
+            onDragOver={handleDragOver}
+            onDrop={e => handleDrop(e, index)}
+            onDragEnd={handleDragEnd}
+            style={{ marginLeft: `${indentLevel * 20}px` }}
+          >
+            <div className="point-header">
+              <div className="point-controls">
+                <div className="point-drag-handle" title="ドラッグして並び替え">
+                  ⋮⋮
+                </div>
+                {hasChildren && (
+                  <button
+                    type="button"
+                    onClick={() => toggleExpanded(point.id)}
+                    className="expand-toggle-btn"
+                    disabled={disabled}
+                    title={point.isExpanded ? '折りたたむ' : '展開する'}
+                  >
+                    {point.isExpanded ? '▼' : '▶'}
+                  </button>
+                )}
+                {!hasChildren && <div className="expand-placeholder" />}
               </div>
-              {hasChildren && (
+              <div className="point-number">
+                論点 {index + 1}
+                {indentLevel > 0 && <span className="point-level">レベル {indentLevel + 1}</span>}
+              </div>
+              <div className="point-actions">
+                {canHaveChildren && (
+                  <button
+                    type="button"
+                    onClick={() => addPoint(point.id)}
+                    className="add-child-btn"
+                    disabled={disabled}
+                    title="子論点を追加"
+                  >
+                    + 子論点
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => toggleExpanded(point.id)}
-                  className="expand-toggle-btn"
+                  onClick={() => removePoint(index)}
+                  className="remove-point-btn"
                   disabled={disabled}
-                  title={point.isExpanded ? '折りたたむ' : '展開する'}
+                  title="この論点を削除"
                 >
-                  {point.isExpanded ? '▼' : '▶'}
+                  ×
                 </button>
-              )}
-              {!hasChildren && <div className="expand-placeholder" />}
+              </div>
             </div>
-            <div className="point-number">
-              論点 {index + 1}
-              {indentLevel > 0 && <span className="point-level">レベル {indentLevel + 1}</span>}
-            </div>
-            <div className="point-actions">
-              {canHaveChildren && (
-                <button
-                  type="button"
-                  onClick={() => addPoint(point.id)}
-                  className="add-child-btn"
+
+            <div className="point-content">
+              <div className="form-group">
+                <label className="form-label">
+                  論点タイトル <span className="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={point.title}
+                  onChange={e => updatePoint(index, 'title', e.target.value)}
+                  className="form-input"
+                  placeholder="論点のタイトルを入力してください"
                   disabled={disabled}
-                  title="子論点を追加"
-                >
-                  + 子論点
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => removePoint(index)}
-                className="remove-point-btn"
-                disabled={disabled}
-                title="この論点を削除"
-              >
-                ×
-              </button>
+                  maxLength={100}
+                />
+                <div className="form-help">{point.title.length}/100 文字</div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">論点の説明（任意）</label>
+                <textarea
+                  value={point.description || ''}
+                  onChange={e => updatePoint(index, 'description', e.target.value)}
+                  className="form-textarea"
+                  placeholder="論点の詳細な説明を入力してください"
+                  disabled={disabled}
+                  rows={3}
+                  maxLength={500}
+                />
+                <div className="form-help">{(point.description || '').length}/500 文字</div>
+              </div>
             </div>
           </div>
 
-          <div className="point-content">
-            <div className="form-group">
-              <label className="form-label">
-                論点タイトル <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                value={point.title}
-                onChange={(e) => updatePoint(index, 'title', e.target.value)}
-                className="form-input"
-                placeholder="論点のタイトルを入力してください"
-                disabled={disabled}
-                maxLength={100}
-              />
-              <div className="form-help">
-                {point.title.length}/100 文字
-              </div>
+          {/* Render children if expanded */}
+          {hasChildren && point.isExpanded && (
+            <div className="point-children">
+              {point.children.map((child, childIndex) =>
+                renderHierarchicalPoint(child, childIndex, index)
+              )}
             </div>
-
-            <div className="form-group">
-              <label className="form-label">
-                論点の説明（任意）
-              </label>
-              <textarea
-                value={point.description || ''}
-                onChange={(e) => updatePoint(index, 'description', e.target.value)}
-                className="form-textarea"
-                placeholder="論点の詳細な説明を入力してください"
-                disabled={disabled}
-                rows={3}
-                maxLength={500}
-              />
-              <div className="form-help">
-                {(point.description || '').length}/500 文字
-              </div>
-            </div>
-          </div>
+          )}
         </div>
-
-        {/* Render children if expanded */}
-        {hasChildren && point.isExpanded && (
-          <div className="point-children">
-            {point.children.map((child, childIndex) => 
-              renderHierarchicalPoint(child, childIndex, index)
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }, [
-    draggedIndex, disabled, canAddChild, addPoint, removePoint, updatePoint, 
-    handleDragStart, handleDragOver, handleDrop, handleDragEnd, toggleExpanded
-  ]);
+      );
+    },
+    [
+      draggedIndex,
+      disabled,
+      canAddChild,
+      addPoint,
+      removePoint,
+      updatePoint,
+      handleDragStart,
+      handleDragOver,
+      handleDrop,
+      handleDragEnd,
+      toggleExpanded,
+    ]
+  );
 
   const hierarchicalPoints = buildHierarchy(points);
 
@@ -299,7 +326,7 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
             {points.length}/{maxPoints} 論点
           </div>
         </div>
-        
+
         <button
           type="button"
           onClick={() => addPoint()}
@@ -320,17 +347,11 @@ export const DiscussionPointsEditor: React.FC<DiscussionPointsEditorProps> = ({
         </div>
       ) : (
         <div className="points-list hierarchical-points-list">
-          {hierarchicalPoints.map((point, index) => 
-            renderHierarchicalPoint(point, index)
-          )}
+          {hierarchicalPoints.map((point, index) => renderHierarchicalPoint(point, index))}
         </div>
       )}
 
-      {error && (
-        <div className="points-editor-error">
-          {error}
-        </div>
-      )}
+      {error && <div className="points-editor-error">{error}</div>}
 
       <div className="points-editor-help">
         <h4>💡 論点設定のコツ</h4>

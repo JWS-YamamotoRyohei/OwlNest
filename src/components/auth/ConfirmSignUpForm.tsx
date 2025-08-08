@@ -23,7 +23,7 @@ const ConfirmSignUpForm: React.FC<ConfirmSignUpFormProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Only allow digits
     setConfirmationCode(value);
-    
+
     // Clear error when user starts typing
     if (error) {
       clearError();
@@ -32,7 +32,7 @@ const ConfirmSignUpForm: React.FC<ConfirmSignUpFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!confirmationCode || confirmationCode.length !== 6) {
       return;
     }
@@ -49,7 +49,7 @@ const ConfirmSignUpForm: React.FC<ConfirmSignUpFormProps> = ({
   const handleResendCode = async () => {
     setIsResending(true);
     setResendMessage('');
-    
+
     try {
       await resendConfirmationCode(email);
       setResendMessage('確認コードを再送信しました。メールをご確認ください。');
@@ -100,9 +100,7 @@ const ConfirmSignUpForm: React.FC<ConfirmSignUpFormProps> = ({
             className="confirmation-code-input"
             autoComplete="one-time-code"
           />
-          <div className="field-help">
-            6桁の数字を入力してください
-          </div>
+          <div className="field-help">6桁の数字を入力してください</div>
         </div>
 
         <button

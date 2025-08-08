@@ -1,5 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getOptimizedImageUrl, createResponsiveSrcSet, generatePlaceholder, getOptimalFormat } from '../../utils/imageOptimization';
+import {
+  getOptimizedImageUrl,
+  createResponsiveSrcSet,
+  generatePlaceholder,
+  getOptimalFormat,
+} from '../../utils/imageOptimization';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -42,7 +47,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     quality,
     format: getOptimalFormat(),
     width,
-    height
+    height,
   });
 
   // Generate responsive srcSet if sizes are provided
@@ -86,7 +91,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   const imageStyle: React.CSSProperties = {
     transition: 'opacity 0.3s ease-in-out',
     opacity: isLoaded ? 1 : 0,
-    ...style
+    ...style,
   };
 
   const placeholderStyle: React.CSSProperties = {
@@ -99,22 +104,17 @@ export const LazyImage: React.FC<LazyImageProps> = ({
     filter: 'blur(4px)',
     transition: 'opacity 0.3s ease-in-out',
     opacity: isLoaded ? 0 : 1,
-    pointerEvents: 'none'
+    pointerEvents: 'none',
   };
 
   return (
-    <div 
+    <div
       className={`lazy-image-container ${className}`}
       style={{ position: 'relative', overflow: 'hidden', ...style }}
     >
       {/* Placeholder image */}
-      <img
-        src={placeholderSrc}
-        alt=""
-        style={placeholderStyle}
-        aria-hidden="true"
-      />
-      
+      <img src={placeholderSrc} alt="" style={placeholderStyle} aria-hidden="true" />
+
       {/* Main image */}
       <img
         ref={imgRef}
@@ -131,7 +131,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
         decoding="async"
         {...props}
       />
-      
+
       {/* Error state */}
       {hasError && (
         <div
@@ -146,7 +146,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
             justifyContent: 'center',
             backgroundColor: '#f3f4f6',
             color: '#6b7280',
-            fontSize: '14px'
+            fontSize: '14px',
           }}
         >
           画像を読み込めませんでした

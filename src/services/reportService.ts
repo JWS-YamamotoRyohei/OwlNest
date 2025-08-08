@@ -1,6 +1,6 @@
-import { 
-  PostReport, 
-  CreateReportData, 
+import {
+  PostReport,
+  CreateReportData,
   ReviewReportData,
   ReportCategory,
   ReportPriority,
@@ -8,7 +8,7 @@ import {
   ModerationQueueItem,
   ModerationQueueFilters,
   ModerationStats,
-  BulkModerationAction
+  BulkModerationAction,
 } from '../types/moderation';
 import { apiService } from './api';
 
@@ -18,13 +18,15 @@ export class ReportService {
    */
   async reportPost(data: CreateReportData): Promise<PostReport> {
     try {
-      const response = await apiService.post('/reports/posts', {
+      const response = await apiService.post<PostReport>('/reports/posts', {
         ...data,
         timestamp: new Date().toISOString(),
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to report post: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to report post: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -33,10 +35,12 @@ export class ReportService {
    */
   async getPostReports(postId: string): Promise<PostReport[]> {
     try {
-      const response = await apiService.get(`/reports/posts/${postId}`);
+      const response = await apiService.get<PostReport[]>(`/reports/posts/${postId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get post reports: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get post reports: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -46,10 +50,12 @@ export class ReportService {
   async getUserReports(userId?: string, limit = 50): Promise<PostReport[]> {
     try {
       const params = userId ? { userId, limit } : { limit };
-      const response = await apiService.get('/reports/user', { params });
+      const response = await apiService.get<PostReport[]>('/reports/user', { params });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get user reports: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get user reports: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -63,12 +69,19 @@ export class ReportService {
     nextToken?: string;
   }> {
     try {
-      const response = await apiService.get('/moderation/queue', {
+      const response = await apiService.get<{
+        items: ModerationQueueItem[];
+        totalCount: number;
+        hasMore: boolean;
+        nextToken?: string;
+      }>('/moderation/queue', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get moderation queue: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get moderation queue: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -82,7 +95,9 @@ export class ReportService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to assign queue item: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to assign queue item: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -96,7 +111,9 @@ export class ReportService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to review report: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to review report: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -110,7 +127,9 @@ export class ReportService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to escalate report: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to escalate report: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -124,7 +143,9 @@ export class ReportService {
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      throw new Error(`Failed to bulk review reports: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to bulk review reports: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -138,12 +159,14 @@ export class ReportService {
     moderatorId?: string;
   }): Promise<ModerationStats> {
     try {
-      const response = await apiService.get('/moderation/stats', {
+      const response = await apiService.get<ModerationStats>('/moderation/stats', {
         params: filters,
       });
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to get moderation stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to get moderation stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -324,10 +347,11 @@ export class ReportService {
 
     // Adjust based on reporter history
     if (reporterHistory) {
-      const accuracy = reporterHistory.totalReports > 0 
-        ? reporterHistory.accurateReports / reporterHistory.totalReports 
-        : 0.5;
-      
+      const accuracy =
+        reporterHistory.totalReports > 0
+          ? reporterHistory.accurateReports / reporterHistory.totalReports
+          : 0.5;
+
       if (accuracy < 0.3) {
         // Lower priority for reporters with poor accuracy
         if (basePriority === ReportPriority.URGENT) basePriority = ReportPriority.HIGH;

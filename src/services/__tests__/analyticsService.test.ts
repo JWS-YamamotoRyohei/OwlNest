@@ -8,7 +8,7 @@ describe('AnalyticsService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     analyticsService.clearCache();
-    
+
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -37,12 +37,12 @@ describe('AnalyticsService', () => {
         lastActivityAt: '2024-01-02T00:00:00Z',
         averagePostsPerParticipant: 2.5,
         uniqueViewers: 150,
-        totalViews: 500
+        totalViews: 500,
       };
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockStats
+        json: async () => mockStats,
       });
 
       const result = await analyticsService.getDiscussionStatistics('1');
@@ -51,9 +51,9 @@ describe('AnalyticsService', () => {
         '/api/analytics/discussions/1/statistics',
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': 'Bearer mock-token',
-            'Content-Type': 'application/json'
-          })
+            Authorization: 'Bearer mock-token',
+            'Content-Type': 'application/json',
+          }),
         })
       );
 
@@ -70,7 +70,7 @@ describe('AnalyticsService', () => {
         title: '議論 1',
         participantCount: expect.any(Number),
         postCount: expect.any(Number),
-        engagementRate: expect.any(Number)
+        engagementRate: expect.any(Number),
       });
     });
 
@@ -89,12 +89,12 @@ describe('AnalyticsService', () => {
         lastActivityAt: '2024-01-02T00:00:00Z',
         averagePostsPerParticipant: 3.0,
         uniqueViewers: 100,
-        totalViews: 300
+        totalViews: 300,
       };
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockStats
+        json: async () => mockStats,
       });
 
       // First call should fetch from API
@@ -125,7 +125,7 @@ describe('AnalyticsService', () => {
           lastActivityAt: '2024-01-02T00:00:00Z',
           averagePostsPerParticipant: 2.5,
           uniqueViewers: 150,
-          totalViews: 500
+          totalViews: 500,
         },
         {
           discussionId: '2',
@@ -141,13 +141,13 @@ describe('AnalyticsService', () => {
           lastActivityAt: '2024-01-02T00:00:00Z',
           averagePostsPerParticipant: 2.5,
           uniqueViewers: 120,
-          totalViews: 400
-        }
+          totalViews: 400,
+        },
       ];
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockStats
+        json: async () => mockStats,
       });
 
       const result = await analyticsService.getMultipleDiscussionStatistics(['1', '2']);
@@ -157,10 +157,10 @@ describe('AnalyticsService', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer mock-token',
-            'Content-Type': 'application/json'
+            Authorization: 'Bearer mock-token',
+            'Content-Type': 'application/json',
           }),
-          body: JSON.stringify({ discussionIds: ['1', '2'] })
+          body: JSON.stringify({ discussionIds: ['1', '2'] }),
         })
       );
 
@@ -185,8 +185,8 @@ describe('AnalyticsService', () => {
             discussionCount: 50,
             postCount: 1200,
             participantCount: 200,
-            engagementRate: 0.75
-          }
+            engagementRate: 0.75,
+          },
         ],
         growthMetrics: {
           dailyActiveUsers: 200,
@@ -195,23 +195,23 @@ describe('AnalyticsService', () => {
           newUsersToday: 10,
           newUsersThisWeek: 70,
           newUsersThisMonth: 250,
-          retentionRate: 0.8
+          retentionRate: 0.8,
         },
         userActivityDistribution: {
           timeOfDay: { '12': 100, '18': 150 },
-          dayOfWeek: { 'Monday': 120, 'Friday': 180 },
+          dayOfWeek: { Monday: 120, Friday: 180 },
           stanceDistribution: {
             pros: 0.35,
-            cons: 0.30,
+            cons: 0.3,
             neutral: 0.25,
-            unknown: 0.10
-          }
-        }
+            unknown: 0.1,
+          },
+        },
       };
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockStats
+        json: async () => mockStats,
       });
 
       const result = await analyticsService.getPlatformStatistics();
@@ -220,9 +220,9 @@ describe('AnalyticsService', () => {
         '/api/analytics/platform/statistics',
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': 'Bearer mock-token',
-            'Content-Type': 'application/json'
-          })
+            Authorization: 'Bearer mock-token',
+            'Content-Type': 'application/json',
+          }),
         })
       );
 
@@ -234,15 +234,15 @@ describe('AnalyticsService', () => {
         timeRange: {
           start: '2024-01-01T00:00:00Z',
           end: '2024-01-31T23:59:59Z',
-          period: 'day' as const
+          period: 'day' as const,
         },
         categories: ['politics', 'technology'],
-        stances: ['pros', 'cons'] as const
+        stances: ['pros', 'cons'] as const,
       };
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => ({})
+        json: async () => ({}),
       });
 
       await analyticsService.getPlatformStatistics(filter);
@@ -266,7 +266,7 @@ describe('AnalyticsService', () => {
       const timeRange: AnalyticsTimeRange = {
         start: '2024-01-01T00:00:00Z',
         end: '2024-01-31T23:59:59Z',
-        period: 'day'
+        period: 'day',
       };
 
       const mockTrendData = [
@@ -274,19 +274,19 @@ describe('AnalyticsService', () => {
           date: '2024-01-01',
           value: 100,
           change: 5,
-          changePercentage: 5.0
+          changePercentage: 5.0,
         },
         {
           date: '2024-01-02',
           value: 105,
           change: 5,
-          changePercentage: 5.0
-        }
+          changePercentage: 5.0,
+        },
       ];
 
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockTrendData
+        json: async () => mockTrendData,
       });
 
       const result = await analyticsService.getTrendData('posts', timeRange);
@@ -296,10 +296,10 @@ describe('AnalyticsService', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer mock-token',
-            'Content-Type': 'application/json'
+            Authorization: 'Bearer mock-token',
+            'Content-Type': 'application/json',
           }),
-          body: JSON.stringify({ timeRange, filter: undefined })
+          body: JSON.stringify({ timeRange, filter: undefined }),
         })
       );
 
@@ -318,11 +318,11 @@ describe('AnalyticsService', () => {
     it('should return cache statistics', async () => {
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => ({})
+        json: async () => ({}),
       });
 
       await analyticsService.getDiscussionStatistics('1');
-      
+
       const stats = analyticsService.getCacheStats();
       expect(stats.size).toBe(1);
       expect(stats.keys.length).toBe(1);

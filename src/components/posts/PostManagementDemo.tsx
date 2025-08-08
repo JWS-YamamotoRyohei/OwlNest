@@ -15,14 +15,14 @@ export const PostManagementDemo: React.FC = () => {
     field: 'createdAt',
     direction: 'desc',
   });
-  const [selectedPost, setSelectedPost] = useState<PostListItem | null>(null);
+  const [selectedPost] = useState<PostListItem | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'thread'>('list');
 
   // Initialize demo data
   useEffect(() => {
     const demoDiscussionPoints = TestDataFactory.createDiscussionPoints(5);
     setDiscussionPoints(demoDiscussionPoints);
-    console.log("demoDiscussionPoints",demoDiscussionPoints)
+    console.log('demoDiscussionPoints', demoDiscussionPoints);
     const demoPosts = TestDataFactory.createPosts(20, {
       discussionId: 'demo-discussion',
       discussionPoints: demoDiscussionPoints,
@@ -59,7 +59,7 @@ export const PostManagementDemo: React.FC = () => {
   const handleReactToPost = async (postId: string, reactionType: ReactionType): Promise<void> => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
-  
+
     // マッピング：ReactionType → statisticsのキー
     const reactionCountKeyMap: Record<ReactionType, keyof PostListItem['statistics']> = {
       [ReactionType.LIKE]: 'likeCount',
@@ -68,20 +68,20 @@ export const PostManagementDemo: React.FC = () => {
       [ReactionType.INSIGHTFUL]: 'insightfulCount',
       [ReactionType.FUNNY]: 'funnyCount',
     };
-  
+
     setPosts(prev =>
       prev.map(post => {
         if (post.postId !== postId) return post;
-  
+
         const currentReaction = post.userReaction;
         const newStatistics = { ...post.statistics };
-  
+
         // 以前のリアクションを減算
         if (currentReaction) {
           const key = reactionCountKeyMap[currentReaction];
           newStatistics[key] = Math.max(0, newStatistics[key] - 1);
         }
-  
+
         // リアクションのトグル処理
         if (currentReaction === reactionType) {
           // 同じリアクションをもう一度押した＝取り消し
@@ -94,7 +94,7 @@ export const PostManagementDemo: React.FC = () => {
           // 新しいリアクションを追加
           const key = reactionCountKeyMap[reactionType];
           newStatistics[key] = (newStatistics[key] || 0) + 1;
-  
+
           return {
             ...post,
             statistics: newStatistics,
@@ -104,7 +104,6 @@ export const PostManagementDemo: React.FC = () => {
       })
     );
   };
-  
 
   const handleEditPost = (postId: string) => {
     alert(`編集機能は実装予定です。投稿ID: ${postId}`);
@@ -121,19 +120,21 @@ export const PostManagementDemo: React.FC = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    setPosts(prev => prev.map(post => {
-      if (post.postId === postId) {
-        return {
-          ...post,
-          // In real implementation, this would be handled by moderation status
-          content: {
-            ...post.content,
-            text: '[この投稿は非表示にされました]',
-          },
-        };
-      }
-      return post;
-    }));
+    setPosts(prev =>
+      prev.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            // In real implementation, this would be handled by moderation status
+            content: {
+              ...post.content,
+              text: '[この投稿は非表示にされました]',
+            },
+          };
+        }
+        return post;
+      })
+    );
 
     console.log(`投稿を非表示にしました。投稿ID: ${postId}, 理由: ${reason}`);
   };
@@ -173,12 +174,15 @@ export const PostManagementDemo: React.FC = () => {
 
   const getPostStats = () => {
     const totalPosts = posts.length;
-  
-    const stanceDistribution = posts.reduce((acc, post) => {
-      acc[post.stance] = (acc[post.stance] || 0) + 1;
-      return acc;
-    }, {} as Record<Stance, number>);
-  
+
+    const stanceDistribution = posts.reduce(
+      (acc, post) => {
+        acc[post.stance] = (acc[post.stance] || 0) + 1;
+        return acc;
+      },
+      {} as Record<Stance, number>
+    );
+
     const totalReactions = posts.reduce((sum, post) => {
       const stats = post.statistics;
       return (
@@ -190,9 +194,9 @@ export const PostManagementDemo: React.FC = () => {
         stats.funnyCount
       );
     }, 0);
-  
+
     const totalReplies = posts.reduce((sum, post) => sum + post.replyCount, 0);
-  
+
     return {
       totalPosts,
       stanceDistribution,
@@ -200,7 +204,6 @@ export const PostManagementDemo: React.FC = () => {
       totalReplies,
     };
   };
-  
 
   const stats = getPostStats();
 
@@ -305,12 +308,12 @@ export const PostManagementDemo: React.FC = () => {
                 </button>
                 <h3>スレッド表示</h3>
               </div>
-              
+
               <PostThread
                 rootPost={selectedPost}
                 replies={getRepliesForPost(selectedPost.postId)}
                 onReact={handleReactToPost}
-                onReply={(postId) => alert(`返信機能は実装予定です。投稿ID: ${postId}`)}
+                onReply={postId => alert(`返信機能は実装予定です。投稿ID: ${postId}`)}
                 onEdit={handleEditPost}
                 onDelete={handleDeletePost}
                 onHide={handleHidePost}
@@ -337,7 +340,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>返信機能</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>🔍 フィルタリング</h4>
             <ul>
@@ -348,7 +351,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>日付範囲フィルタ</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>📊 ソート機能</h4>
             <ul>
@@ -359,7 +362,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>昇順・降順切り替え</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>👍 インタラクション</h4>
             <ul>
@@ -370,7 +373,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>基本的なモデレーション</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>🛡️ モデレーション</h4>
             <ul>
@@ -381,7 +384,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>理由付きアクション</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>🧵 スレッド表示</h4>
             <ul>
@@ -392,7 +395,7 @@ export const PostManagementDemo: React.FC = () => {
               <li>ナビゲーション機能</li>
             </ul>
           </div>
-          
+
           <div className="post-management-demo__feature-card">
             <h4>🎨 UI/UX</h4>
             <ul>

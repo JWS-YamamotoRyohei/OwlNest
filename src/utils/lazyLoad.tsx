@@ -17,17 +17,15 @@ export const lazyLoad = <T extends ComponentType<any>>(
 
   const LazyComponent = lazy(() => {
     // Add artificial delay for better UX (prevents flash of loading state)
-    return new Promise<{ default: T }>((resolve) => {
+    return new Promise<{ default: T }>(resolve => {
       setTimeout(() => {
         importFunc().then(resolve);
       }, delay);
     });
   });
 
-  const WrappedComponent: React.FC<React.ComponentProps<T>> = (props) => (
-    <React.Suspense 
-      fallback={fallback || <LoadingSpinner size="large" fullScreen />}
-    >
+  const WrappedComponent: React.FC<React.ComponentProps<T>> = props => (
+    <React.Suspense fallback={fallback || <LoadingSpinner size="large" fullScreen />}>
       <LazyComponent {...props} />
     </React.Suspense>
   );

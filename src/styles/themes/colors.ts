@@ -3,7 +3,7 @@
 export const colors = {
   primary: {
     50: '#eff6ff',
-    100: '#dbeafe', 
+    100: '#dbeafe',
     200: '#bfdbfe',
     300: '#93c5fd',
     400: '#60a5fa', // メインブランドカラー（現在のヘッダー色）
@@ -43,8 +43,8 @@ export const colors = {
     500: '#ef4444',
     600: '#dc2626',
   },
-  pros: '#22c55e',    // Pros投稿用の緑色
-  cons: '#ef4444',    // Cons投稿用の赤色
+  pros: '#22c55e', // Pros投稿用の緑色
+  cons: '#ef4444', // Cons投稿用の赤色
   neutral: '#64748b', // 中立投稿用のグレー
   unknown: '#a855f7', // わからない投稿用の紫色
 } as const;
